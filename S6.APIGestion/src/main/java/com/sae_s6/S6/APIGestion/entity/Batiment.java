@@ -1,52 +1,38 @@
 package com.sae_s6.S6.APIGestion.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "t_e_batiment_bat")
+@Table(name = "batiment")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Batiment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bat_id")
-    private int id;
+    private Integer id;
 
-    @NotNull
-    @Size(max = 50)
-    @Column(name = "bat_nom", nullable = false, length = 50)
+    @Column(name = "nom", nullable = false, length = 100)
     private String nom;
 
-    @OneToMany(mappedBy = "batiment", cascade = CascadeType.ALL)
-    private List<Salle> salles = new ArrayList<>();
+    @OneToMany(mappedBy = "batiment")
+    private List<Salle> salles;
 
-    // Getters & setters
-
-    public int getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Batiment that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(nom, that.nom);
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public List<Salle> getSalles() {
-        return salles;
-    }
-
-    public void setSalles(List<Salle> salles) {
-        this.salles = salles;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nom);
     }
 }
