@@ -24,8 +24,10 @@ public class SalleService {
 
     private final SalleRepo salleRepo;
 
-    public List<Salle> getAllAuteurs() {
-        return salleRepo.findAll();
+    public List<Salle> getAllSalles() {
+        List<Salle> salles = salleRepo.findAll();
+        log.debug("Liste des salles récupérées: {}", salles);
+        return salles;
     }
 
     /**
@@ -34,13 +36,13 @@ public class SalleService {
      * @return
      */
 
-    public Salle getAuteurById(Integer id) {
+    public Salle getSalleById(Integer id) {
         Optional<Salle> optionalSalle = salleRepo.findById(id);
         if (optionalSalle.isPresent()) {
+            log.debug("Détails de la salle trouvée: {}", optionalSalle.get());
             return optionalSalle.get();
         }
-
-        log.debug("salle with id: {} doesn't exist", id);
+        log.warn("Aucune salle trouvée avec l'id: {}", id);
         return null;
     }
 
@@ -51,7 +53,10 @@ public class SalleService {
          */
 
     public Salle saveSalle(Salle salle) {
-        return salleRepo.save(salle);
+        Salle savedSalle = salleRepo.save(salle);
+        log.info("Salle sauvegardée avec succès avec l'id: {}", savedSalle.getId());
+        log.debug("Détails de la salle sauvegardée: {}", savedSalle);
+        return savedSalle;
     }
 
     
@@ -62,7 +67,10 @@ public class SalleService {
      */
 
     public Salle updateSalle(Salle salle) {
-        return salleRepo.save(salle);
+        Salle updatedSalle = salleRepo.save(salle);
+        log.info("Salle mise à jour avec succès avec l'id: {}", updatedSalle.getId());
+        log.debug("Détails de la salle après mise à jour: {}", updatedSalle);
+        return updatedSalle;
     }
 
      /**
