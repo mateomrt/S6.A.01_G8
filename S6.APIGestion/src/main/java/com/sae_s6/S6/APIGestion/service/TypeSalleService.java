@@ -31,6 +31,61 @@ public class TypeSalleService {
     }
 
 
+     /**
+     * 
+     * @param id
+     * @return
+     */
+
+     public TypeSalle getTypeSalleById(Integer id) {
+        Optional<TypeSalle> optionalTypeSalle = typeSalleRepo.findById(id);
+        if (optionalTypeSalle.isPresent()) {
+            log.debug("Détails de la salle trouvée: {}", optionalTypeSalle.get());
+            return optionalTypeSalle.get();
+        }
+        log.warn("Aucune salle trouvée avec l'id: {}", id);
+        return null;
+    }
+
+       /**
+         * 
+         * @param typeSalle
+         * @return
+         */
+
+    public TypeSalle saveTypeSalle(TypeSalle typeSalle) {
+        TypeSalle savedtypeSalle = typeSalleRepo.save(typeSalle);
+        log.info("Salle sauvegardée avec succès avec l'id: {}", savedtypeSalle.getIdTypeSalle());
+        log.debug("Détails de la salle sauvegardée: {}", savedtypeSalle);
+        return savedtypeSalle;
+    }
+
+    
+    /**
+     * 
+     * @param typeSalle
+     * @return
+     */
+
+    public TypeSalle updateTypeSalle(TypeSalle typeSalle) {
+        TypeSalle updatedtypeSalle = typeSalleRepo.save(typeSalle);
+        log.info("Salle mise à jour avec succès avec l'id: {}", updatedtypeSalle.getIdTypeSalle());
+        log.debug("Détails de la salle après mise à jour: {}", updatedtypeSalle);
+        return updatedtypeSalle;
+    }
+
+     /**
+     * 
+     * @param id
+     * @return
+     */
+
+    public void deleteTypeSalleById(Integer id) {
+        typeSalleRepo.deleteById(id);
+        log.debug("Salle with id: {} deleted successfully", id);
+    }
+
+
 
 
 
