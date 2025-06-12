@@ -36,7 +36,7 @@ public class TypeCapteurDonneeController {
 
     @GetMapping("/")
     public ResponseEntity<List<TypeCapteurDonnee>> getAllDonnees(){
-        List<TypeCapteurDonnee> Donnees = typeCapteurDonneeService.getAllTypeCapteurDonnees();  
+        List<TypeCapteurDonnee> Donnees = typeCapteurDonneeService.getAllTypeCapteurDonnee();  
         if (Donnees == null) {
             return ResponseEntity.badRequest().build();
         }

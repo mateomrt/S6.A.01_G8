@@ -18,8 +18,8 @@ public class Batiment {
     @Id
     private Integer id;
 
-    @Column(name = "nom", nullable = false, length = 100)
-    private String nom;
+    @Column(name = "titre", nullable = false, length = 100)
+    private String titre;
 
     @OneToMany(mappedBy = "batiment")
     private List<Salle> salles;
@@ -28,11 +28,11 @@ public class Batiment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Batiment that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(nom, that.nom);
+        return Objects.equals(id, that.id) && Objects.equals(titre, that.titre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nom);
+        return Objects.hash(id, titre);
     }
 }

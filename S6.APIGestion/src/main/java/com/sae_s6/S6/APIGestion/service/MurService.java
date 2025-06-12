@@ -9,10 +9,8 @@ import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.repository.MurRepo;
 
 
-
 @Service
 public class MurService {
-    
     private final MurRepo murRepo;
 
     @Autowired
@@ -34,8 +32,10 @@ public class MurService {
 
     public Mur updateMur(Integer id, Mur updated) {
         return murRepo.findById(id).map(m -> {
+            m.setTitre(updated.getTitre());
+            m.setHauteur(updated.getHauteur());
+            m.setLongueur(updated.getLongueur());
             m.setOrientation(updated.getOrientation());
-            m.setLargeur(updated.getLargeur());
             m.setSalle(updated.getSalle());
             return murRepo.save(m);
         }).orElse(null);
