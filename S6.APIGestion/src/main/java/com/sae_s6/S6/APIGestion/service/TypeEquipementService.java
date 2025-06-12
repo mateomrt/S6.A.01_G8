@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.repository.TypeEquipementRepo;
-import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+
 
 @Service
 @RequiredArgsConstructor

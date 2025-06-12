@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.repository.EquipementRepo;
-import com.sae_s6.S6.APIGestion.repository.SalleRepo;
 import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Equipement;
-import com.sae_s6.S6.APIGestion.entity.Salle;
 
 @Service
 @RequiredArgsConstructor
