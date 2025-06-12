@@ -13,17 +13,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "type_equipement")
+@Table(name = "typeequipement")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Type_Equipement {
+public class TypeEquipement {
     
     @Id
-    private Integer id_type_equipement;
+    @Column(name = "id")
+    private Integer idTypeEquipement;
 
-    @Column(name = "libelle_type_equipement", nullable = false, length = 250)
-    private String libelle_type_equipement;
+    @Column(name = "titre", nullable = false, length = 250)
+    private String titre;
 
     @OneToMany(mappedBy = "type_equipement")
     private List<Capteur> capteurs;
@@ -31,13 +32,13 @@ public class Type_Equipement {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Type_Equipement type_equipement)) return false;
-        return Objects.equals(id_type_equipement, type_equipement.id_type_equipement)
-                && Objects.equals(libelle_type_equipement, type_equipement.libelle_type_equipement);
+        if (!(o instanceof TypeEquipement type_equipement)) return false;
+        return Objects.equals(idTypeEquipement, type_equipement.idTypeEquipement)
+                && Objects.equals(titre, type_equipement.titre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_type_equipement, libelle_type_equipement);
+        return Objects.hash(idTypeEquipement, titre);
     }
 }
