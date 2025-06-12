@@ -21,7 +21,7 @@ public class TypeEquipement {
     
     @Id
     @Column(name = "id")
-    private Integer idTypeEquipement;
+    private Integer id;
 
     @Column(name = "titre", nullable = false, length = 250)
     private String titre;
@@ -33,12 +33,12 @@ public class TypeEquipement {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TypeEquipement type_equipement)) return false;
-        return Objects.equals(idTypeEquipement, type_equipement.idTypeEquipement)
+        return Objects.equals(id, type_equipement.id)
                 && Objects.equals(titre, type_equipement.titre);
         }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTypeEquipement, titre);
+        return Objects.hash(id, titre);
     }
 }

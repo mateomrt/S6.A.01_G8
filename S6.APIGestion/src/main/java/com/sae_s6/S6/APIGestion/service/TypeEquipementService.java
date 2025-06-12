@@ -48,7 +48,7 @@ public class TypeEquipementService {
 
     public TypeEquipement saveTypeEquipement(TypeEquipement typeEquipement) {
         TypeEquipement savedTypeEquipement = typeEquipementRepo.save(typeEquipement);
-        log.info("Type d'équipement sauvegardé avec succès avec l'id: {}", savedTypeEquipement.getIdTypeEquipement());
+        log.info("Type d'équipement sauvegardé avec succès avec l'id: {}", savedTypeEquipement.getId());
         log.debug("Détails du type d'équipement sauvegardé: {}", savedTypeEquipement);
         return savedTypeEquipement;
     }
@@ -62,7 +62,7 @@ public class TypeEquipementService {
 
     public TypeEquipement updateTypeEquipement(TypeEquipement typeEquipement) {
         TypeEquipement updatedTypeEquipement = typeEquipementRepo.save(typeEquipement);
-        log.info("Type d'équipement mis à jour avec succès avec l'id: {}", updatedTypeEquipement.getIdTypeEquipement());
+        log.info("Type d'équipement mis à jour avec succès avec l'id: {}", updatedTypeEquipement.getId());
         log.debug("Détails du type d'équipement après mise à jour: {}", updatedTypeEquipement);
         return updatedTypeEquipement;
     }

@@ -1,7 +1,6 @@
 package com.sae_s6.S6.APIGestion.controller;
 
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class TypeEquipementControllerTest {
     // Méthode utilitaire pour créer un TypeEquipement
     private TypeEquipement createTypeEquipement(Integer id, String titre) {
         TypeEquipement typeEquipement = new TypeEquipement();
-        typeEquipement.setIdTypeEquipement(id);
+        typeEquipement.setId(id);
         typeEquipement.setTitre(titre);
 
         ResponseEntity<TypeEquipement> response = restTemplate.postForEntity(getBaseUrl() + "/", typeEquipement, TypeEquipement.class);
@@ -49,13 +48,13 @@ public class TypeEquipementControllerTest {
     @Test
     void testGetTypeEquipementById() {
         TypeEquipement typeEquipement = createTypeEquipement(101, "Type B");
-        Integer id = typeEquipement.getIdTypeEquipement();
+        Integer id = typeEquipement.getId();
 
         ResponseEntity<TypeEquipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeEquipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getIdTypeEquipement()).isEqualTo(id);
+        assertThat(response.getBody().getId()).isEqualTo(id);
         assertThat(response.getBody().getTitre()).isEqualTo("Type B");
     }
 
@@ -84,7 +83,7 @@ public class TypeEquipementControllerTest {
     @Test
     void testDeleteTypeEquipementById() {
         TypeEquipement typeEquipement = createTypeEquipement(104, "Type à Supprimer");
-        Integer id = typeEquipement.getIdTypeEquipement();
+        Integer id = typeEquipement.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
 
