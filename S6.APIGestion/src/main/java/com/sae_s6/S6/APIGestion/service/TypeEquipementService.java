@@ -76,6 +76,6 @@ public class TypeEquipementService {
 
     public void deleteTypeEquipementById(Integer id) {
         typeEquipementRepo.deleteById(id);
-        log.debug("Type d'équipement avec id: {} supprimé avec succès !", id);
+        log.debug("Type d'équipement avec id: {} supprimé avec succès", id);
     }
 }
