@@ -35,7 +35,7 @@ public class TypeEquipement {
         if (!(o instanceof TypeEquipement type_equipement)) return false;
         return Objects.equals(idTypeEquipement, type_equipement.idTypeEquipement)
                 && Objects.equals(titre, type_equipement.titre);
-    }
+        }
 
     @Override
     public int hashCode() {
