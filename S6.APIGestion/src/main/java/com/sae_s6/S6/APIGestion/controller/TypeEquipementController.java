@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
-import com.sae_s6.S6.APIGestion.service.TypeSalleService;
 
 import lombok.RequiredArgsConstructor;
 
