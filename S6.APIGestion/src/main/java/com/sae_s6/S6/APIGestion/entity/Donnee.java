@@ -5,7 +5,10 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,7 @@ public class Donnee {
 
 
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "titre", nullable = false, length = 250)
@@ -29,7 +33,8 @@ public class Donnee {
     @Column(name = "mode", nullable = false, length = 250)
     private String mode;
 
-    @OneToMany(mappedBy = "TypeCapteurDonnee")
+    @OneToMany
+    @JoinColumn(name = "typeCapteurDonnees_id")
     private List<TypeCapteurDonnee> typeCapteurDonnees;
 
     @Override

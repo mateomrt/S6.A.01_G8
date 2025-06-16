@@ -26,7 +26,7 @@ public class TypeSalleControllerTest {
     // Méthode utilitaire pour créer un TypeSalle
     private TypeSalle createTypeSalle(Integer id, String libelle) {
         TypeSalle typeSalle = new TypeSalle();
-        typeSalle.setIdTypeSalle(id);
+        typeSalle.setId(id);
         typeSalle.setLibelleTypeSalle(libelle);
 
         ResponseEntity<TypeSalle> response = restTemplate.postForEntity(getBaseUrl() + "/", typeSalle, TypeSalle.class);
@@ -48,13 +48,13 @@ public class TypeSalleControllerTest {
     @Test
     void testGetTypeSalleById() {
         TypeSalle typeSalle = createTypeSalle(101, "Type B");
-        Integer id = typeSalle.getIdTypeSalle();
+        Integer id = typeSalle.getId();
 
         ResponseEntity<TypeSalle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeSalle.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getIdTypeSalle()).isEqualTo(id);
+        assertThat(response.getBody().getId()).isEqualTo(id);
         assertThat(response.getBody().getLibelleTypeSalle()).isEqualTo("Type B");
     }
 
@@ -83,7 +83,7 @@ public class TypeSalleControllerTest {
     @Test
     void testDeleteTypeSalleById() {
         TypeSalle typeSalle = createTypeSalle(104, "Type à Supprimer");
-        Integer id = typeSalle.getIdTypeSalle();
+        Integer id = typeSalle.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
 

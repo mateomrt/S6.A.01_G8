@@ -3,9 +3,11 @@ package com.sae_s6.S6.APIGestion.entity;
 import java.util.List;
 import java.util.Objects;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,13 +22,13 @@ import lombok.NoArgsConstructor;
 public class TypeEquipement {
     
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false, length = 250)
     private String titre;
 
-    @OneToMany(mappedBy = "type_equipement")
+    @OneToMany
+    @JoinColumn(name = "capteur_id")
     private List<Capteur> capteurs;
 
     @Override

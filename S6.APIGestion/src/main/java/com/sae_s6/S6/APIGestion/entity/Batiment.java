@@ -1,12 +1,18 @@
 package com.sae_s6.S6.APIGestion.entity;
 
-import jakarta.persistence.*;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "batiment")
@@ -16,6 +22,7 @@ import java.util.Objects;
 public class Batiment {
 
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "titre", nullable = false, length = 100)

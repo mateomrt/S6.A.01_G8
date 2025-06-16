@@ -19,7 +19,7 @@ import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/typeequipement")
+@RequestMapping("typeequipement")
 @RequiredArgsConstructor
 @Validated
 public class TypeEquipementController {
