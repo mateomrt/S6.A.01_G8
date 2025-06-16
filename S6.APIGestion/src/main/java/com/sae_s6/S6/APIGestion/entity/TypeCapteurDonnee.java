@@ -3,8 +3,6 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,9 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TypeCapteurDonnee {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
 
     @Id
     @Column(name = "donnee_id", nullable = false)
