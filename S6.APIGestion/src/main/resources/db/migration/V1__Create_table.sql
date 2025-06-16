@@ -1,6 +1,6 @@
 -- Table batiment
 CREATE TABLE batiment (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     titre VARCHAR(250) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -8,7 +8,7 @@ CREATE TABLE batiment (
 
 -- Table typesalle
 CREATE TABLE typesalle (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     titre TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -16,7 +16,7 @@ CREATE TABLE typesalle (
 
 -- Table salle
 CREATE TABLE salle (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     batiment_id INTEGER NOT NULL,
     typesalle_id INTEGER NOT NULL,
     titre VARCHAR(250) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE salle (
 
 -- Table mur
 CREATE TABLE mur (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     salle_id INTEGER NOT NULL,
     titre VARCHAR(250) NOT NULL,
     hauteur INTEGER NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE mur (
 
 -- Table typecapteur
 CREATE TABLE typecapteur (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     titre VARCHAR(250) NOT NULL,
     mode VARCHAR(250) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +51,7 @@ CREATE TABLE typecapteur (
 
 -- Table donnee
 CREATE TABLE donnee (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     titre VARCHAR(250) NOT NULL,
     unite VARCHAR(250) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -71,7 +71,7 @@ CREATE TABLE typecapteurdonnee (
 
 -- Table typeequipement
 CREATE TABLE typeequipement (
-    id SERIAL PRIMARY KEY,
+    id integer PRIMARY KEY,
     titre VARCHAR(250) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -79,7 +79,7 @@ CREATE TABLE typeequipement (
 
 -- Table equipement
 CREATE TABLE equipement (
-    id SERIAL PRIMARY KEY,
+    id integer PRIMARY KEY,
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typeequipement_id INTEGER NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE equipement (
 
 -- Table capteur
 CREATE TABLE capteur (
-    id SERIAL PRIMARY KEY,
+    id integer PRIMARY KEY,
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typecapteur_id INTEGER NOT NULL,
