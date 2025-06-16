@@ -49,7 +49,7 @@ public class TypeSalleService {
 
     public TypeSalle saveTypeSalle(TypeSalle typeSalle) {
         TypeSalle savedtypeSalle = typeSalleRepo.save(typeSalle);
-        log.info("Salle sauvegardée avec succès avec l'id: {}", savedtypeSalle.getIdTypeSalle());
+        log.info("Salle sauvegardée avec succès avec l'id: {}", savedtypeSalle.getId());
         log.debug("Détails de la salle sauvegardée: {}", savedtypeSalle);
         return savedtypeSalle;
     }
@@ -63,7 +63,7 @@ public class TypeSalleService {
 
     public TypeSalle updateTypeSalle(TypeSalle typeSalle) {
         TypeSalle updatedtypeSalle = typeSalleRepo.save(typeSalle);
-        log.info("Salle mise à jour avec succès avec l'id: {}", updatedtypeSalle.getIdTypeSalle());
+        log.info("Salle mise à jour avec succès avec l'id: {}", updatedtypeSalle.getId());
         log.debug("Détails de la salle après mise à jour: {}", updatedtypeSalle);
         return updatedtypeSalle;
     }

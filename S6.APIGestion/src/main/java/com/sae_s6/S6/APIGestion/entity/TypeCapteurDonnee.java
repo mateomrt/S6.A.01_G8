@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+
+
+
 @Entity
 @Table(name = "typecapteurdonnee")
 @Data
@@ -24,20 +28,18 @@ public class TypeCapteurDonnee {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Id
     @Column(name = "donnee_id", nullable = false)
     private Integer idDonnee;
 
-    @Id
     @Column(name = "typecapteur_id", nullable = false)
     private Integer idTypeCapteur;
 
     @ManyToOne
-    @JoinColumn(name = "donnee_id")
+    @JoinColumn(name = "donnee_id", insertable = false, updatable = false)
     private Donnee donneeNavigation;
 
     @ManyToOne
-    @JoinColumn(name = "typecapteur_id")
+    @JoinColumn(name = "typecapteur_id", insertable = false, updatable = false)
     private TypeCapteur typeCapteurNavigation;
 
 
