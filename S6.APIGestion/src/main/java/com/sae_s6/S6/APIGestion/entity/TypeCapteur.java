@@ -1,7 +1,6 @@
 package com.sae_s6.S6.APIGestion.entity;
 
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class TypeCapteur {
 
     @Id
-    @Column(name = "id", nullable = false)
     private Integer id;
 
 

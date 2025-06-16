@@ -20,7 +20,7 @@ import com.sae_s6.S6.APIGestion.service.DonneeService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/donnee")
+@RequestMapping("/donnee")
 @RequiredArgsConstructor
 @Validated
 public class DonneeController {
