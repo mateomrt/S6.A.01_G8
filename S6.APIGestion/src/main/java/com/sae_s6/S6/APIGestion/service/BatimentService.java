@@ -1,21 +1,21 @@
 package com.sae_s6.S6.APIGestion.service;
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.sae_s6.S6.APIGestion.entity.Batiment;
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class BatimentService {
 	private final BatimentRepo batimentRepo;
 
-	@Autowired
-	public BatimentService(BatimentRepo batimentRepo) {
-		this.batimentRepo = batimentRepo;
-	}
+	
 
 	// Récupérer tous les bâtiments
 	public List<Batiment> getAllBatiments() {
