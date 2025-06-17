@@ -1,3 +1,5 @@
+SET search_path TO "sae6apigestion";
+
 -- Table batiment
 CREATE TABLE batiment (
     id INTEGER PRIMARY KEY,
