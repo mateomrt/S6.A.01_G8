@@ -49,7 +49,7 @@ public class TypeCapteurDonneeService {
 
     public TypeCapteurDonnee saveTypeCapteurDonnee(TypeCapteurDonnee Donnee) {
         TypeCapteurDonnee savedDonnee = typeCapteurDonneeRepo.save(Donnee);
-        log.info("TypeCapteurDonnee sauvegardé avec succès avec l'id: {}", savedDonnee.getIdTypeCapteur());
+        log.info("TypeCapteurDonnee sauvegardé avec succès avec l'id: {}", savedDonnee.getId());
         log.debug("Détails de TypeCapteurDonnee sauvegardée: {}", savedDonnee);
         return savedDonnee;
     }
@@ -63,7 +63,7 @@ public class TypeCapteurDonneeService {
 
     public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonnee Donnee) {
         TypeCapteurDonnee updatedDonnee = typeCapteurDonneeRepo.save(Donnee);
-        log.info("Donnee mise à jour avec succès avec l'id: {}", updatedDonnee.getIdTypeCapteur());
+        log.info("Donnee mise à jour avec succès avec l'id: {}", updatedDonnee.getId());
         log.debug("Détails de TypeCapteurDonnee après mise à jour: {}", updatedDonnee);
         return updatedDonnee;
     }
