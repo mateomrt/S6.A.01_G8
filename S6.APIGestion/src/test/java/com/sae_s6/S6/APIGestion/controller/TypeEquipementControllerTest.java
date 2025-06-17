@@ -20,7 +20,7 @@ public class TypeEquipementControllerTest {
     private TestRestTemplate restTemplate;
 
     private String getBaseUrl() {
-        return "http://localhost:" + port + "/api/typeequipement";
+        return "http://localhost:" + port + "/typeequipement";
     }
 
     // Méthode utilitaire pour créer un TypeEquipement

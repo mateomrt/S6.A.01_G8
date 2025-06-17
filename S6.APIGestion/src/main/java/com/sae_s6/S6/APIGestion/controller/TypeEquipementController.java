@@ -19,7 +19,7 @@ import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("typeequipement")
+@RequestMapping("/typeequipement")
 @RequiredArgsConstructor
 @Validated
 public class TypeEquipementController {
@@ -38,7 +38,7 @@ public class TypeEquipementController {
         if (typeEquipements == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(typeEquipements);
+        return ResponseEntity.ok().body(typeEquipementService.getAllTypeEquipements());
     }
 
 

@@ -20,7 +20,7 @@ public class TypeEquipementService {
     public List<TypeEquipement> getAllTypeEquipements() {
         List<TypeEquipement> typeEquipements = typeEquipementRepo.findAll();
         log.debug("Liste des type d'équipements récupérées: {}", typeEquipements);
-        return typeEquipements;
+        return typeEquipementRepo.findAll();
     }
 
 

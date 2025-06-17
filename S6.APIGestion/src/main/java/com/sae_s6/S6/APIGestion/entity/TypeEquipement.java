@@ -3,6 +3,7 @@ package com.sae_s6.S6.APIGestion.entity;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class TypeEquipement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "titre", nullable = false)
     private String titre;
 
     @OneToMany
