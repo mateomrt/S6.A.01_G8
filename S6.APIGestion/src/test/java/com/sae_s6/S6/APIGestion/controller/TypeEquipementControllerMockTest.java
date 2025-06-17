@@ -24,6 +24,23 @@ public class TypeEquipementControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    
+
+    @Test
+    void testGetAllBatiments() throws Exception {
+        // Act
+        MvcResult result = mockMvc.perform(get("/batiments")
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Assert
+        String json = result.getResponse().getContentAsString();
+        Batiment[] batiments = objectMapper.readValue(json, Batiment[].class);
+        assertThat(batiments).isNotEmpty();
+        assertThat(batiments[0].getTitre()).isEqualTo("Batiment A");
+        assertThat(batiments[1].getTitre()).isEqualTo("Batiment B");
+    }
+
     @Test
     void testGetTypeEquipementById() throws Exception {
         // Arrange
@@ -39,21 +56,6 @@ public class TypeEquipementControllerMockTest {
         TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
         assertThat(typeEquipement.getId()).isEqualTo(typeEquipementId);
         assertThat(typeEquipement.getTitre()).isEqualTo("Ordinateur"); // Assuming "Ordinateur" is the expected title
-    }
-
-    @Test
-    void testGetAllBatiments() throws Exception {
-        // Act
-        MvcResult result = mockMvc.perform(get("/batiments")
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        // Assert
-        String json = result.getResponse().getContentAsString();
-        Batiment[] batiments = objectMapper.readValue(json, Batiment[].class);
-        assertThat(batiments).isNotEmpty();
-        assertThat(batiments[0].getTitre()).isEqualTo("Batiment A");
-        assertThat(batiments[1].getTitre()).isEqualTo("Batiment B");
     }
 
     @Test
