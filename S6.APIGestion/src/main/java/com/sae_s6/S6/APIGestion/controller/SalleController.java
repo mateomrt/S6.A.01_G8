@@ -110,5 +110,18 @@ public class SalleController {
         return ResponseEntity.ok("Salle supprimée avec succès");
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Salle>> getSallesByTitre(@RequestParam(name="titre") String titre) {
+        return ResponseEntity.ok().body(salleService.getSallesByTitre(titre));
+    }
+
+    /**
+     * GET auteurs by nom and prenom (--like--) as Request Parameters.
+     * URL: localhost:8080/biblio/auteur/searchLike?nom=Hug&prenom=Vict
+     */
+    @GetMapping("/searchLike")
+    public ResponseEntity<List<Salle>> getSallesByTitreLike(@RequestParam(name="titre") String titre) {
+        return ResponseEntity.ok().body(salleService.getSallesByTitreLike(titre));
+    }
 
 }

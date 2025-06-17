@@ -98,7 +98,7 @@ public class MurServiceTest {
         assertEquals("Nouveau titre", result.getTitre());
         assertEquals(2.5, result.getHauteur());
         assertEquals(4.0, result.getLongueur());
-        assertEquals("Nord", result.getOrientation());
+        assertEquals(Orientation.N, result.getOrientation());
         verify(murRepo, times(1)).findById(1);
         verify(murRepo, times(1)).save(existingMur);
     }
