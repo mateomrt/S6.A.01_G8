@@ -38,7 +38,7 @@ public class TypeEquipementController {
         if (typeEquipements == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body(typeEquipementService.getAllTypeEquipements());
+        return ResponseEntity.ok().body(typeEquipements);
     }
 
 
