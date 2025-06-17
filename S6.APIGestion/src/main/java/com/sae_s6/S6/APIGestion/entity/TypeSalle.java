@@ -45,11 +45,6 @@ public class TypeSalle {
                 return false;
         } else if (!libelleTypeSalle.equals(other.libelleTypeSalle))
             return false;
-        if (salles == null) {
-            if (other.salles != null)
-                return false;
-        } else if (!salles.equals(other.salles))
-            return false;
         return true;
     }
 
@@ -59,7 +54,6 @@ public class TypeSalle {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((libelleTypeSalle == null) ? 0 : libelleTypeSalle.hashCode());
-        result = prime * result + ((salles == null) ? 0 : salles.hashCode());
         return result;
     }
 
