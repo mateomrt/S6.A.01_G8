@@ -27,7 +27,7 @@ public class TypeEquipementController {
 
      /**
   * Cette méthode est appelée lors d’une requête GET.
-  * URL: localhost:8080/api/typeequipement/
+  * URL: localhost:8080/typeequipement/
   * but: Récupère toute les TypeEquipement dans la table TypeEquipement
   * @return List des TypeEquipements 
   */
@@ -44,7 +44,7 @@ public class TypeEquipementController {
 
              /**
      * Cette méthode est appelée lors d’une requête GET.
-    * URL: localhost:8080/api/typeequipement/1 (1 ou tout autre id)
+    * URL: localhost:8080/typeequipement/1 (1 ou tout autre id)
     * But: Récupère la typeequipement avec l’id associé.
     * @param id - typeequipement id
     * @return typeequipement avec l’id associé.
@@ -62,7 +62,7 @@ public class TypeEquipementController {
     
             /**
      * Cette méthode est appelée lors d’une requête POST.
-    * URL: localhost:8080/api/typeequipement/
+    * URL: localhost:8080/typeequipement/
     * Purpose: Création d’une entité typeEquipement
     * @param typeEquipement – le body de la requête est une entité typeEquipement
     * @return entité typeEquipement créée
@@ -80,7 +80,7 @@ public class TypeEquipementController {
 
              /**
      * Cette méthode est appelée lors d’une requête PUT.
-    * URL: localhost:8080/api/typeequipement/
+    * URL: localhost:8080/typeequipement/
     * Purpose: Met à jour une entité typeEquipement
     * @param typeEquipement - entité typeEquipement à mettre à jour.
     * @return  entité typeEquipement à mise à jour
@@ -99,7 +99,7 @@ public class TypeEquipementController {
 
         /**
      * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/typeequipement/1 (1 ou tout autre id)
+    * URL: localhost:8080/biblio/typeequipement/1 (1 ou tout autre id)
     * Purpose: Supprime une entité typeEquipement
     * @param id - l’id du typeEquipement à supprimer
     * @return un message String indiquant que l’enregistrement a été supprimé avec succès.

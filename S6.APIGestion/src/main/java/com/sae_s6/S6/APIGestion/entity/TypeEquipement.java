@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,9 +28,8 @@ public class TypeEquipement {
     @Column(name = "titre", nullable = false)
     private String titre;
 
-    @OneToMany
-    @JoinColumn(name = "capteur_id")
-    private List<Capteur> capteurs;
+    @OneToMany(mappedBy = "typeEquipement")
+    private List<Equipement> equipements;
 
     @Override
     public boolean equals(Object o) {
