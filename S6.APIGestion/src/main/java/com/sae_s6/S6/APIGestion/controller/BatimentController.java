@@ -19,7 +19,7 @@ import com.sae_s6.S6.APIGestion.service.BatimentService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/batiment")
+@RequestMapping("/api/batiment")
 @RequiredArgsConstructor
 @Validated
 public class BatimentController {
