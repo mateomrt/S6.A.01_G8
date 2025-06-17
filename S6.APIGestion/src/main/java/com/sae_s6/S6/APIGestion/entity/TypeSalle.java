@@ -26,10 +26,6 @@ public class TypeSalle {
 
     private String libelleTypeSalle;
 
-    @OneToMany
-    @JoinColumn(name = "salle_id")
-    private List<Salle> salles;
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
