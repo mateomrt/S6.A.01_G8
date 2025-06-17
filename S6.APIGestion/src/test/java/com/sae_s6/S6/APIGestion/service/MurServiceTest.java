@@ -86,7 +86,7 @@ public class MurServiceTest {
         updatedMur.setTitre("Nouveau titre");
         updatedMur.setHauteur(2.5);
         updatedMur.setLongueur(4.0);
-        updatedMur.setOrientation(Orientation.NORD);
+        updatedMur.setOrientation(Orientation.N);
         updatedMur.setSalle(null);
 
         when(murRepo.findById(1)).thenReturn(Optional.of(existingMur));

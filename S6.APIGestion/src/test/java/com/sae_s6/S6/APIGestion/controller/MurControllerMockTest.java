@@ -55,7 +55,7 @@ public class MurControllerMockTest {
     @Test
     void testCreateMur() throws Exception {
         // Arrange
-        Mur mur = new Mur(3, "Mur C", 300, 500, 1, null);
+        Mur mur = new Mur(null, "Mur C", 400.0, 600.0, Mur.Orientation.N, null);
 
         // Act
         MvcResult result = mockMvc.perform(post("/murs")
@@ -73,7 +73,7 @@ public class MurControllerMockTest {
     @Test
     void testUpdateMur() throws Exception {
         // Arrange
-        Mur updatedMur = new Mur(1, "Mur A Updated", 350, 550, 1, null);
+        Mur updatedMur = new Mur(1, "Mur A Updated", 400.0, 600.0, Mur.Orientation.N, null);
 
         // Act
         MvcResult result = mockMvc.perform(put("/murs/1")
