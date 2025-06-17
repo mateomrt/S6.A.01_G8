@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.repository.TypeCapteurDonneeRepo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 @RequiredArgsConstructor
@@ -26,58 +26,54 @@ public class TypeCapteurDonneeService {
     }
 
     /**
+     * Récupère un TypeCapteurDonnee par sa clé composite.
      * 
-     * @param id
-     * @return
+     * @param id clé composite (TypeCapteurDonneeEmbedId)
+     * @return TypeCapteurDonnee ou null si non trouvé
      */
-
-    public TypeCapteurDonnee getTypeCapteurDonneeById(Integer id) {
+    public TypeCapteurDonnee getTypeCapteurDonneeById(TypeCapteurDonneeEmbedId id) {
         Optional<TypeCapteurDonnee> optionalDonnee = typeCapteurDonneeRepo.findById(id);
         if (optionalDonnee.isPresent()) {
             log.debug("Détails de TypeCapteurDonnee trouvée: {}", optionalDonnee.get());
             return optionalDonnee.get();
         }
-        log.warn("Aucun TypeCapteurDonnee trouvée avec l'id: {}", id);
+        log.warn("Aucun TypeCapteurDonnee trouvée avec l'id composite: {}", id);
         return null;
     }
 
-       /**
-         * 
-         * @param TypeCapteurDonnee
-         * @return
-         */
-
+    /**
+     * Sauvegarde un TypeCapteurDonnee.
+     * 
+     * @param Donnee TypeCapteurDonnee à sauvegarder
+     * @return TypeCapteurDonnee sauvegardé
+     */
     public TypeCapteurDonnee saveTypeCapteurDonnee(TypeCapteurDonnee Donnee) {
         TypeCapteurDonnee savedDonnee = typeCapteurDonneeRepo.save(Donnee);
-        log.info("TypeCapteurDonnee sauvegardé avec succès avec l'id: {}", savedDonnee.getId());
+        log.info("TypeCapteurDonnee sauvegardé avec succès avec l'id composite: {}", savedDonnee.getId());
         log.debug("Détails de TypeCapteurDonnee sauvegardée: {}", savedDonnee);
         return savedDonnee;
     }
 
-    
     /**
+     * Met à jour un TypeCapteurDonnee.
      * 
-     * @param TypeCapteurDonnee
-     * @return
+     * @param Donnee TypeCapteurDonnee à mettre à jour
+     * @return TypeCapteurDonnee mis à jour
      */
-
     public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonnee Donnee) {
         TypeCapteurDonnee updatedDonnee = typeCapteurDonneeRepo.save(Donnee);
-        log.info("Donnee mise à jour avec succès avec l'id: {}", updatedDonnee.getId());
+        log.info("Donnee mise à jour avec succès avec l'id composite: {}", updatedDonnee.getId());
         log.debug("Détails de TypeCapteurDonnee après mise à jour: {}", updatedDonnee);
         return updatedDonnee;
     }
 
-     /**
+    /**
+     * Supprime un TypeCapteurDonnee par sa clé composite.
      * 
-     * @param id
-     * @return
+     * @param id clé composite (TypeCapteurDonneeEmbedId)
      */
-
-    public void deleteTypeCapteurDonneeById(Integer id) {
+    public void deleteTypeCapteurDonneeById(TypeCapteurDonneeEmbedId id) {
         typeCapteurDonneeRepo.deleteById(id);
-        log.debug("TypeCapteurDonnee with id: {} deleted successfully", id);
+        log.debug("TypeCapteurDonnee avec l'id composite: {} supprimé avec succès", id);
     }
-
-   
 }

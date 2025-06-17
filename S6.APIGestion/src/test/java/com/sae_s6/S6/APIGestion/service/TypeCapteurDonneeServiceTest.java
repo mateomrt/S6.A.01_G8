@@ -1,6 +1,7 @@
 package com.sae_s6.S6.APIGestion.service;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.repository.TypeCapteurDonneeRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,54 +43,58 @@ public class TypeCapteurDonneeServiceTest {
 
     @Test
     public void testGetTypeCapteurDonneeById_Found() {
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonnee tcd = new TypeCapteurDonnee();
-        tcd.setIdTypeCapteur(1);
-        when(typeCapteurDonneeRepo.findById(1)).thenReturn(Optional.of(tcd));
+        tcd.setId(id);
+        when(typeCapteurDonneeRepo.findById(id)).thenReturn(Optional.of(tcd));
 
-        TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(1);
+        TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
 
         assertNotNull(result);
-        assertEquals(1, result.getIdTypeCapteur());
+        assertEquals(id, result.getId());
     }
 
     @Test
     public void testGetTypeCapteurDonneeById_NotFound() {
-        when(typeCapteurDonneeRepo.findById(1)).thenReturn(Optional.empty());
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
+        when(typeCapteurDonneeRepo.findById(id)).thenReturn(Optional.empty());
 
-        TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(1);
+        TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
 
         assertNull(result);
     }
 
     @Test
     public void testSaveTypeCapteurDonnee() {
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonnee tcd = new TypeCapteurDonnee();
-        tcd.setIdTypeCapteur(1);
+        tcd.setId(id);
         when(typeCapteurDonneeRepo.save(tcd)).thenReturn(tcd);
 
         TypeCapteurDonnee result = typeCapteurDonneeService.saveTypeCapteurDonnee(tcd);
 
         assertNotNull(result);
-        assertEquals(1, result.getIdTypeCapteur());
+        assertEquals(id, result.getId());
         verify(typeCapteurDonneeRepo, times(1)).save(tcd);
     }
 
     @Test
     public void testUpdateTypeCapteurDonnee() {
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonnee tcd = new TypeCapteurDonnee();
-        tcd.setIdTypeCapteur(1);
+        tcd.setId(id);
         when(typeCapteurDonneeRepo.save(tcd)).thenReturn(tcd);
 
         TypeCapteurDonnee result = typeCapteurDonneeService.updateTypeCapteurDonnee(tcd);
 
         assertNotNull(result);
-        assertEquals(1, result.getIdTypeCapteur());
+        assertEquals(id, result.getId());
         verify(typeCapteurDonneeRepo, times(1)).save(tcd);
     }
 
     @Test
     public void testDeleteTypeCapteurDonneeById() {
-        Integer id = 1;
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
         verify(typeCapteurDonneeRepo, times(1)).deleteById(id);
     }
