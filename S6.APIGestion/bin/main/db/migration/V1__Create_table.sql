@@ -3,7 +3,7 @@ SET search_path TO "sae6apigestion";
 -- Table batiment
 CREATE TABLE batiment (
     id INTEGER PRIMARY KEY,
-    titre VARCHAR(250) NOT NULL,
+    libelle_batiment VARCHAR(75) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -11,7 +11,7 @@ CREATE TABLE batiment (
 -- Table typesalle
 CREATE TABLE typesalle (
     id INTEGER PRIMARY KEY,
-    titre TEXT NOT NULL,
+    libelle_typesalle VARCHAR(25) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -21,7 +21,7 @@ CREATE TABLE salle (
     id INTEGER PRIMARY KEY,
     batiment_id INTEGER NOT NULL,
     typesalle_id INTEGER NOT NULL,
-    titre VARCHAR(250) NOT NULL,
+    libelle_salle VARCHAR(50) NOT NULL,
     superficie DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -33,9 +33,9 @@ CREATE TABLE salle (
 CREATE TABLE mur (
     id INTEGER PRIMARY KEY,
     salle_id INTEGER NOT NULL,
-    titre VARCHAR(250) NOT NULL,
-    hauteur INTEGER NOT NULL,
-    longueur INTEGER NOT NULL,
+    libelle_mur VARCHAR(50) NOT NULL,
+    hauteur DOUBLE NOT NULL,
+    longueur DOUBLE NOT NULL,
     orientation VARCHAR(10) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -45,8 +45,8 @@ CREATE TABLE mur (
 -- Table typecapteur
 CREATE TABLE typecapteur (
     id INTEGER PRIMARY KEY,
-    titre VARCHAR(250) NOT NULL,
-    mode VARCHAR(250) NOT NULL,
+    libelle_typecapteur VARCHAR(50) NOT NULL,
+    mode VARCHAR(25) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -54,8 +54,8 @@ CREATE TABLE typecapteur (
 -- Table donnee
 CREATE TABLE donnee (
     id INTEGER PRIMARY KEY,
-    titre VARCHAR(250) NOT NULL,
-    unite VARCHAR(250) NOT NULL,
+    libelle_donnee VARCHAR(50) NOT NULL,
+    unite VARCHAR(25) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -67,14 +67,14 @@ CREATE TABLE typecapteurdonnee (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (donnee_id, typecapteur_id),
-    CONSTRAINT fk_tcd_donnee FOREIGN KEY (donnee_id) REFERENCES donnee(id),
-    CONSTRAINT fk_tcd_typecapteur FOREIGN KEY (typecapteur_id) REFERENCES typecapteur(id)
+    CONSTRAINT fk_tcd_donnee FOREIGN KEY (donnee_id) REFERENCES donnee(id) ON DELETE CASCADE,
+    CONSTRAINT fk_tcd_typecapteur FOREIGN KEY (typecapteur_id) REFERENCES typecapteur(id) ON DELETE CASCADE
 );
 
 -- Table typeequipement
 CREATE TABLE typeequipement (
     id integer PRIMARY KEY,
-    titre VARCHAR(250) NOT NULL,
+    libelle_typeequipement VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -85,11 +85,11 @@ CREATE TABLE equipement (
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typeequipement_id INTEGER NOT NULL,
-    titre VARCHAR(250) NOT NULL,
-    hauteur INTEGER NOT NULL,
-    largeur INTEGER NOT NULL,
-    position_x INTEGER NOT NULL,
-    position_y INTEGER NOT NULL,
+    libelle_equipement VARCHAR(50) NOT NULL,
+    hauteur DOUBLE NOT NULL,
+    largeur DOUBLE NOT NULL,
+    position_x DOUBLE NOT NULL,
+    position_y DOUBLE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_equipement_mur FOREIGN KEY (mur_id) REFERENCES mur(id),
@@ -103,9 +103,9 @@ CREATE TABLE capteur (
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typecapteur_id INTEGER NOT NULL,
-    titre VARCHAR(250) NOT NULL,
-    position_x INTEGER NOT NULL,
-    position_y INTEGER NOT NULL,
+    libelle_capteur VARCHAR(50) NOT NULL,
+    position_x DOUBLE NOT NULL,
+    position_y DOUBLE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_capteur_mur FOREIGN KEY (mur_id) REFERENCES mur(id),

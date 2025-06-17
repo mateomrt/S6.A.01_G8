@@ -24,8 +24,8 @@ public class Equipement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false, length = 250)
-    private String titre;
+    @Column(name = "libelle_equipment", nullable = false, length = 250)
+    private String libelleEquipement;
 
     @Column(name = "hauteur", nullable = false)
     private Integer hauteur;
@@ -40,16 +40,16 @@ public class Equipement {
     private Integer position_y;
 
     @ManyToOne
-    @JoinColumn(name = "mur_id", nullable = false)
-    private Mur mur;
+    @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = false)
+    private Mur murNavigation;
 
     @ManyToOne
-    @JoinColumn(name = "salle_id", nullable = false)
-    private Salle salle;
+    @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
+    private Salle salleNavigation;
 
     @ManyToOne
-    @JoinColumn(name = "typeequipement_id", nullable = false)
-    private TypeEquipement typeEquipement;
+    @JoinColumn(name = "typeequipement_id", referencedColumnName = "id", nullable = false)
+    private TypeEquipement typeEquipementNavigation;
 
     
 
@@ -58,18 +58,18 @@ public class Equipement {
         if (this == o) return true;
         if (!(o instanceof Equipement equipement)) return false;
         return Objects.equals(id, equipement.id)
-                && Objects.equals(titre, equipement.titre)
+                && Objects.equals(libelleEquipement, equipement.libelleEquipement)
                 && Objects.equals(hauteur, equipement.hauteur)
                 && Objects.equals(largeur, equipement.largeur)
                 && Objects.equals(position_x, equipement.position_x)
                 && Objects.equals(position_x, equipement.position_y)
-                && Objects.equals(mur, equipement.mur)
-                && Objects.equals(salle, equipement.salle)
-                && Objects.equals(typeEquipement, equipement.typeEquipement);
+                && Objects.equals(murNavigation, equipement.murNavigation)
+                && Objects.equals(salleNavigation, equipement.salleNavigation)
+                && Objects.equals(typeEquipementNavigation, equipement.typeEquipementNavigation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, titre, hauteur, largeur, position_x, position_y, mur, salle, typeEquipement);
+        return Objects.hash(id, libelleEquipement, hauteur, largeur, position_x, position_y, murNavigation, salleNavigation, typeEquipementNavigation);
     }
 }

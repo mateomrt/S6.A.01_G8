@@ -27,7 +27,7 @@ public class BatimentControllerTest {
     private Batiment createBatiment(Integer id, String libelle) {
         Batiment batiment = new Batiment();
         batiment.setId(id);
-        batiment.setTitre(libelle);
+        batiment.setLibelleBatiment(libelle);
         batiment.setSalles(null); // Salles peut être null pour les tests
 
         ResponseEntity<Batiment> response = restTemplate.postForEntity(getBaseUrl() + "/", batiment, Batiment.class);
@@ -56,14 +56,14 @@ public class BatimentControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getTitre()).isEqualTo("Type B");
+        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Type B");
         assertThat(response.getBody().getSalles()).isNull(); // Vérifie que les salles sont nulles
     }
 
     @Test
     void testSaveBatiment() {
         Batiment batiment = createBatiment(102, "Type C");
-        assertThat(batiment.getTitre()).isEqualTo("Type C");
+        assertThat(batiment.getLibelleBatiment()).isEqualTo("Type C");
         assertThat(batiment.getSalles()).isNull(); // Vérifie que les salles sont nulles
         assertThat(batiment.getId()).isNotNull(); // Vérifie que l'ID a été généré
         assertThat(batiment.getId()).isGreaterThan(0); // Vérifie que l'ID est positif
@@ -72,7 +72,7 @@ public class BatimentControllerTest {
     @Test
     void testUpdateBatiment() {
         Batiment batiment = createBatiment(103, "Type D");
-        batiment.setTitre("Type D - MAJ");
+        batiment.setLibelleBatiment("Type D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -82,7 +82,7 @@ public class BatimentControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Batiment.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getTitre()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Type D - MAJ");
         assertThat(response.getBody().getSalles()).isNull(); // Vérifie que les salles sont nulles
         assertThat(response.getBody().getId()).isEqualTo(batiment.getId()); // Vérifie que l'ID est inchangé
         assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif

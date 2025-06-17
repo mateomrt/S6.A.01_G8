@@ -42,14 +42,14 @@ public class EquipementControllerTest {
         
         Equipement equipement = new Equipement();
         equipement.setId(id);
-        equipement.setTitre(titre);
+        equipement.setLibelleEquipement(titre);
         equipement.setHauteur(hauteur); 
         equipement.setLargeur(largeur); 
         equipement.setPosition_x(position_x); 
         equipement.setPosition_y(position_y); 
-        equipement.setMur(mur); 
-        equipement.setSalle(salle); 
-        equipement.setTypeEquipement(typeEquipement); 
+        equipement.setMurNavigation(mur); 
+        equipement.setSalleNavigation(salle); 
+        equipement.setTypeEquipementNavigation(typeEquipement); 
 
         ResponseEntity<Equipement> response = restTemplate.postForEntity(getBaseUrl() + "/", equipement, Equipement.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -77,30 +77,30 @@ public class EquipementControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getTitre()).isEqualTo("Equipement B");
-        assertThat(response.getBody().getMur()).isNotNull(); 
-        assertThat(response.getBody().getSalle()).isNotNull(); 
-        assertThat(response.getBody().getTypeEquipement()).isNotNull(); 
+        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("Equipement B");
+        assertThat(response.getBody().getMurNavigation()).isNotNull(); 
+        assertThat(response.getBody().getSalleNavigation()).isNotNull(); 
+        assertThat(response.getBody().getTypeEquipementNavigation()).isNotNull(); 
     }
 
     @Test
     void testSaveEquipement() {
         Equipement equipement = createEquipement(100, "Equipement C", 5, 5, 100, 200); 
         assertThat(equipement.getId()).isNotNull(); // Vérifie que l'ID a été généré
-        assertThat(equipement.getTitre()).isEqualTo("Type C");
+        assertThat(equipement.getLibelleEquipement()).isEqualTo("Type C");
         assertThat(equipement.getHauteur()).isGreaterThan(0); // Vérifie que la hauteur est positive
         assertThat(equipement.getLargeur()).isGreaterThan(0); // Vérifie que la largeur est positive
         assertThat(equipement.getPosition_x()).isGreaterThan(0); // Vérifie que la position_x est positive
         assertThat(equipement.getPosition_y()).isGreaterThan(0); // Vérifie que la postion_y est positive
-        assertThat(equipement.getMur()).isNotNull(); // Vérifie que le mur n'est pas nulle
-        assertThat(equipement.getSalle()).isNotNull(); // Vérifie que la salle n'est pas nulle
-        assertThat(equipement.getTypeEquipement()).isNotNull(); // Vérifie que le TypeEquipement n'est pas nulle
+        assertThat(equipement.getMurNavigation()).isNotNull(); // Vérifie que le mur n'est pas nulle
+        assertThat(equipement.getSalleNavigation()).isNotNull(); // Vérifie que la salle n'est pas nulle
+        assertThat(equipement.getTypeEquipementNavigation()).isNotNull(); // Vérifie que le TypeEquipement n'est pas nulle
     }
 
     @Test
     void testUpdateEquipement() {
         Equipement equipement = createEquipement(100, "Equipement D", 5, 5, 100, 200); 
-        equipement.setTitre("Type D - MAJ");
+        equipement.setLibelleEquipement("Type D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -110,7 +110,7 @@ public class EquipementControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Equipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getTitre()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("Type D - MAJ");
         assertThat(response.getBody().getId()).isEqualTo(equipement.getId()); // Vérifie que l'ID est inchangé
         assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif
     }

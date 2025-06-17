@@ -29,27 +29,27 @@ public class Salle {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false, length = 250)
-    private String titre;
+    @Column(name = "libelle_salle", nullable = false, length = 50)
+    private String libelleSalle;
 
     @Column(name = "superficie", nullable = false)
     private Double superficie;
 
     @ManyToOne
-    @JoinColumn(name = "batiment_id", nullable = false)
-    private Batiment batiment;
+    @JoinColumn(name = "batiment_id", referencedColumnName = "id" , nullable = false)
+    private Batiment batimentNavigation;
 
     @ManyToOne
-    @JoinColumn(name = "typesalle_id", nullable = false)
-    private TypeSalle typeSalle;
+    @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = false)
+    private TypeSalle typeSalleNavigation;
 
-    @OneToMany(mappedBy = "salle")
+    @OneToMany(mappedBy = "salleNavigation")
     private List<Mur> murs;
 
-    @OneToMany(mappedBy = "salle")
+    @OneToMany(mappedBy = "salleNavigation")
     private List<Equipement> equipements;
 
-    @OneToMany(mappedBy = "salle")
+    @OneToMany(mappedBy = "salleNavigation")
     private List<Capteur> capteurs;
 
     @Override
@@ -57,15 +57,15 @@ public class Salle {
         if (this == o) return true;
         if (!(o instanceof Salle salle)) return false;
         return Objects.equals(id, salle.id)
-                && Objects.equals(titre, salle.titre)
+                && Objects.equals(libelleSalle, salle.libelleSalle)
                 && Objects.equals(superficie, salle.superficie)
-                && Objects.equals(batiment, salle.batiment)
-                && Objects.equals(typeSalle, salle.typeSalle);
+                && Objects.equals(batimentNavigation, salle.batimentNavigation)
+                && Objects.equals(typeSalleNavigation, salle.typeSalleNavigation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, titre, superficie, batiment, typeSalle);
+        return Objects.hash(id, libelleSalle, superficie, batimentNavigation, typeSalleNavigation);
     }
 
 }

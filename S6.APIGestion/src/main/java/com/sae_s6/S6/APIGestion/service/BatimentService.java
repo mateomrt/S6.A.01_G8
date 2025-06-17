@@ -29,7 +29,7 @@ public class BatimentService {
 
 	// Créer un nouveau bâtiment
 	public Batiment createBatiment(Batiment batiment) {
-		if (batiment.getTitre() == null || batiment.getTitre().isEmpty()) {
+		if (batiment.getLibelleBatiment() == null || batiment.getLibelleBatiment().isEmpty()) {
 			throw new IllegalArgumentException("Le titre du bâtiment est obligatoire.");
 		}
 		return batimentRepo.save(batiment);
@@ -38,8 +38,8 @@ public class BatimentService {
 	// Mettre à jour un bâtiment existant
 	public Batiment updateBatiment(Integer id, Batiment updated) {
 		return batimentRepo.findById(id).map(existingBatiment -> {
-			if (updated.getTitre() != null && !updated.getTitre().isEmpty()) {
-				existingBatiment.setTitre(updated.getTitre());
+			if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
+				existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
 			}
 			if (updated.getSalles() != null) {
 				existingBatiment.setSalles(updated.getSalles());

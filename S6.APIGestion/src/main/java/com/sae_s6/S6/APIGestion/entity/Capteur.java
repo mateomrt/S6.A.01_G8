@@ -24,18 +24,14 @@ public class Capteur {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "capteur_libelle", nullable = false, length = 64)
+    @Column(name = "libelle_capteur", nullable = false, length = 50)
     private String libelleCapteur;
 
-    @Column(name = "capteur_x", nullable = false)
+    @Column(name = "position_x", nullable = false)
     private Integer positionXCapteur;
 
-    @Column(name = "capteur-y", nullable = false)
+    @Column(name = "position_y", nullable = false)
     private Integer positionYCapteur;
-
-    @ManyToOne
-    @JoinColumn(name = "typecapteur_id", referencedColumnName = "id", nullable = false)
-    private TypeCapteur typeCapteurNavigation;
 
     @ManyToOne
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = false)
@@ -43,9 +39,11 @@ public class Capteur {
 
     @ManyToOne
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
-    private Salle salle; 
+    private Salle salleNavigation;
 
-    
+    @ManyToOne
+    @JoinColumn(name = "typecapteur_id", referencedColumnName = "id", nullable = false)
+    private TypeCapteur typeCapteurNavigation;
 
     @Override
     public boolean equals(Object o) {
@@ -56,7 +54,7 @@ public class Capteur {
                Objects.equals(positionXCapteur, capteur.positionXCapteur) &&
                Objects.equals(positionYCapteur, capteur.positionYCapteur) &&
                Objects.equals(murNavigation, capteur.murNavigation) &&
-               Objects.equals(salle, capteur.salle);
+               Objects.equals(salleNavigation, capteur.salleNavigation);
     }
 
     @Override
@@ -67,7 +65,7 @@ public class Capteur {
             positionXCapteur, 
             positionYCapteur, 
             murNavigation, 
-            salle
+            salleNavigation
         );
     }
 }

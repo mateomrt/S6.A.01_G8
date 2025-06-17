@@ -32,11 +32,11 @@ public class MurService {
 
     public Mur updateMur(Integer id, Mur updated) {
         return murRepo.findById(id).map(m -> {
-            m.setTitre(updated.getTitre());
+            m.setLibelleMur(updated.getLibelleMur());
             m.setHauteur(updated.getHauteur());
             m.setLongueur(updated.getLongueur());
             m.setOrientation(updated.getOrientation());
-            m.setSalle(updated.getSalle());
+            m.setSalleNavigation(updated.getSalleNavigation());
             return murRepo.save(m);
         }).orElse(null);
     }

@@ -2,11 +2,11 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,11 @@ public class TypeSalle {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "libelle_typesalle", nullable = false, length = 25)
     private String libelleTypeSalle;
+
+    @OneToMany(mappedBy = "typeSalleNavigation")
+    private List<Salle> salles;
 
     @Override
     public boolean equals(Object obj) {
@@ -56,6 +60,4 @@ public class TypeSalle {
         result = prime * result + ((libelleTypeSalle == null) ? 0 : libelleTypeSalle.hashCode());
         return result;
     }
-
-    
 }

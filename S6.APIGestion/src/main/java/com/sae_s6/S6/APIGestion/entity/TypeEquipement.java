@@ -25,10 +25,10 @@ public class TypeEquipement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false)
-    private String titre;
+    @Column(name = "libelle_typeequipement", nullable = false, length = 50)
+    private String libelleTypeEquipement;
 
-    @OneToMany(mappedBy = "typeEquipement")
+    @OneToMany(mappedBy = "typeEquipementNavigation")
     private List<Equipement> equipements;
 
     @Override
@@ -36,11 +36,11 @@ public class TypeEquipement {
         if (this == o) return true;
         if (!(o instanceof TypeEquipement type_equipement)) return false;
         return Objects.equals(id, type_equipement.id)
-                && Objects.equals(titre, type_equipement.titre);
+                && Objects.equals(libelleTypeEquipement, type_equipement.libelleTypeEquipement);
         }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, titre);
+        return Objects.hash(id, libelleTypeEquipement);
     }
 }

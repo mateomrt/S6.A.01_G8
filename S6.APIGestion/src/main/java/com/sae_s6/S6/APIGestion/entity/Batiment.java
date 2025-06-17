@@ -25,21 +25,21 @@ public class Batiment {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false, length = 100)
-    private String titre;
+    @Column(name = "libelle_batiment", nullable = false, length = 75)
+    private String libelleBatiment;
 
-    @OneToMany(mappedBy = "batiment")
+    @OneToMany(mappedBy = "batimentNavigation")
     private List<Salle> salles;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Batiment that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(titre, that.titre);
+        return Objects.equals(id, that.id) && Objects.equals(libelleBatiment, that.libelleBatiment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, titre);
+        return Objects.hash(id, libelleBatiment);
     }
 }

@@ -80,14 +80,14 @@ public class MurServiceTest {
     public void testUpdateMur_Found() {
         Mur existingMur = new Mur();
         existingMur.setId(1);
-        existingMur.setTitre("Ancien titre");
+        existingMur.setLibelleMur("Ancien titre");
 
         Mur updatedMur = new Mur();
-        updatedMur.setTitre("Nouveau titre");
+        updatedMur.setLibelleMur("Nouveau titre");
         updatedMur.setHauteur(2.5);
         updatedMur.setLongueur(4.0);
         updatedMur.setOrientation(Orientation.N);
-        updatedMur.setSalle(null);
+        updatedMur.setSalleNavigation(null);
 
         when(murRepo.findById(1)).thenReturn(Optional.of(existingMur));
         when(murRepo.save(any(Mur.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -95,7 +95,7 @@ public class MurServiceTest {
         Mur result = murService.updateMur(1, updatedMur);
 
         assertNotNull(result);
-        assertEquals("Nouveau titre", result.getTitre());
+        assertEquals("Nouveau titre", result.getLibelleMur());
         assertEquals(2.5, result.getHauteur());
         assertEquals(4.0, result.getLongueur());
         assertEquals(Orientation.N, result.getOrientation());

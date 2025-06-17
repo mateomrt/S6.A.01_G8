@@ -34,8 +34,8 @@ public class MurControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Mur[] murs = objectMapper.readValue(json, Mur[].class);
         assertThat(murs).isNotEmpty();
-        assertThat(murs[0].getTitre()).isEqualTo("Mur A"); // Assuming "Mur A" is the first title
-        assertThat(murs[1].getTitre()).isEqualTo("Mur B"); // Assuming "Mur B" is the second title
+        assertThat(murs[0].getLibelleMur()).isEqualTo("Mur A"); // Assuming "Mur A" is the first title
+        assertThat(murs[1].getLibelleMur()).isEqualTo("Mur B"); // Assuming "Mur B" is the second title
     }
 
     @Test
@@ -49,13 +49,13 @@ public class MurControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Mur mur = objectMapper.readValue(json, Mur.class);
         assertThat(mur.getId()).isEqualTo(1);
-        assertThat(mur.getTitre()).isEqualTo("Mur A"); // Assuming "Mur A" is the expected title
+        assertThat(mur.getLibelleMur()).isEqualTo("Mur A"); // Assuming "Mur A" is the expected title
     }
 
     @Test
     void testCreateMur() throws Exception {
         // Arrange
-        Mur mur = new Mur(null, "Mur C", 400.0, 600.0, Mur.Orientation.N, null);
+        Mur mur = new Mur(null, "Mur C", 500.0, 800.0, Mur.Orientation.S, null, null, null);
 
         // Act
         MvcResult result = mockMvc.perform(post("/murs")
@@ -67,13 +67,13 @@ public class MurControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Mur createdMur = objectMapper.readValue(json, Mur.class);
         assertThat(createdMur.getId()).isEqualTo(3);
-        assertThat(createdMur.getTitre()).isEqualTo("Mur C");
+        assertThat(createdMur.getLibelleMur()).isEqualTo("Mur C");
     }
 
     @Test
     void testUpdateMur() throws Exception {
         // Arrange
-        Mur updatedMur = new Mur(1, "Mur A Updated", 400.0, 600.0, Mur.Orientation.N, null);
+        Mur updatedMur = new Mur(1, "Mur A Updated", 400.0, 600.0, Mur.Orientation.N, null, null, null);
 
         // Act
         MvcResult result = mockMvc.perform(put("/murs/1")
@@ -85,7 +85,7 @@ public class MurControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Mur mur = objectMapper.readValue(json, Mur.class);
         assertThat(mur.getId()).isEqualTo(1);
-        assertThat(mur.getTitre()).isEqualTo("Mur A Updated");
+        assertThat(mur.getLibelleMur()).isEqualTo("Mur A Updated");
     }
 
     @Test

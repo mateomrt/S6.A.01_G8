@@ -27,7 +27,7 @@ public class TypeEquipementControllerTest {
     private TypeEquipement createTypeEquipement(Integer id, String titre) {
         TypeEquipement typeEquipement = new TypeEquipement();
         typeEquipement.setId(id);
-        typeEquipement.setTitre(titre);
+        typeEquipement.setLibelleTypeEquipement(titre);
 
         ResponseEntity<TypeEquipement> response = restTemplate.postForEntity(getBaseUrl() + "/", typeEquipement, TypeEquipement.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -55,19 +55,19 @@ public class TypeEquipementControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getTitre()).isEqualTo("Ordinateur");
+        assertThat(response.getBody().getLibelleTypeEquipement()).isEqualTo("Ordinateur");
     }
 
     @Test
     void testSaveTypeEquipement() {
         TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
-        assertThat(typeEquipement.getTitre()).isEqualTo("Projecteur");
+        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("Projecteur");
     }
 
     @Test
     void testUpdateTypeEquipement() {
         TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
-        typeEquipement.setTitre("Projecteur - MAJ");
+        typeEquipement.setLibelleTypeEquipement("Projecteur - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -77,7 +77,7 @@ public class TypeEquipementControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, TypeEquipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getTitre()).isEqualTo("Projecteur - MAJ");
+        assertThat(response.getBody().getLibelleTypeEquipement()).isEqualTo("Projecteur - MAJ");
     }
 
     @Test

@@ -37,7 +37,7 @@ public class BatimentControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Batiment batiment = objectMapper.readValue(json, Batiment.class);
         assertThat(batiment.getId()).isEqualTo(batimentId);
-        assertThat(batiment.getTitre()).isEqualTo("Batiment A"); // Assuming "Batiment A" is the expected title
+        assertThat(batiment.getLibelleBatiment()).isEqualTo("Batiment A"); // Assuming "Batiment A" is the expected title
     }
 
     @Test
@@ -51,8 +51,8 @@ public class BatimentControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Batiment[] batiments = objectMapper.readValue(json, Batiment[].class);
         assertThat(batiments).isNotEmpty();
-        assertThat(batiments[0].getTitre()).isEqualTo("Batiment A");
-        assertThat(batiments[1].getTitre()).isEqualTo("Batiment B");
+        assertThat(batiments[0].getLibelleBatiment()).isEqualTo("Batiment A");
+        assertThat(batiments[1].getLibelleBatiment()).isEqualTo("Batiment B");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class BatimentControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Batiment createdBatiment = objectMapper.readValue(json, Batiment.class);
         assertThat(createdBatiment.getId()).isEqualTo(3);
-        assertThat(createdBatiment.getTitre()).isEqualTo("Batiment C");
+        assertThat(createdBatiment.getLibelleBatiment()).isEqualTo("Batiment C");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BatimentControllerMockTest {
         String json = result.getResponse().getContentAsString();
         Batiment batiment = objectMapper.readValue(json, Batiment.class);
         assertThat(batiment.getId()).isEqualTo(1);
-        assertThat(batiment.getTitre()).isEqualTo("Batiment A Updated");
+        assertThat(batiment.getLibelleBatiment()).isEqualTo("Batiment A Updated");
     }
 
     @Test

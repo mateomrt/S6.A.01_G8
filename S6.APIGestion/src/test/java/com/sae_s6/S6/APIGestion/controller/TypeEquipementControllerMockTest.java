@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,8 +36,8 @@ public class TypeEquipementControllerMockTest {
         String json = result.getResponse().getContentAsString();
         TypeEquipement[] typeEquipements = objectMapper.readValue(json, TypeEquipement[].class);
         assertThat(typeEquipements).isNotEmpty();
-        assertThat(typeEquipements[0].getTitre()).isEqualTo("Ordinateur");
-        assertThat(typeEquipements[1].getTitre()).isEqualTo("Projecteur");
+        assertThat(typeEquipements[0].getLibelleTypeEquipement()).isEqualTo("Ordinateur");
+        assertThat(typeEquipements[1].getLibelleTypeEquipement()).isEqualTo("Projecteur");
     }
 
     @Test
@@ -55,7 +54,7 @@ public class TypeEquipementControllerMockTest {
         String json = result.getResponse().getContentAsString();
         TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
         assertThat(typeEquipement.getId()).isEqualTo(typeEquipementId);
-        assertThat(typeEquipement.getTitre()).isEqualTo("Ordinateur"); // Assuming "Ordinateur" is the expected title
+        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("Ordinateur"); // Assuming "Ordinateur" is the expected title
     }
 
     @Test
@@ -73,7 +72,7 @@ public class TypeEquipementControllerMockTest {
         String json = result.getResponse().getContentAsString();
         TypeEquipement createdTypeEquipement = objectMapper.readValue(json, TypeEquipement.class);
         assertThat(createdTypeEquipement.getId()).isEqualTo(3);
-        assertThat(createdTypeEquipement.getTitre()).isEqualTo("Peripherique");
+        assertThat(createdTypeEquipement.getLibelleTypeEquipement()).isEqualTo("Peripherique");
     }
 
     @Test
@@ -91,7 +90,7 @@ public class TypeEquipementControllerMockTest {
         String json = result.getResponse().getContentAsString();
         TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
         assertThat(typeEquipement.getId()).isEqualTo(1);
-        assertThat(typeEquipement.getTitre()).isEqualTo("PC");
+        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("PC");
     }
 
     @Test

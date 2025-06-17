@@ -25,10 +25,10 @@ public class TypeCapteur {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "typecapteur_libelle", nullable = false, length = 250)
+    @Column(name = "libelle_typecapteur", nullable = false, length = 250)
     private String libelleTypeCapteur;
 
-    @Column(name = "typecapteur_mode", nullable = false, length = 250)
+    @Column(name = "mode", nullable = false, length = 250)
     private String modeTypeCapteur;
 
     @OneToMany(mappedBy = "typeCapteurNavigation")

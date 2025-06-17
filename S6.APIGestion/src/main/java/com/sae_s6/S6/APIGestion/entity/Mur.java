@@ -1,5 +1,6 @@
 package com.sae_s6.S6.APIGestion.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +31,8 @@ public class Mur {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titre", nullable = false, length = 250)
-    private String titre;
+    @Column(name = "libelle_mur", nullable = false, length = 50)
+    private String libelleMur;
 
     @Column(name = "hauteur", nullable = false)
     private Double hauteur;
@@ -43,8 +45,16 @@ public class Mur {
     private Orientation  orientation;
 
     @ManyToOne
-    @JoinColumn(name = "salle_id", nullable = false)
-    private Salle salle;
+    @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
+    private Salle salleNavigation;
+
+    @OneToMany(mappedBy = "murNavigation")
+    private List<Equipement> equipements;
+
+    @OneToMany(mappedBy = "murNavigation")
+    private List<Capteur> capteurs;
+
+
 
     
     public enum Orientation {
@@ -63,16 +73,16 @@ public class Mur {
         if (this == o) return true;
         if (!(o instanceof Mur mur)) return false;
         return Objects.equals(id, mur.id) &&
-               Objects.equals(titre, mur.titre) &&
+               Objects.equals(libelleMur, mur.libelleMur) &&
                Objects.equals(hauteur, mur.hauteur) &&
                Objects.equals(longueur, mur.longueur) &&
                Objects.equals(orientation, mur.orientation) &&
-               Objects.equals(salle, mur.salle);
+               Objects.equals(salleNavigation, mur.salleNavigation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, titre, hauteur, longueur, orientation, salle);
+        return Objects.hash(id, libelleMur, hauteur, longueur, orientation, salleNavigation);
     
     }
 
