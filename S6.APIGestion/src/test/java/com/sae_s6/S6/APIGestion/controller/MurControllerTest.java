@@ -28,9 +28,9 @@ public class MurControllerTest {
         Mur mur = new Mur();
         mur.setId(id);
         mur.setTitre(libelle);
-        mur.setHauteur(300); // Hauteur par défaut
-        mur.setLongueur(500); // Longueur par défaut
-        mur.setOrientation(1); // Orientation par défaut
+        mur.setHauteur(300.0); // Hauteur par défaut pour les tests
+        mur.setLongueur(500.0); // Longueur par défaut pour les tests  
+        mur.setOrientation(Mur.Orientation.N); // Orientation par défaut pour les tests
         mur.setSalle(null); // Salle peut être null pour les tests
 
         ResponseEntity<Mur> response = restTemplate.postForEntity(getBaseUrl() + "/", mur, Mur.class);
