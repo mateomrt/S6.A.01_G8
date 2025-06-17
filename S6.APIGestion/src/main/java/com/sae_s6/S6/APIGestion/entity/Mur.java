@@ -48,10 +48,14 @@ public class Mur {
 
     
     public enum Orientation {
-        NORD,
-        EST,
-        SUD,
-        OUEST
+        N,
+        E,
+        S,
+        O,
+        NE,
+        NO,
+        SE,
+        SO,
     }
 
     @Override
