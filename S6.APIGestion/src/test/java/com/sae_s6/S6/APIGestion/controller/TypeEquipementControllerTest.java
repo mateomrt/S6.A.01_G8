@@ -36,7 +36,7 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testGetAllTypeEquipements() {
-        createTypeEquipement(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
+        //createTypeEquipement(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<TypeEquipement[]> response = restTemplate.getForEntity(getBaseUrl() + "/", TypeEquipement[].class);
 
@@ -47,7 +47,7 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testGetTypeEquipementById() {
-        TypeEquipement typeEquipement = createTypeEquipement(101, "Type B");
+        TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
         Integer id = typeEquipement.getId();
 
         ResponseEntity<TypeEquipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeEquipement.class);
@@ -55,19 +55,19 @@ public class TypeEquipementControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getTitre()).isEqualTo("Type B");
+        assertThat(response.getBody().getTitre()).isEqualTo("Ordinateur");
     }
 
     @Test
     void testSaveTypeEquipement() {
-        TypeEquipement typeEquipement = createTypeEquipement(102, "Type C");
-        assertThat(typeEquipement.getTitre()).isEqualTo("Type C");
+        TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
+        assertThat(typeEquipement.getTitre()).isEqualTo("Projecteur");
     }
 
     @Test
     void testUpdateTypeEquipement() {
-        TypeEquipement typeEquipement = createTypeEquipement(103, "Type D");
-        typeEquipement.setTitre("Type D - MAJ");
+        TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
+        typeEquipement.setTitre("Projecteur - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -77,12 +77,12 @@ public class TypeEquipementControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, TypeEquipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getTitre()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getTitre()).isEqualTo("Projecteur - MAJ");
     }
 
     @Test
     void testDeleteTypeEquipementById() {
-        TypeEquipement typeEquipement = createTypeEquipement(104, "Type à Supprimer");
+        TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
         Integer id = typeEquipement.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);

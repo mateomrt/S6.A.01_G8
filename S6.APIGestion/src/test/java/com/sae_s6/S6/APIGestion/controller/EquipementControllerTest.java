@@ -58,7 +58,7 @@ public class EquipementControllerTest {
 
     @Test
     void testGetAllEquipements() {
-        createEquipement(100, "Equipement A", 5, 5, 100, 200); // Crée un équipement pour s'assurer qu'on a au moins un en base
+        createEquipement(1, "PC principal", 5, 5, 100, 200); // Crée un équipement pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<Equipement[]> response = restTemplate.getForEntity(getBaseUrl() + "/", Equipement[].class);
 
