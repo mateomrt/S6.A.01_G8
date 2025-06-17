@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +14,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.EnumType;
+
+
 
 @Entity
 @Table(name = "mur")
@@ -29,17 +33,26 @@ public class Mur {
     private String titre;
 
     @Column(name = "hauteur", nullable = false)
-    private Integer hauteur;
+    private Double hauteur;
 
     @Column(name = "longueur", nullable = false)
-    private Integer longueur;
+    private Double longueur;
 
+    @Enumerated(EnumType.STRING) // IMPORTANT pour stocker le nom de l'enum dans la colonne et non le numero 
     @Column(name = "orientation", nullable = false)
-    private Integer orientation;
+    private Orientation  orientation;
 
     @ManyToOne
     @JoinColumn(name = "salle_id", nullable = false)
     private Salle salle;
+
+    
+    public enum Orientation {
+        NORD,
+        EST,
+        SUD,
+        OUEST
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -58,4 +71,5 @@ public class Mur {
         return Objects.hash(id, titre, hauteur, longueur, orientation, salle);
     
     }
+
 }
