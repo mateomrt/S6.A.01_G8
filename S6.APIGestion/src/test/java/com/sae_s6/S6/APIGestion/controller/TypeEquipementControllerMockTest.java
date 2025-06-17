@@ -27,18 +27,18 @@ public class TypeEquipementControllerMockTest {
     
 
     @Test
-    void testGetAllBatiments() throws Exception {
+    void testGetAllTypeEquipements() throws Exception {
         // Act
-        MvcResult result = mockMvc.perform(get("/batiments")
+        MvcResult result = mockMvc.perform(get("/api/typeequipement/")
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         // Assert
         String json = result.getResponse().getContentAsString();
-        Batiment[] batiments = objectMapper.readValue(json, Batiment[].class);
-        assertThat(batiments).isNotEmpty();
-        assertThat(batiments[0].getTitre()).isEqualTo("Batiment A");
-        assertThat(batiments[1].getTitre()).isEqualTo("Batiment B");
+        TypeEquipement[] typeEquipements = objectMapper.readValue(json, TypeEquipement[].class);
+        assertThat(typeEquipements).isNotEmpty();
+        assertThat(typeEquipements[0].getTitre()).isEqualTo("Ordinateur");
+        assertThat(typeEquipements[1].getTitre()).isEqualTo("Projecteur");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TypeEquipementControllerMockTest {
         int typeEquipementId = 1;
 
         // Act
-        MvcResult result = mockMvc.perform(get("/typeequipement/" + typeEquipementId)
+        MvcResult result = mockMvc.perform(get("/api/typeequipement/" + typeEquipementId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -59,45 +59,45 @@ public class TypeEquipementControllerMockTest {
     }
 
     @Test
-    void testCreateBatiment() throws Exception {
+    void testCreateTypeEquipement() throws Exception {
         // Arrange
-        Batiment batiment = new Batiment(3, "Batiment C", null);
+        TypeEquipement typeEquipement = new TypeEquipement(3, "Peripherique", null);
 
         // Act
-        MvcResult result = mockMvc.perform(post("/batiments")
+        MvcResult result = mockMvc.perform(post("/api/typeequipement/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(batiment)))
+                .content(objectMapper.writeValueAsString(typeEquipement)))
                 .andReturn();
 
         // Assert
         String json = result.getResponse().getContentAsString();
-        Batiment createdBatiment = objectMapper.readValue(json, Batiment.class);
-        assertThat(createdBatiment.getId()).isEqualTo(3);
-        assertThat(createdBatiment.getTitre()).isEqualTo("Batiment C");
+        TypeEquipement createdTypeEquipement = objectMapper.readValue(json, TypeEquipement.class);
+        assertThat(createdTypeEquipement.getId()).isEqualTo(3);
+        assertThat(createdTypeEquipement.getTitre()).isEqualTo("Peripherique");
     }
 
     @Test
-    void testUpdateBatiment() throws Exception {
+    void testUpdateTypeEquipement() throws Exception {
         // Arrange
-        Batiment updatedBatiment = new Batiment(1, "Batiment A Updated", null);
+        TypeEquipement updatedTypeEquipement = new TypeEquipement(1, "PC", null);
 
         // Act
-        MvcResult result = mockMvc.perform(put("/batiments/1")
+        MvcResult result = mockMvc.perform(put("/api/typeequipement/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedBatiment)))
+                .content(objectMapper.writeValueAsString(updatedTypeEquipement)))
                 .andReturn();
 
         // Assert
         String json = result.getResponse().getContentAsString();
-        Batiment batiment = objectMapper.readValue(json, Batiment.class);
-        assertThat(batiment.getId()).isEqualTo(1);
-        assertThat(batiment.getTitre()).isEqualTo("Batiment A Updated");
+        TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
+        assertThat(typeEquipement.getId()).isEqualTo(1);
+        assertThat(typeEquipement.getTitre()).isEqualTo("PC");
     }
 
     @Test
-    void testDeleteBatiment() throws Exception {
+    void testDeleteTypeEquipement() throws Exception {
         // Act
-        MvcResult result = mockMvc.perform(delete("/batiments/1")
+        MvcResult result = mockMvc.perform(delete("/api/typeequipement/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
