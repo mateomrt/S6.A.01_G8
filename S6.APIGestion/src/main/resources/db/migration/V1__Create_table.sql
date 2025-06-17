@@ -34,7 +34,7 @@ CREATE TABLE mur (
     titre VARCHAR(250) NOT NULL,
     hauteur INTEGER NOT NULL,
     longueur INTEGER NOT NULL,
-    orientation INTEGER NOT NULL,
+    orientation VARCHAR(10) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_mur_salle FOREIGN KEY (salle_id) REFERENCES salle(id)

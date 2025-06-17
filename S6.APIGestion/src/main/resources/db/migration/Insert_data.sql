@@ -5,7 +5,7 @@ INSERT INTO batiment (titre) VALUES
 ('Bâtiment B');
 
 -- Insertion dans typesalle
-INSERT INTO typesalle (titre) VALUES 
+INSERT INTO typesalle (libelle_type_salle) VALUES 
 ('Salle de réunion'), 
 ('Bureau'), 
 ('Laboratoire');
@@ -18,10 +18,11 @@ INSERT INTO salle (batiment_id, typesalle_id, titre, superficie) VALUES
 
 -- Insertion dans mur
 INSERT INTO mur (salle_id, titre, hauteur, longueur, orientation) VALUES 
-(1, 'Mur nord', 250, 600, 0), 
-(1, 'Mur sud', 250, 600, 180),
-(2, 'Mur est', 250, 400, 90),
-(3, 'Mur ouest', 300, 500, 270);
+(1, 'Mur nord', 250, 600, 'N'),
+(1, 'Mur sud', 250, 600, 'S'),
+(2, 'Mur est', 250, 400, 'E'),
+(3, 'Mur ouest', 300, 500, 'O');
+
 
 -- Insertion dans typecapteur
 INSERT INTO typecapteur (titre, mode) VALUES 
