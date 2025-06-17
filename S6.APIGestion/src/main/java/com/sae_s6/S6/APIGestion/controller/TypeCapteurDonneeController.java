@@ -20,7 +20,7 @@ import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/type_capteur_donnee")
+@RequestMapping("/api/type_capteur_donnee")
 @RequiredArgsConstructor
 @Validated
 public class TypeCapteurDonneeController {

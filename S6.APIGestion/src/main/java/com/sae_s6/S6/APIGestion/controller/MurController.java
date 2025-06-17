@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/murs")
+@RequestMapping("/api/murs")
 @RequiredArgsConstructor
 @Validated
 public class MurController {

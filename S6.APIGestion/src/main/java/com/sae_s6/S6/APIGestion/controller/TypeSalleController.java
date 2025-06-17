@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/typesalle")
+@RequestMapping("/api/typesalle")
 @RequiredArgsConstructor
 @Validated
 public class TypeSalleController {
