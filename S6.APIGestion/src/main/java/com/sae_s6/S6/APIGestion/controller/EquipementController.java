@@ -19,7 +19,7 @@ import com.sae_s6.S6.APIGestion.service.EquipementService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/equipement")
+@RequestMapping("/api/equipement")
 @RequiredArgsConstructor
 @Validated
 public class EquipementController {
@@ -99,7 +99,7 @@ public class EquipementController {
 
         /**
      * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/equipement/ (1 ou tout autre id)
+    * URL: localhost:8080/api/equipement/ (1 ou tout autre id)
     * Purpose: Supprime une entité équipement
     * @param id - l’id de l'équipement à supprimer
     * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
