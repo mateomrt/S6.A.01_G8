@@ -12,7 +12,7 @@ import com.sae_s6.S6.APIGestion.service.CapteurService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Capteur")
+@RequestMapping("/api/capteur")
 @RequiredArgsConstructor
 @Validated
 public class CapteurController {
