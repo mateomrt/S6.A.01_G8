@@ -48,6 +48,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
 	ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
 	
+
 	HorizontalLayout fields = new HorizontalLayout(libelleSalle, superficie);
 
 	/* Action buttons */
@@ -113,8 +114,14 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	}
 
 	void save() {
-		salleService.saveSalle(salle);
-		changeHandler.onChange();
+        if (salle.getId() == null) {
+            // If the livre is new, we save it
+            salleService.saveSalle(salle);
+        } else {
+            // If the livre already exists, we update it
+            salleService.updateSalle(salle);
+        }
+        changeHandler.onChange();
 	}
 
 	public interface ChangeHandler {
@@ -126,6 +133,10 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 			setVisible(false);
 			return;
 		}
+
+		batimentComboBox.setItems(batimentService.getAllBatiments());
+		typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
+
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
