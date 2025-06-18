@@ -35,8 +35,8 @@ public class CapteurControllerTestMock {
 
     @Test
     public void testGetAllCapteurs() throws Exception {
-        Capteur capteur1 = new Capteur(null, "Capteur température", 10, 20, null, null, null);
-        Capteur capteur2 = new Capteur(null, "Capteur humidité", 15, 25, null, null, null);
+        Capteur capteur1 = new Capteur(null, "Capteur température", 10.0, 20.0, null, null, null);
+        Capteur capteur2 = new Capteur(null, "Capteur humidité", 15.0, 25.0, null, null, null);
         capteurRepository.save(capteur1);
         capteurRepository.save(capteur2);
 
@@ -50,7 +50,7 @@ public class CapteurControllerTestMock {
 
     @Test
     public void testCreateCapteur() throws Exception {
-        Capteur capteur = new Capteur(null, "Capteur luminosité", 10, 20, null, null, null);
+        Capteur capteur = new Capteur(null, "Capteur luminosité", 10.0, 20.0, null, null, null);
 
         mockMvc.perform(post("/api/capteur/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class CapteurControllerTestMock {
 
     @Test
     public void testUpdateCapteur() throws Exception {
-        Capteur capteur = new Capteur(null, "Capteur pression", 10, 20, null, null, null);
+        Capteur capteur = new Capteur(null, "Capteur pression", 10.0, 20.0, null, null, null);
         Capteur savedCapteur = capteurRepository.save(capteur);
 
         savedCapteur.setLibelleCapteur("Capteur pression modifié");
@@ -76,7 +76,7 @@ public class CapteurControllerTestMock {
 
     @Test
     public void testDeleteCapteur() throws Exception {
-        Capteur capteur = new Capteur(null, "Capteur humidité", 10, 20, null, null, null);
+        Capteur capteur = new Capteur(null, "Capteur humidité", 10.0, 20.0, null, null, null);
         Capteur savedCapteur = capteurRepository.save(capteur);
 
         mockMvc.perform(delete("/api/capteur/" + savedCapteur.getId())
