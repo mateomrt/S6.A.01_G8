@@ -77,7 +77,7 @@ public class SalleView extends VerticalLayout {
 	// tag::listAuteurs[]
 	void listAuteurs(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getSallesByTitreLike(filterText));
+			grid.setItems(salleService.getSallesByLibelleSalleLike(filterText));
 		} else {
 			grid.setItems(salleService.getAllSalles());
 		}

@@ -77,11 +77,11 @@ public class SalleService {
         log.debug("Salle with id: {} deleted successfully", id);
     }
 
-    public List<Salle> getSallesByTitre(String titre) {
-        return salleRepo.findByTitre(titre);
+    public List<Salle> getSallesByLibelleSalle(String libelleSalle) {
+        return salleRepo.findByLibelleSalle(libelleSalle);
     }
-    public List<Salle> getSallesByTitreLike(String titre) {
-        return salleRepo.findByTitreLike(titre);
+    public List<Salle> getSallesByLibelleSalleLike(String libelleSalle) {
+        return salleRepo.findByLibelleSalleLike(libelleSalle);
     }   
    
 }

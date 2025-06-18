@@ -111,8 +111,8 @@ public class SalleController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Salle>> getSallesByTitre(@RequestParam(name="titre") String titre) {
-        return ResponseEntity.ok().body(salleService.getSallesByTitre(titre));
+    public ResponseEntity<List<Salle>> getSallesByLibelleSalle(@RequestParam(name="libelleSalle") String libelleSalle) {
+        return ResponseEntity.ok().body(salleService.getSallesByLibelleSalle(libelleSalle));
     }
 
     /**
@@ -120,8 +120,8 @@ public class SalleController {
      * URL: localhost:8080/biblio/auteur/searchLike?nom=Hug&prenom=Vict
      */
     @GetMapping("/searchLike")
-    public ResponseEntity<List<Salle>> getSallesByTitreLike(@RequestParam(name="titre") String titre) {
-        return ResponseEntity.ok().body(salleService.getSallesByTitreLike(titre));
+    public ResponseEntity<List<Salle>> getSallesByLibelleSalleLike(@RequestParam(name="libelleSalle") String libelleSalle) {
+        return ResponseEntity.ok().body(salleService.getSallesByLibelleSalleLike(libelleSalle));
     }
 
 }
