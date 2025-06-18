@@ -86,4 +86,7 @@ public class Mur {
     
     }
 
+    public String getDesc() {
+        return libelleMur;
+    }
 }

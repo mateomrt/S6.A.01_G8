@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
-import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
 @Service
@@ -83,10 +82,5 @@ public class TypeSalleService {
     public List<TypeSalle> getByLibelleTypeSalleContainingIgnoreCase(String libelleSalle) {
         return typeSalleRepo.findByLibelleTypeSalleContainingIgnoreCase(libelleSalle);
     }  
-
-
-
-
-
 
 }
