@@ -103,7 +103,7 @@ CREATE TABLE capteur (
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typecapteur_id INTEGER NOT NULL,
-    libelle_capteur VARCHAR(50) NOT NULL,
+    libelle_capteur VARCHAR(100) NOT NULL,
     position_x DOUBLE PRECISION NOT NULL,
     position_y DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
