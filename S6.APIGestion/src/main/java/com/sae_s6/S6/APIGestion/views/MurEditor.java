@@ -49,6 +49,7 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
 	TextField hauteur = new TextField("Hauteur");
 	TextField longueur = new TextField("longueur");
     
+	ComboBox<String> Orientation = new ComboBox<>("Orientation");
 	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
 	
 
