@@ -63,6 +63,10 @@ public class TypeEquipementControllerMockTest {
     void testGetTypeEquipementById() throws Exception {
         // Arrange
         int typeEquipementId = 1;
+        TypeEquipement typeEquipement = new TypeEquipement(typeEquipementId, "Ordinateur");
+
+        Mockito.when(typeEquipementService.getTypeEquipementById(typeEquipementId))
+                    .thenReturn(typeEquipement);
 
         // Act
         MvcResult result = mockMvc.perform(get("/api/typeequipement/" + typeEquipementId)
@@ -71,27 +75,32 @@ public class TypeEquipementControllerMockTest {
 
         // Assert
         String json = result.getResponse().getContentAsString();
-        TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
-        assertThat(typeEquipement.getId()).isEqualTo(typeEquipementId);
-        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("Ordinateur"); // Assuming "Ordinateur" is the expected title
+        TypeEquipement resultat = objectMapper.readValue(json, TypeEquipement.class);
+        assertThat(resultat.getId()).isEqualTo(typeEquipementId);
+        assertThat(resultat.getLibelleTypeEquipement()).isEqualTo("Ordinateur"); // Assuming "Ordinateur" is the expected title
     }
 
     @Test
     void testCreateTypeEquipement() throws Exception {
         // Arrange
-        TypeEquipement typeEquipement = new TypeEquipement(null, "Peripherique");
+        TypeEquipement newTypeEquipement = new TypeEquipement(10, "Cable");
 
+        Mockito.when(typeEquipementService.saveTypeEquipement(Mockito.any()))
+                    .thenReturn(newTypeEquipement);
+
+        //int maxId = typeEquipements.stream().mapToInt(TypeEquipement::getId).max().orElse(0);
+        
         // Act
         MvcResult result = mockMvc.perform(post("/api/typeequipement/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(typeEquipement)))
+                .content(objectMapper.writeValueAsString(newTypeEquipement)))
                 .andReturn();
 
         // Assert
         String json = result.getResponse().getContentAsString();
         TypeEquipement createdTypeEquipement = objectMapper.readValue(json, TypeEquipement.class);
-        assertThat(createdTypeEquipement.getId()).isEqualTo(3);
-        assertThat(createdTypeEquipement.getLibelleTypeEquipement()).isEqualTo("Peripherique");
+        assertThat(createdTypeEquipement.getId()).isEqualTo(10);
+        assertThat(createdTypeEquipement.getLibelleTypeEquipement()).isEqualTo("Cable");
     }
 
     @Test
@@ -117,9 +126,20 @@ public class TypeEquipementControllerMockTest {
 
     @Test
     void testDeleteTypeEquipement() throws Exception {
+
+        //Arrange
+        int typeEquipementId = 1;
+        
+        TypeEquipement typeEquipement = new TypeEquipement(typeEquipementId, "Ordinateur");
+
+        Mockito.when(typeEquipementService.getTypeEquipementById(typeEquipementId))
+            .thenReturn(typeEquipement);
+        
+        Mockito.doNothing().when(typeEquipementService).deleteTypeEquipementById(typeEquipementId);
+
         // Act
-        MvcResult result = mockMvc.perform(delete("/api/typeequipement/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(delete("/api/typeequipement/" + typeEquipementId)
+                .contentType(MediaType.APPLICATION_JSON))                
                 .andReturn();
 
         // Assert
