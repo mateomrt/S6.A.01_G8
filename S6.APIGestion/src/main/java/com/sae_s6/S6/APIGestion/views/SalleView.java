@@ -91,7 +91,7 @@ public class SalleView extends VerticalLayout {
 	// tag::listAuteurs[]
 	void listAuteurs(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getSallesByLibelleSalleLike(filterText));
+			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
 		} else {
 			grid.setItems(salleService.getAllSalles());
 		}
