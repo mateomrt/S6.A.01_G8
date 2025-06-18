@@ -1,24 +1,35 @@
 package com.sae_s6.S6.APIGestion.controller;
 
+
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
+import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeEquipementControllerMockTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private TypeEquipementService typeEquipementService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -27,6 +38,14 @@ public class TypeEquipementControllerMockTest {
 
     @Test
     void testGetAllTypeEquipements() throws Exception {
+
+        TypeEquipement typeEquipement1 = new TypeEquipement(1, "Ordinateur");
+        TypeEquipement typeEquipement2 = new TypeEquipement(2, "Projecteur");
+        List<TypeEquipement> typeEquipements = Arrays.asList(typeEquipement1, typeEquipement2);
+
+        Mockito.when(typeEquipementService.getAllTypeEquipements())
+                    .thenReturn(typeEquipements);
+
         // Act
         MvcResult result = mockMvc.perform(get("/api/typeequipement/")
                 .accept(MediaType.APPLICATION_JSON))
@@ -34,10 +53,10 @@ public class TypeEquipementControllerMockTest {
 
         // Assert
         String json = result.getResponse().getContentAsString();
-        TypeEquipement[] typeEquipements = objectMapper.readValue(json, TypeEquipement[].class);
-        assertThat(typeEquipements).isNotEmpty();
-        assertThat(typeEquipements[0].getLibelleTypeEquipement()).isEqualTo("Ordinateur");
-        assertThat(typeEquipements[1].getLibelleTypeEquipement()).isEqualTo("Projecteur");
+        List<TypeEquipement> resultat = objectMapper.readValue(json, new TypeReference<List<TypeEquipement>>() {});
+        assertThat(resultat).isNotEmpty();
+        assertThat(resultat.get(0).getLibelleTypeEquipement()).isEqualTo("Ordinateur");
+        assertThat(resultat.get(1).getLibelleTypeEquipement()).isEqualTo("Projecteur");
     }
 
     @Test
@@ -60,7 +79,7 @@ public class TypeEquipementControllerMockTest {
     @Test
     void testCreateTypeEquipement() throws Exception {
         // Arrange
-        TypeEquipement typeEquipement = new TypeEquipement(3, "Peripherique");
+        TypeEquipement typeEquipement = new TypeEquipement(null, "Peripherique");
 
         // Act
         MvcResult result = mockMvc.perform(post("/api/typeequipement/")
@@ -80,8 +99,11 @@ public class TypeEquipementControllerMockTest {
         // Arrange
         TypeEquipement updatedTypeEquipement = new TypeEquipement(1, "PC");
 
+        Mockito.when(typeEquipementService.updateTypeEquipement(Mockito.any()))
+                    .thenReturn(updatedTypeEquipement);
+
         // Act
-        MvcResult result = mockMvc.perform(put("/api/typeequipement/1")
+        MvcResult result = mockMvc.perform(put("/api/typeequipement/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedTypeEquipement)))
                 .andReturn();
@@ -90,7 +112,7 @@ public class TypeEquipementControllerMockTest {
         String json = result.getResponse().getContentAsString();
         TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
         assertThat(typeEquipement.getId()).isEqualTo(1);
-        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("PC");
+        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("ok");
     }
 
     @Test
