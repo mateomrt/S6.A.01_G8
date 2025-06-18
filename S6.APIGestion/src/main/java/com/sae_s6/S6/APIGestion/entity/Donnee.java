@@ -26,11 +26,11 @@ public class Donnee {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_donnee", nullable = false, length = 50)
+    @Column(name = "libelle_donnee", nullable = false, length = 100)
     private String libelleDonnee;
 
-    @Column(name = "mode", nullable = false, length = 25)
-    private String mode;
+    @Column(name = "unite", nullable = false, length = 50)
+    private String unite;
 
     @OneToMany(mappedBy = "donneeNavigation")
     private List<TypeCapteurDonnee> typeCapteurDonnees;
@@ -54,10 +54,10 @@ public class Donnee {
                 return false;
         } else if (!libelleDonnee.equals(other.libelleDonnee))
             return false;
-        if (mode == null) {
-            if (other.mode != null)
+        if (unite == null) {
+            if (other.unite != null)
                 return false;
-        } else if (!mode.equals(other.mode))
+        } else if (!unite.equals(other.unite))
             return false;
         if (typeCapteurDonnees == null) {
             if (other.typeCapteurDonnees != null)
@@ -73,7 +73,7 @@ public class Donnee {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((libelleDonnee == null) ? 0 : libelleDonnee.hashCode());
-        result = prime * result + ((mode == null) ? 0 : mode.hashCode());
+        result = prime * result + ((unite == null) ? 0 : unite.hashCode());
         result = prime * result + ((typeCapteurDonnees == null) ? 0 : typeCapteurDonnees.hashCode());
         return result;
     }

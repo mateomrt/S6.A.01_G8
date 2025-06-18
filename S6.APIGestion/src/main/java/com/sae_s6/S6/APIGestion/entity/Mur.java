@@ -31,7 +31,7 @@ public class Mur {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_mur", nullable = false, length = 50)
+    @Column(name = "libelle_mur", nullable = false, length = 75)
     private String libelleMur;
 
     @Column(name = "hauteur", nullable = false)

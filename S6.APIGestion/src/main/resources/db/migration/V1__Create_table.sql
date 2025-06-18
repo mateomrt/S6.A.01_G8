@@ -3,7 +3,7 @@ SET search_path TO "sae6apigestion";
 -- Table batiment
 CREATE TABLE batiment (
     id INTEGER PRIMARY KEY,
-    libelle_batiment VARCHAR(75) NOT NULL,
+    libelle_batiment VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -11,7 +11,7 @@ CREATE TABLE batiment (
 -- Table typesalle
 CREATE TABLE typesalle (
     id INTEGER PRIMARY KEY,
-    libelle_typesalle VARCHAR(25) NOT NULL,
+    libelle_typesalle VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -33,7 +33,7 @@ CREATE TABLE salle (
 CREATE TABLE mur (
     id INTEGER PRIMARY KEY,
     salle_id INTEGER NOT NULL,
-    libelle_mur VARCHAR(50) NOT NULL,
+    libelle_mur VARCHAR(75) NOT NULL,
     hauteur DOUBLE NOT NULL,
     longueur DOUBLE NOT NULL,
     orientation VARCHAR(10) NOT NULL,
@@ -45,8 +45,8 @@ CREATE TABLE mur (
 -- Table typecapteur
 CREATE TABLE typecapteur (
     id INTEGER PRIMARY KEY,
-    libelle_typecapteur VARCHAR(50) NOT NULL,
-    mode VARCHAR(25) NOT NULL,
+    libelle_typecapteur VARCHAR(100) NOT NULL,
+    mode VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -54,8 +54,8 @@ CREATE TABLE typecapteur (
 -- Table donnee
 CREATE TABLE donnee (
     id INTEGER PRIMARY KEY,
-    libelle_donnee VARCHAR(50) NOT NULL,
-    unite VARCHAR(25) NOT NULL,
+    libelle_donnee VARCHAR(100) NOT NULL,
+    unite VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -74,7 +74,7 @@ CREATE TABLE typecapteurdonnee (
 -- Table typeequipement
 CREATE TABLE typeequipement (
     id integer PRIMARY KEY,
-    libelle_typeequipement VARCHAR(50) NOT NULL,
+    libelle_typeequipement VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

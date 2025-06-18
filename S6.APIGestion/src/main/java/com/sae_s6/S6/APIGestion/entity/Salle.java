@@ -29,18 +29,18 @@ public class Salle {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_salle", nullable = false, length = 50)
+    @Column(name = "libelle_salle", nullable = true, length = 50)
     private String libelleSalle;
 
-    @Column(name = "superficie", nullable = false)
+    @Column(name = "superficie", nullable = true)
     private Double superficie;
 
     @ManyToOne
-    @JoinColumn(name = "batiment_id", referencedColumnName = "id" , nullable = false)
+    @JoinColumn(name = "batiment_id", referencedColumnName = "id" , nullable = true)
     private Batiment batimentNavigation;
 
     @ManyToOne
-    @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = true)
     private TypeSalle typeSalleNavigation;
 
     @OneToMany(mappedBy = "salleNavigation")

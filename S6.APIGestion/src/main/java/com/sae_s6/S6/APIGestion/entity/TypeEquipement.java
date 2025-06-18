@@ -25,7 +25,7 @@ public class TypeEquipement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_typeequipement", nullable = false, length = 50)
+    @Column(name = "libelle_typeequipement", nullable = false, length = 100)
     private String libelleTypeEquipement;
 
     @OneToMany(mappedBy = "typeEquipementNavigation")
