@@ -40,7 +40,7 @@ public class Equipement {
     private Integer position_y;
 
     @ManyToOne
-    @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = true)
     private Mur murNavigation;
 
     @ManyToOne
