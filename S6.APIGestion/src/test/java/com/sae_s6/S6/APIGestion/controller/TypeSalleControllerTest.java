@@ -23,16 +23,16 @@ public class TypeSalleControllerTest {
         return "http://localhost:" + port + "/api/typesalle";
     }
 
-    // Méthode utilitaire pour créer un TypeSalle
-    private TypeSalle createTypeSalle(Integer id, String libelle) {
+   
+    private TypeSalle createTypeSalle(String libelle) {
         TypeSalle typeSalle = new TypeSalle();
-        typeSalle.setId(id);
         typeSalle.setLibelleTypeSalle(libelle);
 
         ResponseEntity<TypeSalle> response = restTemplate.postForEntity(getBaseUrl() + "/", typeSalle, TypeSalle.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         return response.getBody();
     }
+
 
     @Test
     void testGetAllTypeSalles() {
@@ -47,7 +47,7 @@ public class TypeSalleControllerTest {
 
     @Test
     void testGetTypeSalleById() {
-        TypeSalle typeSalle = createTypeSalle(101, "Type B");
+        TypeSalle typeSalle = createTypeSalle( "Type B");
         Integer id = typeSalle.getId();
 
         ResponseEntity<TypeSalle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeSalle.class);
@@ -60,13 +60,13 @@ public class TypeSalleControllerTest {
 
     @Test
     void testSaveTypeSalle() {
-        TypeSalle typeSalle = createTypeSalle(102, "Type C");
+        TypeSalle typeSalle = createTypeSalle( "Type C");
         assertThat(typeSalle.getLibelleTypeSalle()).isEqualTo("Type C");
     }
 
     @Test
     void testUpdateTypeSalle() {
-        TypeSalle typeSalle = createTypeSalle(103, "Type D");
+        TypeSalle typeSalle = createTypeSalle("Type D");
         typeSalle.setLibelleTypeSalle("Type D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,7 +82,7 @@ public class TypeSalleControllerTest {
 
     @Test
     void testDeleteTypeSalleById() {
-        TypeSalle typeSalle = createTypeSalle(104, "Type à Supprimer");
+        TypeSalle typeSalle = createTypeSalle("Type à Supprimer");
         Integer id = typeSalle.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
