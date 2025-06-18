@@ -14,8 +14,9 @@ import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Mur;
-import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+
+import com.sae_s6.S6.APIGestion.entity.Salle;
 
 @Service
 @RequiredArgsConstructor
@@ -73,4 +74,9 @@ public class MurService {
         murRepo.deleteById(id);
         log.debug("Mur avec id: {} supprimé avec succès", id);
     }
+
+    public List<Mur> getByLibelleMurContainingIgnoreCase(String libelleSalle) {
+        return murRepo.findByLibelleMurContainingIgnoreCase(libelleSalle);
+    }  
+
 }

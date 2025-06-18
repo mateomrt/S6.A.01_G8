@@ -100,8 +100,8 @@ public class SalleService {
     public List<Salle> getSallesByLibelleSalle(String libelleSalle) {
         return salleRepo.findByLibelleSalle(libelleSalle);
     }
-    public List<Salle> getSallesByLibelleSalleLike(String libelleSalle) {
-        return salleRepo.findByLibelleSalleLike(libelleSalle);
+    public List<Salle> getByLibelleSalleContainingIgnoreCase(String libelleSalle) {
+        return salleRepo.findByLibelleSalleContainingIgnoreCase(libelleSalle);
     }   
    
 }

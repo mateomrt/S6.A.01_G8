@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.EnumType;
 
 
-
 @Entity
 @Table(name = "mur")
 @Data
@@ -80,7 +79,9 @@ public class Mur {
     @Override
     public int hashCode() {
         return Objects.hash(id, libelleMur, hauteur, longueur, orientation, salleNavigation);
-    
     }
 
+    public String getDesc() {
+        return libelleMur;
+    }
 }

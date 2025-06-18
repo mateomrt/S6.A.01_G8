@@ -79,9 +79,8 @@ public class TypeSalleService {
         log.debug("Salle with id: {} deleted successfully", id);
     }
 
-
-
-
-
+    public List<TypeSalle> getByLibelleTypeSalleContainingIgnoreCase(String libelleSalle) {
+        return typeSalleRepo.findByLibelleTypeSalleContainingIgnoreCase(libelleSalle);
+    }  
 
 }
