@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
+import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
 @Service
@@ -78,6 +79,10 @@ public class TypeSalleService {
         typeSalleRepo.deleteById(id);
         log.debug("Salle with id: {} deleted successfully", id);
     }
+
+    public List<TypeSalle> getByLibelleTypeSalleContainingIgnoreCase(String libelleSalle) {
+        return typeSalleRepo.findByLibelleTypeSalleContainingIgnoreCase(libelleSalle);
+    }  
 
 
 
