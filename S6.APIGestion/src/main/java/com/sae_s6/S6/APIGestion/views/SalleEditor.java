@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import java.util.Locale;
+
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
@@ -90,6 +92,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
             .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
 
 		binder.forField(superficie)
+			.withNullRepresentation("") 
 			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
 			.bind(Salle::getSuperficie, Salle::setSuperficie);
 

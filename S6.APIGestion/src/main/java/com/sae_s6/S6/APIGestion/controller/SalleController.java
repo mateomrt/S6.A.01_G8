@@ -115,13 +115,5 @@ public class SalleController {
         return ResponseEntity.ok().body(salleService.getSallesByLibelleSalle(libelleSalle));
     }
 
-    /**
-     * GET auteurs by nom and prenom (--like--) as Request Parameters.
-     * URL: localhost:8080/biblio/auteur/searchLike?nom=Hug&prenom=Vict
-     */
-    @GetMapping("/searchLike")
-    public ResponseEntity<List<Salle>> getSallesByLibelleSalleLike(@RequestParam(name="libelleSalle") String libelleSalle) {
-        return ResponseEntity.ok().body(salleService.getSallesByLibelleSalleLike(libelleSalle));
-    }
 
 }
