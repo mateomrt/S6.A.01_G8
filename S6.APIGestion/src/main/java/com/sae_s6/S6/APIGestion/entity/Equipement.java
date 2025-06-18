@@ -28,16 +28,16 @@ public class Equipement {
     private String libelleEquipement;
 
     @Column(name = "hauteur", nullable = false)
-    private Integer hauteur;
+    private Double hauteur;
 
     @Column(name = "largeur", nullable = false)
-    private Integer largeur;
+    private Double largeur;
 
     @Column(name = "position_x", nullable = false)
-    private Integer position_x;
+    private Double position_x;
 
     @Column(name = "position_y", nullable = false)
-    private Integer position_y;
+    private Double position_y;
 
     @ManyToOne
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = true)

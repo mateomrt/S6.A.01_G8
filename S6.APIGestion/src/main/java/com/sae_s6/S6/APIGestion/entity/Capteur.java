@@ -24,14 +24,14 @@ public class Capteur {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_capteur", nullable = false, length = 50)
+    @Column(name = "libelle_capteur", nullable = false, length = 100)
     private String libelleCapteur;
 
     @Column(name = "position_x", nullable = false)
-    private Integer positionXCapteur;
+    private Double positionXCapteur;
 
     @Column(name = "position_y", nullable = false)
-    private Integer positionYCapteur;
+    private Double positionYCapteur;
 
     @ManyToOne
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = false)

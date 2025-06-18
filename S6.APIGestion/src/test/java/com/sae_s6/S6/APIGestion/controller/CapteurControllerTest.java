@@ -37,8 +37,8 @@ public class CapteurControllerTest {
     public void testCreateAndGetCapteur() {
         Capteur capteur = new Capteur();
         capteur.setLibelleCapteur("Capteur température");
-        capteur.setPositionXCapteur(10);
-        capteur.setPositionYCapteur(20);
+        capteur.setPositionXCapteur(10.0);
+        capteur.setPositionYCapteur(20.0);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -60,8 +60,8 @@ public class CapteurControllerTest {
     public void testUpdateCapteur() {
         Capteur capteur = new Capteur();
         capteur.setLibelleCapteur("Capteur luminosité");
-        capteur.setPositionXCapteur(15);
-        capteur.setPositionYCapteur(25);
+        capteur.setPositionXCapteur(15.0);
+        capteur.setPositionYCapteur(25.0);
 
         Capteur saved = capteurService.saveCapteur(capteur);
 

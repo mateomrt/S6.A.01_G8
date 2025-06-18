@@ -27,7 +27,7 @@ public class EquipementControllerTest {
     }
 
     // Méthode utilitaire pour créer un Equipement
-    private Equipement createEquipement(Integer id, String titre, Integer hauteur, Integer largeur, Integer position_x, Integer position_y) {
+    private Equipement createEquipement(Integer id, String titre, Double hauteur, Double largeur, Double position_x, Double position_y) {
         // Crée un mur fictif
         Mur mur = new Mur();
         mur.setId(1); // Doit exister dans la base ou avoir un contrôleur pour le créer
@@ -58,7 +58,7 @@ public class EquipementControllerTest {
 
     @Test
     void testGetAllEquipements() {
-        createEquipement(1, "PC principal", 5, 5, 100, 200); // Crée un équipement pour s'assurer qu'on a au moins un en base
+        createEquipement(1, "PC principal", 5.0, 5.0, 100.0, 200.0); // Crée un équipement pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<Equipement[]> response = restTemplate.getForEntity(getBaseUrl() + "/", Equipement[].class);
 
@@ -69,7 +69,7 @@ public class EquipementControllerTest {
 
     @Test
     void testGetEquipementById() {
-        Equipement equipement = createEquipement(100, "Equipement B", 5, 5, 100, 200); 
+        Equipement equipement = createEquipement(100, "Equipement B", 5.0, 5.0, 100.0, 200.0); 
         Integer id = equipement.getId();
 
         ResponseEntity<Equipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Equipement.class);
@@ -85,7 +85,7 @@ public class EquipementControllerTest {
 
     @Test
     void testSaveEquipement() {
-        Equipement equipement = createEquipement(100, "Equipement C", 5, 5, 100, 200); 
+        Equipement equipement = createEquipement(100, "Equipement C", 5.0, 5.0, 100.0, 200.0); 
         assertThat(equipement.getId()).isNotNull(); // Vérifie que l'ID a été généré
         assertThat(equipement.getLibelleEquipement()).isEqualTo("Type C");
         assertThat(equipement.getHauteur()).isGreaterThan(0); // Vérifie que la hauteur est positive
@@ -99,7 +99,7 @@ public class EquipementControllerTest {
 
     @Test
     void testUpdateEquipement() {
-        Equipement equipement = createEquipement(100, "Equipement D", 5, 5, 100, 200); 
+        Equipement equipement = createEquipement(100, "Equipement D", 5.0, 5.0, 100.0, 200.0); 
         equipement.setLibelleEquipement("Type D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
@@ -117,7 +117,7 @@ public class EquipementControllerTest {
 
     @Test
     void testDeleteEquipementById() {
-        Equipement equipement = createEquipement(100, "Equipement E", 5, 5, 100, 200); 
+        Equipement equipement = createEquipement(100, "Equipement E", 5.0, 5.0, 100.0, 200.0); 
         Integer id = equipement.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
