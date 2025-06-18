@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class Capteur {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Double id;
+    private Integer id;
 
     @Column(name = "libelle_capteur", nullable = false, length = 100)
     private String libelleCapteur;
