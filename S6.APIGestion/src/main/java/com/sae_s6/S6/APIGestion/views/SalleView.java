@@ -45,7 +45,7 @@ public class SalleView extends VerticalLayout {
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "nom", "prenom", "nationalite", "dateNaissance", "dateDeces");
+		grid.setColumns("id", "batiment_id", "typesalle_id", "libelle_salle", "superficie");
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
 		filter.setPlaceholder("Filtrer par nom");

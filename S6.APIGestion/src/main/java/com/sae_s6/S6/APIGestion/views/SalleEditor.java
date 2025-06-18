@@ -52,6 +52,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		});
     }
 
+	
 	HorizontalLayout fields = new HorizontalLayout(prenom, nom, nationalite, dateNaissance, dateDeces);
 
 	/* Action buttons */

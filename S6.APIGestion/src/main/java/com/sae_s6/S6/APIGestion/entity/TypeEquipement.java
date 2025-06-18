@@ -28,8 +28,8 @@ public class TypeEquipement {
     @Column(name = "libelle_typeequipement", nullable = false, length = 100)
     private String libelleTypeEquipement;
 
-    @OneToMany(mappedBy = "typeEquipementNavigation")
-    private List<Equipement> equipements;
+    // @OneToMany(mappedBy = "typeEquipementNavigation")
+    // private List<Equipement> equipements;
 
     @Override
     public boolean equals(Object o) {

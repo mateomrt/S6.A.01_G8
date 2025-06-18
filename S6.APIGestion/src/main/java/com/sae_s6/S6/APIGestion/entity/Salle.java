@@ -43,14 +43,14 @@ public class Salle {
     @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = true)
     private TypeSalle typeSalleNavigation;
 
-    @OneToMany(mappedBy = "salleNavigation")
-    private List<Mur> murs;
+    // @OneToMany(mappedBy = "salleNavigation")
+    // private List<Mur> murs;
 
-    @OneToMany(mappedBy = "salleNavigation")
-    private List<Equipement> equipements;
+    // @OneToMany(mappedBy = "salleNavigation")
+    // private List<Equipement> equipements;
 
-    @OneToMany(mappedBy = "salleNavigation")
-    private List<Capteur> capteurs;
+    // @OneToMany(mappedBy = "salleNavigation")
+    // private List<Capteur> capteurs;
 
     @Override
     public boolean equals(Object o) {

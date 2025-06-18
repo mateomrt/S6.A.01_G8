@@ -34,8 +34,8 @@ public class TypeCapteur {
     @OneToMany(mappedBy = "typeCapteurNavigation")
     private List<Capteur> capteurs;
 
-    @OneToMany(mappedBy = "typeCapteurNavigation")
-    private List<TypeCapteurDonnee> typeCapteurDonnees;
+    // @OneToMany(mappedBy = "typeCapteurNavigation")
+    // private List<TypeCapteurDonnee> typeCapteurDonnees;
 
     @Override
     public boolean equals(Object o) {

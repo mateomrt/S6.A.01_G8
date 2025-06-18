@@ -32,8 +32,8 @@ public class Donnee {
     @Column(name = "unite", nullable = false, length = 50)
     private String unite;
 
-    @OneToMany(mappedBy = "donneeNavigation")
-    private List<TypeCapteurDonnee> typeCapteurDonnees;
+    // @OneToMany(mappedBy = "donneeNavigation")
+    // private List<TypeCapteurDonnee> typeCapteurDonnees;
 
     @Override
     public boolean equals(Object obj) {
@@ -59,11 +59,6 @@ public class Donnee {
                 return false;
         } else if (!unite.equals(other.unite))
             return false;
-        if (typeCapteurDonnees == null) {
-            if (other.typeCapteurDonnees != null)
-                return false;
-        } else if (!typeCapteurDonnees.equals(other.typeCapteurDonnees))
-            return false;
         return true;
     }
 
@@ -74,7 +69,6 @@ public class Donnee {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((libelleDonnee == null) ? 0 : libelleDonnee.hashCode());
         result = prime * result + ((unite == null) ? 0 : unite.hashCode());
-        result = prime * result + ((typeCapteurDonnees == null) ? 0 : typeCapteurDonnees.hashCode());
         return result;
     }
 

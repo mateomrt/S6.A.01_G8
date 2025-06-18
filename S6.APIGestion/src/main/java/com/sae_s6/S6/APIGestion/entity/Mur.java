@@ -48,11 +48,11 @@ public class Mur {
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 
-    @OneToMany(mappedBy = "murNavigation")
-    private List<Equipement> equipements;
+    // @OneToMany(mappedBy = "murNavigation")
+    // private List<Equipement> equipements;
 
-    @OneToMany(mappedBy = "murNavigation")
-    private List<Capteur> capteurs;
+    // @OneToMany(mappedBy = "murNavigation")
+    // private List<Capteur> capteurs;
 
 
 
