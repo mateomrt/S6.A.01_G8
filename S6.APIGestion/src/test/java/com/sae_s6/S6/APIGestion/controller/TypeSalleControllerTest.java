@@ -36,7 +36,7 @@ public class TypeSalleControllerTest {
 
     @Test
     void testGetAllTypeSalles() {
-        createTypeSalle(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
+        //createTypeSalle(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<TypeSalle[]> response = restTemplate.getForEntity(getBaseUrl() + "/", TypeSalle[].class);
 

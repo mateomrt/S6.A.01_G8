@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.EnumType;
 
 
-
 @Entity
 @Table(name = "mur")
 @Data
@@ -54,8 +53,6 @@ public class Mur {
     // @OneToMany(mappedBy = "murNavigation")
     // private List<Capteur> capteurs;
 
-
-
     
     public enum Orientation {
         N,
@@ -83,7 +80,6 @@ public class Mur {
     @Override
     public int hashCode() {
         return Objects.hash(id, libelleMur, hauteur, longueur, orientation, salleNavigation);
-    
     }
 
 }
