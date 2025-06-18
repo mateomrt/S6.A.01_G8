@@ -5,16 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.repository.CapteurRepo;
+import com.sae_s6.S6.APIGestion.repository.SalleRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeCapteurRepo;
 import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Capteur;
+import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CapteurService {
     private final CapteurRepo capteurRepo;
+    private final SalleRepo salleRepo;
+    private final TypeCapteurRepo typeCapteurRepo;
 
     public List<Capteur> getAllCapteurs() {
         List<Capteur> capteurs = capteurRepo.findAll();
@@ -44,10 +50,21 @@ public class CapteurService {
          * @return
          */
 
-    public Capteur saveCapteur(Capteur Capteur) {
-        Capteur savedCapteur = capteurRepo.save(Capteur);
+    public Capteur saveCapteur(Capteur capteur) {
+        // Charger les informations liées à partir des IDs
+        Salle salle = salleRepo.findById(capteur.getSalleNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
+
+        TypeCapteur typeCapteur = typeCapteurRepo.findById(capteur.getTypeCapteurNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Type de capteur non trouvé"));
+
+        // Associer les entités liées au capteur
+        capteur.setSalleNavigation(salle);
+        capteur.setTypeCapteurNavigation(typeCapteur);
+
+        Capteur savedCapteur = capteurRepo.save(capteur);
         log.info("Capteur sauvegardé avec succès avec l'id: {}", savedCapteur.getId());
-        log.debug("Détails de l'équipement sauvegardé: {}", savedCapteur);
+        log.debug("Détails du capteur sauvegardé: {}", savedCapteur);
         return savedCapteur;
     }
 

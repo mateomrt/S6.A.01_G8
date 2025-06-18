@@ -54,9 +54,6 @@ public class Mur {
     // @OneToMany(mappedBy = "murNavigation")
     // private List<Capteur> capteurs;
 
-
-
-    
     public enum Orientation {
         N,
         E,

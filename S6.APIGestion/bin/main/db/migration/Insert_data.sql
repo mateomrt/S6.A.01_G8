@@ -13,10 +13,10 @@ INSERT INTO "sae6apigestion".salle (batiment_id, typesalle_id, libelle_salle, su
 (2, 3, 'Lab 201', 45.0);
 
 INSERT INTO "sae6apigestion".mur (salle_id, libelle_mur, hauteur, longueur, orientation) VALUES 
-(1, 'Mur nord', 250, 600, 'N'),
-(1, 'Mur sud', 250, 600, 'S'),
-(2, 'Mur est', 250, 400, 'E'),
-(3, 'Mur ouest', 300, 500, 'O');
+(1, 'Mur nord', 250.0, 600.0, 'N'),
+(1, 'Mur sud', 250.0, 600.0, 'S'),
+(2, 'Mur est', 250.0, 400.0, 'E'),
+(3, 'Mur ouest', 300.0, 500.0, 'O');
 
 INSERT INTO "sae6apigestion".typecapteur (libelle_typecapteur, mode) VALUES 
 ('Thermique', 'actif'), 
@@ -35,10 +35,10 @@ INSERT INTO "sae6apigestion".typeequipement (libelle_typeequipement) VALUES
 ('Projecteur');
 
 INSERT INTO "sae6apigestion".equipement (mur_id, salle_id, typeequipement_id, libelle_equipement, hauteur, largeur, position_x, position_y) VALUES 
-(1, 1, 1, 'PC principal', 50, 30, 100, 200), 
-(2, 1, 2, 'Vidéo projecteur', 20, 40, 250, 100);
+(1, 1, 1, 'PC principal', 50.0, 30.0, 100.0, 200.0), 
+(2, 1, 2, 'Vidéo projecteur', 20.0, 40.0, 250.0, 100.0);
 
 INSERT INTO "sae6apigestion".capteur (mur_id, salle_id, typecapteur_id, libelle_capteur, position_x, position_y) VALUES 
-(1, 1, 1, 'Capteur Température 1', 100, 150), 
-(2, 1, 2, 'Capteur Humidité 1', 200, 150), 
-(3, 2, 2, 'Capteur Humidité 2', 50, 100);
+(1, 1, 1, 'Capteur Température 1', 100.0, 150.0), 
+(2, 1, 2, 'Capteur Humidité 1', 200.0, 150.0), 
+(3, 2, 2, 'Capteur Humidité 2', 50.0, 100.0);

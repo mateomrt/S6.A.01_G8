@@ -17,47 +17,96 @@ import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.service.MurService;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/murs")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class MurController {
-    
     private final MurService murService;
 
-
-    @GetMapping
+    /**
+     * Cette méthode est appelée lors d’une requête GET.
+     * URL: localhost:8080/api/murs/
+     * But: Récupère tous les murs dans la table mur.
+     * @return Liste des murs.
+     */
+    @GetMapping("/")
     public ResponseEntity<List<Mur>> getAllMurs() {
-        return ResponseEntity.ok(murService.getAllMurs());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Mur> getMurById(@PathVariable Integer id) {
-        return murService.getMurById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<Mur> createMur(@RequestBody Mur mur) {
-        return ResponseEntity.ok(murService.createMur(mur));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Mur> updateMur(@PathVariable Integer id, @RequestBody Mur updated) {
-        Mur updatedMur = murService.updateMur(id, updated);
-        if (updatedMur != null) {
-            return ResponseEntity.ok(updatedMur);
-        } else {
-            return ResponseEntity.notFound().build();
+        List<Mur> murs = murService.getAllMurs();
+        if (murs == null) {
+            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.ok(murs);
     }
 
+    /**
+     * Cette méthode est appelée lors d’une requête GET.
+     * URL: localhost:8080/api/murs/{id}
+     * But: Récupère le mur avec l’id associé.
+     * @param id - id du mur.
+     * @return Mur avec l’id associé.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Mur> getMurById(@PathVariable("id") Integer id) {
+        Mur mur = murService.getMurById(id);
+        if (mur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(mur);
+    }
+
+    /**
+     * Cette méthode est appelée lors d’une requête POST.
+     * URL: localhost:8080/api/murs/
+     * But: Création d’une entité mur.
+     * @param mur – le body de la requête est une entité mur.
+     * @return Entité mur créée.
+     */
+    @PostMapping("/")
+    public ResponseEntity<Mur> saveMur(@RequestBody Mur mur) {
+        log.info("Requête POST reçue pour sauvegarder un mur: {}", mur);
+        Mur savedMur = murService.saveMur(mur);
+        if (savedMur == null) {
+            log.warn("Échec de la sauvegarde du mur: {}", mur);
+            return ResponseEntity.badRequest().build();
+        }
+        log.info("Mur sauvegardé avec succès: {}", savedMur);
+        return ResponseEntity.ok(savedMur);
+    }
+
+    /**
+     * Cette méthode est appelée lors d’une requête PUT.
+     * URL: localhost:8080/api/murs/
+     * But: Met à jour une entité mur.
+     * @param mur - entité mur à mettre à jour.
+     * @return Entité mur mise à jour.
+     */
+    @PutMapping("/")
+    public ResponseEntity<Mur> updateMur(@RequestBody Mur mur) {
+        Mur updatedMur = murService.updateMur(mur);
+        if (updatedMur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updatedMur);
+    }
+
+    /**
+     * Cette méthode est appelée lors d’une requête DELETE.
+     * URL: localhost:8080/api/murs/{id}
+     * But: Supprime une entité mur.
+     * @param id - l’id du mur à supprimer.
+     * @return Un message indiquant que l’enregistrement a été supprimé avec succès.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMur(@PathVariable Integer id) {
-        murService.deleteMur(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteMurById(@PathVariable("id") Integer id) {
+        Mur mur = murService.getMurById(id);
+        if (mur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        murService.deleteMurById(id);
+        return ResponseEntity.ok("Mur supprimé avec succès");
     }
 }

@@ -5,16 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.repository.EquipementRepo;
+import com.sae_s6.S6.APIGestion.repository.SalleRepo;
 import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Equipement;
+import com.sae_s6.S6.APIGestion.entity.Salle;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class EquipementService {
     private final EquipementRepo equipementRepo;
+    private final SalleRepo salleRepo;
 
     public List<Equipement> getAllEquipements() {
         List<Equipement> equipements = equipementRepo.findAll();
@@ -45,6 +48,13 @@ public class EquipementService {
          */
 
     public Equipement saveEquipement(Equipement equipement) {
+        // Charger les informations liées à partir des IDs
+        Salle salle = salleRepo.findById(equipement.getSalleNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
+
+        // Associer les entités liées à l'équipement
+        equipement.setSalleNavigation(salle);
+
         Equipement savedEquipement = equipementRepo.save(equipement);
         log.info("Equipement sauvegardé avec succès avec l'id: {}", savedEquipement.getId());
         log.debug("Détails de l'équipement sauvegardé: {}", savedEquipement);

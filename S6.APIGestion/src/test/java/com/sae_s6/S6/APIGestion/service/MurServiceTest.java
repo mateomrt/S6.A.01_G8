@@ -48,28 +48,28 @@ public class MurServiceTest {
         mur.setId(1);
         when(murRepo.findById(1)).thenReturn(Optional.of(mur));
 
-        Optional<Mur> result = murService.getMurById(1);
+        Mur result = murService.getMurById(1);
 
-        assertTrue(result.isPresent());
-        assertEquals(1, result.get().getId());
+        assertNotNull(result);
+        assertEquals(1, result.getId());
     }
 
     @Test
     public void testGetMurById_NotFound() {
         when(murRepo.findById(1)).thenReturn(Optional.empty());
 
-        Optional<Mur> result = murService.getMurById(1);
+        Mur result = murService.getMurById(1);
 
-        assertFalse(result.isPresent());
+        assertNull(result);
     }
 
     @Test
-    public void testCreateMur() {
+    public void testSaveMur() {
         Mur mur = new Mur();
         mur.setId(1);
         when(murRepo.save(mur)).thenReturn(mur);
 
-        Mur result = murService.createMur(mur);
+        Mur result = murService.saveMur(mur);
 
         assertNotNull(result);
         assertEquals(1, result.getId());
@@ -77,48 +77,28 @@ public class MurServiceTest {
     }
 
     @Test
-    public void testUpdateMur_Found() {
+    public void testUpdateMur() {
         Mur existingMur = new Mur();
         existingMur.setId(1);
         existingMur.setLibelleMur("Ancien titre");
 
         Mur updatedMur = new Mur();
+        updatedMur.setId(1);
         updatedMur.setLibelleMur("Nouveau titre");
-        updatedMur.setHauteur(2.5);
-        updatedMur.setLongueur(4.0);
-        updatedMur.setOrientation(Orientation.N);
-        updatedMur.setSalleNavigation(null);
 
-        when(murRepo.findById(1)).thenReturn(Optional.of(existingMur));
-        when(murRepo.save(any(Mur.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(murRepo.save(updatedMur)).thenReturn(updatedMur);
 
-        Mur result = murService.updateMur(1, updatedMur);
+        Mur result = murService.updateMur(updatedMur);
 
         assertNotNull(result);
         assertEquals("Nouveau titre", result.getLibelleMur());
-        assertEquals(2.5, result.getHauteur());
-        assertEquals(4.0, result.getLongueur());
-        assertEquals(Orientation.N, result.getOrientation());
-        verify(murRepo, times(1)).findById(1);
-        verify(murRepo, times(1)).save(existingMur);
+        verify(murRepo, times(1)).save(updatedMur);
     }
 
     @Test
-    public void testUpdateMur_NotFound() {
-        Mur updatedMur = new Mur();
-        when(murRepo.findById(1)).thenReturn(Optional.empty());
-
-        Mur result = murService.updateMur(1, updatedMur);
-
-        assertNull(result);
-        verify(murRepo, times(1)).findById(1);
-        verify(murRepo, times(0)).save(any());
-    }
-
-    @Test
-    public void testDeleteMur() {
+    public void testDeleteMurById() {
         Integer id = 1;
-        murService.deleteMur(id);
+        murService.deleteMurById(id);
         verify(murRepo, times(1)).deleteById(id);
     }
 }

@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.repository.SalleRepo;
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 import java.util.List;
 import java.util.Optional;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -16,6 +18,8 @@ import com.sae_s6.S6.APIGestion.entity.Salle;
 public class SalleService {
 
     private final SalleRepo salleRepo;
+    private final BatimentRepo batimentRepo;
+    private final TypeSalleRepo typeSalleRepo;
 
     public List<Salle> getAllSalles() {
         List<Salle> salles = salleRepo.findAll();
@@ -45,12 +49,28 @@ public class SalleService {
          * @return
          */
 
-    public Salle saveSalle(Salle salle) {
-        Salle savedSalle = salleRepo.save(salle);
-        log.info("Salle sauvegardée avec succès avec l'id: {}", savedSalle.getId());
-        log.debug("Détails de la salle sauvegardée: {}", savedSalle);
-        return savedSalle;
-    }
+         public Salle saveSalle(Salle salle) {
+            // Charger les informations liées à partir des IDs
+            if (salle.getBatimentNavigation() != null) {
+                salle.setBatimentNavigation(
+                    batimentRepo.findById(salle.getBatimentNavigation().getId())
+                        .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
+                );
+            }
+        
+            if (salle.getTypeSalleNavigation() != null) {
+                salle.setTypeSalleNavigation(
+                    typeSalleRepo.findById(salle.getTypeSalleNavigation().getId())
+                        .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"))
+                );
+            }
+        
+            // Sauvegarder la salle avec les entités liées
+            Salle savedSalle = salleRepo.save(salle);
+            log.info("Salle sauvegardée avec succès avec l'id: {}", savedSalle.getId());
+            log.debug("Détails de la salle sauvegardée: {}", savedSalle);
+            return savedSalle;
+        }
 
     
     /**
