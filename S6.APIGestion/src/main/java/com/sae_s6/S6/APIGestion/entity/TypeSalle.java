@@ -58,4 +58,8 @@ public class TypeSalle {
         result = prime * result + ((libelleTypeSalle == null) ? 0 : libelleTypeSalle.hashCode());
         return result;
     }
+
+    public String getDesc() {
+        return libelleTypeSalle;
+    }
 }

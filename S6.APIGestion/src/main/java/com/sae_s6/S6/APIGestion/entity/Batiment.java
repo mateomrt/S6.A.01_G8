@@ -40,4 +40,8 @@ public class Batiment {
     public int hashCode() {
         return Objects.hash(id, libelleBatiment);
     }
+
+    public String getDesc() {
+        return libelleBatiment;
+    }
 }
