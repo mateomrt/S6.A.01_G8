@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.entity;
 
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -8,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,8 +29,8 @@ public class TypeCapteur {
     @Column(name = "mode", nullable = false, length = 50)
     private String modeTypeCapteur;
 
-    // @OneToMany(mappedBy = "typeCapteurNavigation")
-    // private List<Capteur> capteurs;
+    //@OneToMany(mappedBy = "typeCapteurNavigation")
+    //private List<Capteur> capteurs;
 
     // @OneToMany(mappedBy = "typeCapteurNavigation")
     // private List<TypeCapteurDonnee> typeCapteurDonnees;
