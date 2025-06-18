@@ -1,7 +1,9 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.SalleService;
 
 import com.vaadin.flow.component.button.Button;
@@ -38,14 +40,26 @@ public class SalleView extends VerticalLayout {
 		//this.editor = editor;
 		this.grid = new Grid<>(Salle.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un salle", VaadinIcon.PLUS.create());
+		this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "batiment_id", "typesalle_id", "libelle_salle", "superficie");
+		grid.setColumns("id", "libelleSalle", "superficie");
+		
+		grid.addColumn(salle -> {
+            Batiment batiment = salle.getBatimentNavigation();
+            return batiment != null ? batiment.getDesc() : "";
+        }).setHeader("Batiment").setKey("BatimentDescription");
+
+		grid.addColumn(salle -> {
+            TypeSalle typeSalle = salle.getTypeSalleNavigation();
+            return typeSalle != null ? typeSalle.getDesc() : "";
+        }).setHeader("Type salle").setKey("typeSalleDescription");
+		
+		
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
 		filter.setPlaceholder("Filtrer par nom");
