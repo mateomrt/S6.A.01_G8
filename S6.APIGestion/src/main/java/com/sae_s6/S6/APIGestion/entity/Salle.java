@@ -67,4 +67,7 @@ public class Salle {
         return Objects.hash(id, libelleSalle, superficie, batimentNavigation, typeSalleNavigation);
     }
 
+    public String getDesc() {
+        return libelleSalle;
+    }
 }

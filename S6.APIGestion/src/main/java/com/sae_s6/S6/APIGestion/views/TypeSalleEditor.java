@@ -3,7 +3,6 @@ package com.sae_s6.S6.APIGestion.views;
 import java.util.Locale;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.BatimentService;
 import com.sae_s6.S6.APIGestion.service.SalleService;
@@ -32,26 +31,21 @@ import com.vaadin.flow.spring.annotation.UIScope;
  */
 @SpringComponent
 @UIScope
-public class SalleEditor extends VerticalLayout implements KeyNotifier {
+public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 
-	private final SalleService salleService;
-	private final BatimentService batimentService;
 	private final TypeSalleService typeSalleService;
 
 	/**
 	 * The currently edited auteur
 	 */
-	private Salle salle;
+	private TypeSalle typeSalle;
 
 	/* Fields to edit properties in Auteur entity */
-	TextField libelleSalle = new TextField("Libellé salle");
-	TextField superficie = new TextField("Superficie");
+	TextField libelleTypeSalle = new TextField("Libellé type salle");
     
-	ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
-	ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
 	
 
-	HorizontalLayout fields = new HorizontalLayout(libelleSalle, superficie);
+	HorizontalLayout fields = new HorizontalLayout(libelleTypeSalle);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -59,42 +53,19 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Salle> binder = new Binder<>(Salle.class);
+	Binder<TypeSalle> binder = new Binder<>(TypeSalle.class);
 	private ChangeHandler changeHandler;
 
-	public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
-		this.salleService = salleService;
-		this.batimentService = batimentService;
+	public TypeSalleEditor(TypeSalleService typeSalleService) {
 		this.typeSalleService = typeSalleService;
 
-		batimentComboBox.setPlaceholder("Sélectionner un batiment");
-		batimentComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
+		
 
-		typeSalleComboBox.setPlaceholder("Sélectionner un type salle");
-		typeSalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
-
-		add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
+		add(libelleTypeSalle, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
-		binder.forField(batimentComboBox)
-            .asRequired("Batiment est obligatoire")
-            .bind(Salle::getBatimentNavigation, Salle::setBatimentNavigation);
-			
-		binder.forField(typeSalleComboBox)
-            .asRequired("Auteur est obligatoire")
-            .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
-
-		binder.forField(superficie)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
-			.bind(Salle::getSuperficie, Salle::setSuperficie);
+		
 
 		// Configure and style components
 		setSpacing(true);
@@ -107,22 +78,22 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editSalle(salle));
+		cancel.addClickListener(e -> editTypeSalle(typeSalle));
 		setVisible(false);
 	}
 
 	void delete() {
-		salleService.deleteSalleById(salle.getId());
+		typeSalleService.deleteTypeSalleById(typeSalle.getId());
 		changeHandler.onChange();
 	}
 
 	void save() {
-        if (salle.getId() == null) {
+        if (typeSalle.getId() == null) {
             // If the livre is new, we save it
-            salleService.saveSalle(salle);
+            typeSalleService.saveTypeSalle(typeSalle);
         } else {
             // If the livre already exists, we update it
-            salleService.updateSalle(salle);
+            typeSalleService.updateTypeSalle(typeSalle);
         }
         changeHandler.onChange();
 	}
@@ -131,36 +102,33 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editSalle(Salle a) {
+	public final void editTypeSalle(TypeSalle a) {
 		if (a == null) {
 			setVisible(false);
 			return;
 		}
-
-		batimentComboBox.setItems(batimentService.getAllBatiments());
-		typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
 
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
 			// In a more complex app, you might want to load
 			// the entity/DTO with lazy loaded relations for editing
-			salle = salleService.getSalleById(a.getId());
+			typeSalle = typeSalleService.getTypeSalleById(a.getId());
 		}
 		else {
-			salle = a;
+			typeSalle = a;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind auteur properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(salle);
+		binder.setBean(typeSalle);
 
 		setVisible(true);
 
 		// Focus first name initially
-		libelleSalle.focus();
+		libelleTypeSalle.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

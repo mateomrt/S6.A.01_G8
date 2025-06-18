@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.entity.Mur;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.repository.MurRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -44,4 +45,9 @@ public class MurService {
     public void deleteMur(Integer id) {
         murRepo.deleteById(id);
     }
+
+    public List<Mur> getByLibelleMurContainingIgnoreCase(String libelleSalle) {
+        return murRepo.findByLibelleMurContainingIgnoreCase(libelleSalle);
+    }  
+
 }

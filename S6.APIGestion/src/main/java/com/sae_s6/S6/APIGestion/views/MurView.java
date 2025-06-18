@@ -2,10 +2,9 @@ package com.sae_s6.S6.APIGestion.views;
 
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
-import com.sae_s6.S6.APIGestion.service.SalleService;
-
+import com.sae_s6.S6.APIGestion.service.MurService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -18,29 +17,29 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-@Route (value="salle") 
-@PageTitle("Les Salles")
-@Menu(title = "Les Salle", order = 0, icon = "vaadin:clipboard-check")
+@Route (value="mur") 
+@PageTitle("Les Murs")
+@Menu(title = "Les Murs", order = 0, icon = "vaadin:clipboard-check")
 
-public class SalleView extends VerticalLayout {
+public class MurView extends VerticalLayout {
 
 	//private final AuteurRepo repo;
-	private final SalleService salleService;
+	private final MurService murService;
 
-	final Grid<Salle> grid;
+	final Grid<Mur> grid;
 
 	final TextField filter;
 
 	private final Button addNewBtn;
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public SalleView(SalleService salleService, SalleEditor editor) {
+	public MurView(MurService murService, MurEditor editor) {
 		//this.repo = repo;
-		this.salleService = salleService;
+		this.murService = murService;
 		//this.editor = editor;
-		this.grid = new Grid<>(Salle.class);
+		this.grid = new Grid<>(Mur.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
+		this.addNewBtn = new Button("Ajouter un mur", VaadinIcon.PLUS.create());
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
@@ -72,11 +71,11 @@ public class SalleView extends VerticalLayout {
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editSalle(e.getValue());
+			editor.editMur(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
+		addNewBtn.addClickListener(e -> editor.editMur(new Mur()));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
@@ -91,9 +90,9 @@ public class SalleView extends VerticalLayout {
 	// tag::listSalles[]
 	void listSalles(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
+			grid.setItems(murService.getByLibelleMurContainingIgnoreCase(filterText));
 		} else {
-			grid.setItems(salleService.getAllSalles());
+			grid.setItems(murService.getAllMurs());
 		}
 	}
 	// end::listCustomers[]

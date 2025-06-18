@@ -3,9 +3,11 @@ package com.sae_s6.S6.APIGestion.views;
 import java.util.Locale;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
+import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.BatimentService;
+import com.sae_s6.S6.APIGestion.service.MurService;
 import com.sae_s6.S6.APIGestion.service.SalleService;
 import com.sae_s6.S6.APIGestion.service.TypeSalleService;
 import com.vaadin.flow.component.Key;
@@ -32,23 +34,23 @@ import com.vaadin.flow.spring.annotation.UIScope;
  */
 @SpringComponent
 @UIScope
-public class SalleEditor extends VerticalLayout implements KeyNotifier {
+public class MurEditor extends VerticalLayout implements KeyNotifier {
 
+	private final MurService murService;
 	private final SalleService salleService;
-	private final BatimentService batimentService;
-	private final TypeSalleService typeSalleService;
 
 	/**
 	 * The currently edited auteur
 	 */
-	private Salle salle;
+	private Mur mur;
 
 	/* Fields to edit properties in Auteur entity */
-	TextField libelleSalle = new TextField("Libellé salle");
-	TextField superficie = new TextField("Superficie");
+	TextField libelleMur = new TextField("Libellé mur");
+	TextField hauteur = new TextField("Hauteur");
+	TextField longueur = new TextField("longueur");
     
-	ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
-	ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
+	ComboBox<String> Orientation = new ComboBox<>("Orientation");
+	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
 	
 
 	HorizontalLayout fields = new HorizontalLayout(libelleSalle, superficie);
@@ -59,43 +61,30 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Salle> binder = new Binder<>(Salle.class);
+	Binder<Mur> binder = new Binder<>(Mur.class);
 	private ChangeHandler changeHandler;
 
-	public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
+	public MurEditor(MurService murService, SalleService salleService) {
+		this.murService = murService;
 		this.salleService = salleService;
-		this.batimentService = batimentService;
-		this.typeSalleService = typeSalleService;
 
-		batimentComboBox.setPlaceholder("Sélectionner un batiment");
-		batimentComboBox.setClearButtonVisible(true);
+		SalleComboBox.setPlaceholder("Sélectionner une salle");
+		SalleComboBox.setClearButtonVisible(true);
 		// do it after :
 		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
+		SalleComboBox.setItemLabelGenerator(Salle::getDesc);
 
-		typeSalleComboBox.setPlaceholder("Sélectionner un type salle");
-		typeSalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
 
-		add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
+		add(libelleSalle, superficie, SalleComboBox, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
-		binder.forField(batimentComboBox)
-            .asRequired("Batiment est obligatoire")
-            .bind(Salle::getBatimentNavigation, Salle::setBatimentNavigation);
+		binder.forField(SalleComboBox)
+            .asRequired("Salle est obligatoire")
+            .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
 			
-		binder.forField(typeSalleComboBox)
-            .asRequired("Auteur est obligatoire")
-            .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
-
-		binder.forField(superficie)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
-			.bind(Salle::getSuperficie, Salle::setSuperficie);
-
+		
+		
 		// Configure and style components
 		setSpacing(true);
 
@@ -107,22 +96,22 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editSalle(salle));
+		cancel.addClickListener(e -> editMur(mur));
 		setVisible(false);
 	}
 
 	void delete() {
-		salleService.deleteSalleById(salle.getId());
+		murService.deleteMur(mur.getId());
 		changeHandler.onChange();
 	}
 
 	void save() {
-        if (salle.getId() == null) {
+        if (mur.getId() == null) {
             // If the livre is new, we save it
-            salleService.saveSalle(salle);
+            murService.saveMur(mur);
         } else {
             // If the livre already exists, we update it
-            salleService.updateSalle(salle);
+            murService.updateMur(mur);
         }
         changeHandler.onChange();
 	}
@@ -131,31 +120,30 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editSalle(Salle a) {
+	public final void editMur(Mur a) {
 		if (a == null) {
 			setVisible(false);
 			return;
 		}
 
-		batimentComboBox.setItems(batimentService.getAllBatiments());
-		typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
+		SalleComboBox.setItems(salleService.getAllSalles());
 
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
 			// In a more complex app, you might want to load
 			// the entity/DTO with lazy loaded relations for editing
-			salle = salleService.getSalleById(a.getId());
+			mur = murService.getMurById(a.getId());
 		}
 		else {
-			salle = a;
+			mur = a;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind auteur properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(salle);
+		binder.setBean(mur);
 
 		setVisible(true);
 
