@@ -1,18 +1,22 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+import com.sae_s6.S6.APIGestion.service.BatimentService;
 import com.sae_s6.S6.APIGestion.service.SalleService;
+import com.sae_s6.S6.APIGestion.service.TypeSalleService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -29,6 +33,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class SalleEditor extends VerticalLayout implements KeyNotifier {
 
 	private final SalleService salleService;
+	private final BatimentService batimentService;
+	private final TypeSalleService typeSalleService;
 
 	/**
 	 * The currently edited auteur
@@ -36,24 +42,14 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	private Salle salle;
 
 	/* Fields to edit properties in Auteur entity */
-	TextField prenom = new TextField("Prénom");
-	TextField nom = new TextField("Nom");
-    DatePicker dateNaissance = new DatePicker("Date de naissance");
-    DatePicker dateDeces = new DatePicker("Date de décès");
-    ComboBox<String> nationalite = new ComboBox<>("Nationalité");
-    {
-        nationalite.setItems("Française", "Belge", "Suisse", "Américaine", "Autre");
-        nationalite.setPlaceholder("Sélectionner une nationalité");
-        nationalite.setClearButtonVisible(true);
-        nationalite.setAllowCustomValue(true);
-		nationalite.addCustomValueSetListener(event -> {
-    		String customValue = event.getDetail();
-    		nationalite.setValue(customValue); // Set the custom value as the selected value
-		});
-    }
-
+	TextField libelleSalle = new TextField("Libellé salle");
+	TextField superficie = new TextField("Superficie");
+    
+	ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
+	ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
 	
-	HorizontalLayout fields = new HorizontalLayout(prenom, nom, nationalite, dateNaissance, dateDeces);
+
+	HorizontalLayout fields = new HorizontalLayout(libelleSalle, superficie);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -64,13 +60,38 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	Binder<Salle> binder = new Binder<>(Salle.class);
 	private ChangeHandler changeHandler;
 
-	public SalleEditor(SalleService service) {
-		this.salleService = service;
+	public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
+		this.salleService = salleService;
+		this.batimentService = batimentService;
+		this.typeSalleService = typeSalleService;
 
-		add(fields, actions);
+		batimentComboBox.setPlaceholder("Sélectionner un batiment");
+		batimentComboBox.setClearButtonVisible(true);
+		// do it after :
+		//auteurComboBox.setItems(auteurService.getAllAuteurs());
+		batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
+
+		typeSalleComboBox.setPlaceholder("Sélectionner un type salle");
+		typeSalleComboBox.setClearButtonVisible(true);
+		// do it after :
+		//auteurComboBox.setItems(auteurService.getAllAuteurs());
+		typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
+
+		add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
+		binder.forField(batimentComboBox)
+            .asRequired("Batiment est obligatoire")
+            .bind(Salle::getBatimentNavigation, Salle::setBatimentNavigation);
+			
+		binder.forField(typeSalleComboBox)
+            .asRequired("Auteur est obligatoire")
+            .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
+
+		binder.forField(superficie)
+			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
+			.bind(Salle::getSuperficie, Salle::setSuperficie);
 
 		// Configure and style components
 		setSpacing(true);
@@ -93,8 +114,14 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 	}
 
 	void save() {
-		salleService.saveSalle(salle);
-		changeHandler.onChange();
+        if (salle.getId() == null) {
+            // If the livre is new, we save it
+            salleService.saveSalle(salle);
+        } else {
+            // If the livre already exists, we update it
+            salleService.updateSalle(salle);
+        }
+        changeHandler.onChange();
 	}
 
 	public interface ChangeHandler {
@@ -106,6 +133,10 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 			setVisible(false);
 			return;
 		}
+
+		batimentComboBox.setItems(batimentService.getAllBatiments());
+		typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
+
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
@@ -126,7 +157,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 		setVisible(true);
 
 		// Focus first name initially
-		prenom.focus();
+		libelleSalle.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {
