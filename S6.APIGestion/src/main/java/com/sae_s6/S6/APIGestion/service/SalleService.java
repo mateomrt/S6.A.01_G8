@@ -10,7 +10,10 @@ import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 import java.util.List;
 import java.util.Optional;
+
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
 @Service
 @RequiredArgsConstructor
@@ -43,34 +46,26 @@ public class SalleService {
         return null;
     }
 
-       /**
-         * 
-         * @param salle
-         * @return
-         */
+    /**
+     * 
+     * @param salle
+     * @return
+     */
 
-         public Salle saveSalle(Salle salle) {
-            // Charger les informations liées à partir des IDs
-            if (salle.getBatimentNavigation() != null) {
-                salle.setBatimentNavigation(
-                    batimentRepo.findById(salle.getBatimentNavigation().getId())
-                        .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
-                );
-            }
-        
-            if (salle.getTypeSalleNavigation() != null) {
-                salle.setTypeSalleNavigation(
-                    typeSalleRepo.findById(salle.getTypeSalleNavigation().getId())
-                        .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"))
-                );
-            }
-        
-            // Sauvegarder la salle avec les entités liées
-            Salle savedSalle = salleRepo.save(salle);
-            log.info("Salle sauvegardée avec succès avec l'id: {}", savedSalle.getId());
-            log.debug("Détails de la salle sauvegardée: {}", savedSalle);
-            return savedSalle;
-        }
+    public Salle saveSalle(Salle salle) {
+        // Hydrater le bâtiment lié
+        Batiment batiment = batimentRepo.findById(salle.getBatimentNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"));
+
+        // Hydrater le type de salle lié
+        TypeSalle typeSalle = typeSalleRepo.findById(salle.getTypeSalleNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"));
+
+        salle.setBatimentNavigation(batiment);
+        salle.setTypeSalleNavigation(typeSalle);
+
+        return salleRepo.save(salle);
+    }
 
     
     /**

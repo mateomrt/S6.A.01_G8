@@ -4,12 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.EquipementRepo;
+import com.sae_s6.S6.APIGestion.repository.MurRepo;
 import com.sae_s6.S6.APIGestion.repository.SalleRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeEquipementRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
+
 import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Equipement;
+import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 
 @Service
@@ -18,6 +24,11 @@ import com.sae_s6.S6.APIGestion.entity.Salle;
 public class EquipementService {
     private final EquipementRepo equipementRepo;
     private final SalleRepo salleRepo;
+    private final MurRepo murRepo;
+    private final TypeEquipementRepo typeEquipementRepo;
+    private final BatimentRepo batimentRepo;
+    private final TypeSalleRepo typeSalleRepo;
+    
 
     public List<Equipement> getAllEquipements() {
         List<Equipement> equipements = equipementRepo.findAll();
@@ -48,18 +59,47 @@ public class EquipementService {
          */
 
     public Equipement saveEquipement(Equipement equipement) {
-        // Charger les informations liées à partir des IDs
         Salle salle = salleRepo.findById(equipement.getSalleNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
-
-        // Associer les entités liées à l'équipement
+        salle.setBatimentNavigation(
+            batimentRepo.findById(salle.getBatimentNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
+        );
+        salle.setTypeSalleNavigation(
+            typeSalleRepo.findById(salle.getTypeSalleNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"))
+        );
         equipement.setSalleNavigation(salle);
 
-        Equipement savedEquipement = equipementRepo.save(equipement);
-        log.info("Equipement sauvegardé avec succès avec l'id: {}", savedEquipement.getId());
-        log.debug("Détails de l'équipement sauvegardé: {}", savedEquipement);
-        return savedEquipement;
+        if (equipement.getMurNavigation() != null) {
+            Mur mur = murRepo.findById(equipement.getMurNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Mur non trouvé"));
+
+            Salle salleMur = salleRepo.findById(mur.getSalleNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Salle du mur non trouvée"));
+
+            salleMur.setBatimentNavigation(
+                batimentRepo.findById(salleMur.getBatimentNavigation().getId())
+                    .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
+            );
+            salleMur.setTypeSalleNavigation(
+                typeSalleRepo.findById(salleMur.getTypeSalleNavigation().getId())
+                    .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"))
+            );
+            mur.setSalleNavigation(salleMur);
+            equipement.setMurNavigation(mur);
+        }
+
+        if (equipement.getTypeEquipementNavigation() != null) {
+            equipement.setTypeEquipementNavigation(
+                typeEquipementRepo.findById(equipement.getTypeEquipementNavigation().getId())
+                    .orElseThrow(() -> new RuntimeException("Type équipement non trouvé"))
+            );
+        }
+
+        return equipementRepo.save(equipement);
     }
+
 
     
     /**

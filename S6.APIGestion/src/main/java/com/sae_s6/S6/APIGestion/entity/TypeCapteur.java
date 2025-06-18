@@ -31,8 +31,8 @@ public class TypeCapteur {
     @Column(name = "mode", nullable = false, length = 50)
     private String modeTypeCapteur;
 
-    @OneToMany(mappedBy = "typeCapteurNavigation")
-    private List<Capteur> capteurs;
+    // @OneToMany(mappedBy = "typeCapteurNavigation")
+    // private List<Capteur> capteurs;
 
     // @OneToMany(mappedBy = "typeCapteurNavigation")
     // private List<TypeCapteurDonnee> typeCapteurDonnees;

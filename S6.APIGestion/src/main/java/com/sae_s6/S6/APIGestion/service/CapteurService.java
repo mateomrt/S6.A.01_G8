@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.CapteurRepo;
+import com.sae_s6.S6.APIGestion.repository.MurRepo;
 import com.sae_s6.S6.APIGestion.repository.SalleRepo;
 import com.sae_s6.S6.APIGestion.repository.TypeCapteurRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
+
 import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.entity.Capteur;
+import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 
@@ -21,6 +26,9 @@ public class CapteurService {
     private final CapteurRepo capteurRepo;
     private final SalleRepo salleRepo;
     private final TypeCapteurRepo typeCapteurRepo;
+    private final MurRepo murRepo;
+    private final BatimentRepo batimentRepo;
+    private final TypeSalleRepo typeSalleRepo;
 
     public List<Capteur> getAllCapteurs() {
         List<Capteur> capteurs = capteurRepo.findAll();
@@ -51,22 +59,46 @@ public class CapteurService {
          */
 
     public Capteur saveCapteur(Capteur capteur) {
-        // Charger les informations liées à partir des IDs
+        // Hydrater la salle liée
         Salle salle = salleRepo.findById(capteur.getSalleNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
+        salle.setBatimentNavigation(
+            batimentRepo.findById(salle.getBatimentNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
+        );
+        salle.setTypeSalleNavigation(
+            typeSalleRepo.findById(salle.getTypeSalleNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"))
+        );
+        capteur.setSalleNavigation(salle);
 
+        // Hydrater le mur lié
+        Mur mur = murRepo.findById(capteur.getMurNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Mur non trouvé"));
+
+        // Si nécessaire, hydrater la salle du mur (optionnel selon besoin)
+        Salle salleMur = salleRepo.findById(mur.getSalleNavigation().getId())
+            .orElseThrow(() -> new RuntimeException("Salle du mur non trouvée"));
+        salleMur.setBatimentNavigation(
+            batimentRepo.findById(salleMur.getBatimentNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Bâtiment non trouvé"))
+        );
+        salleMur.setTypeSalleNavigation(
+            typeSalleRepo.findById(salleMur.getTypeSalleNavigation().getId())
+                .orElseThrow(() -> new RuntimeException("Type salle non trouvé"))
+        );
+        mur.setSalleNavigation(salleMur);
+
+        capteur.setMurNavigation(mur);
+
+        // Hydrater le type de capteur
         TypeCapteur typeCapteur = typeCapteurRepo.findById(capteur.getTypeCapteurNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Type de capteur non trouvé"));
-
-        // Associer les entités liées au capteur
-        capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(typeCapteur);
 
-        Capteur savedCapteur = capteurRepo.save(capteur);
-        log.info("Capteur sauvegardé avec succès avec l'id: {}", savedCapteur.getId());
-        log.debug("Détails du capteur sauvegardé: {}", savedCapteur);
-        return savedCapteur;
+        return capteurRepo.save(capteur);
     }
+
 
     
     /**
