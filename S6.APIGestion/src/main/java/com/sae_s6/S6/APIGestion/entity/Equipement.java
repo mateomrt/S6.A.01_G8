@@ -24,7 +24,7 @@ public class Equipement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "libelle_equipment", nullable = false, length = 250)
+    @Column(name = "libelle_equipment", nullable = false, length = 150)
     private String libelleEquipement;
 
     @Column(name = "hauteur", nullable = false)

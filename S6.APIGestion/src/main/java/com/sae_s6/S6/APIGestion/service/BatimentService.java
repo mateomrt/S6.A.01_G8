@@ -41,9 +41,9 @@ public class BatimentService {
 			if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
 				existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
 			}
-			if (updated.getSalles() != null) {
-				existingBatiment.setSalles(updated.getSalles());
-			}
+			// if (updated.getSalles() != null) {
+			// 	existingBatiment.setSalles(updated.getSalles());
+			// }
 			return batimentRepo.save(existingBatiment);
 		}).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
 	}

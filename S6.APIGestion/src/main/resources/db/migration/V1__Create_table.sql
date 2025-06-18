@@ -19,10 +19,10 @@ CREATE TABLE typesalle (
 -- Table salle
 CREATE TABLE salle (
     id INTEGER PRIMARY KEY,
-    batiment_id INTEGER NOT NULL,
-    typesalle_id INTEGER NOT NULL,
-    libelle_salle VARCHAR(50) NOT NULL,
-    superficie DOUBLE PRECISION NOT NULL,
+    batiment_id INTEGER NULL,
+    typesalle_id INTEGER NULL,
+    libelle_salle VARCHAR(50) NULL,
+    superficie DOUBLE PRECISION NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_salle_batiment FOREIGN KEY (batiment_id) REFERENCES batiment(id),
@@ -85,7 +85,7 @@ CREATE TABLE equipement (
     mur_id INTEGER NOT NULL,
     salle_id INTEGER NOT NULL,
     typeequipement_id INTEGER NOT NULL,
-    libelle_equipement VARCHAR(50) NOT NULL,
+    libelle_equipement VARCHAR(150) NOT NULL,
     hauteur DOUBLE PRECISION NOT NULL,
     largeur DOUBLE PRECISION NOT NULL,
     position_x DOUBLE PRECISION NOT NULL,

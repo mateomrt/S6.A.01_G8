@@ -28,8 +28,8 @@ public class Batiment {
     @Column(name = "libelle_batiment", nullable = false, length = 100)
     private String libelleBatiment;
 
-    @OneToMany(mappedBy = "batimentNavigation")
-    private List<Salle> salles;
+    // @OneToMany(mappedBy = "batimentNavigation")
+    // private List<Salle> salles;
 
     @Override
     public boolean equals(Object o) {
