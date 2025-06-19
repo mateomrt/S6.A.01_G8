@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
+import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -79,5 +80,9 @@ public class BatimentService {
             throw new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé.");
         }
         batimentRepo.deleteById(id);
+    }
+
+    public List<Batiment> getByLibelleBatimentContainingIgnoreCase(String libelleBatiment) {
+        return batimentRepo.findByLibelleBatimentContainingIgnoreCase(libelleBatiment);
     }
 }
