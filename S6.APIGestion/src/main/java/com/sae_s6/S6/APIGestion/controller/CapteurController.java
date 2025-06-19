@@ -79,20 +79,18 @@ public class CapteurController {
     * @return  entité équipement à mise à jour
     */
     @PutMapping("/")
-    public ResponseEntity<Capteur> updateCapteur(@RequestBody Capteur Capteur)
-    {
-        Capteur updatedCapteur = CapteurService.updateCapteur(Capteur);
+    public ResponseEntity<Capteur> updateCapteur(@RequestBody Capteur capteur) {
+        Capteur updatedCapteur = CapteurService.updateCapteur(capteur);
         if (updatedCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
-        
         return ResponseEntity.ok(updatedCapteur);
     }
 
 
         /**
      * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/Capteur/ (1 ou tout autre id)
+    * URL: localhost:8080/api/Capteur/{id}
     * Purpose: Supprime une entité équipement
     * @param id - l’id de l'équipement à supprimer
     * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
