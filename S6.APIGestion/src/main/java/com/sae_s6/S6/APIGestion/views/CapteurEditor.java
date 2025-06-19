@@ -1,10 +1,14 @@
 package com.sae_s6.S6.APIGestion.views;
 
+
+import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
-import com.sae_s6.S6.APIGestion.entity.Mur.Orientation;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+import com.sae_s6.S6.APIGestion.service.CapteurService;
 import com.sae_s6.S6.APIGestion.service.MurService;
 import com.sae_s6.S6.APIGestion.service.SalleService;
+import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -29,26 +33,29 @@ import com.vaadin.flow.spring.annotation.UIScope;
  */
 @SpringComponent
 @UIScope
-public class MurEditor extends VerticalLayout implements KeyNotifier {
+public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 
+	private final CapteurService capteurService;
 	private final MurService murService;
 	private final SalleService salleService;
+	private final TypeCapteurService typeCapteurService;
 
 	/**
 	 * The currently edited auteur
 	 */
-	private Mur mur;
+	private Capteur capteur;
 
 	/* Fields to edit properties in Auteur entity */
-	TextField libelleMur = new TextField("Libellé mur");
-	TextField hauteur = new TextField("Hauteur");
-	TextField longueur = new TextField("longueur");
+	TextField libelleCapteur = new TextField("Libellé capteur");
+	TextField positionXCapteur = new TextField("Position X");
+	TextField positionYCapteur = new TextField("Position Y");
     
-	ComboBox<Orientation> OrientationComboBox = new ComboBox<>("Orientation");
-	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
+	ComboBox<Mur> murComboBox = new ComboBox<>("Mur");
+	ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
+	ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type capteur");
 	
 
-	HorizontalLayout fields = new HorizontalLayout(libelleMur, hauteur, longueur);
+	HorizontalLayout fields = new HorizontalLayout(libelleCapteur, positionXCapteur, positionYCapteur);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -56,44 +63,54 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Mur> binder = new Binder<>(Mur.class);
+	Binder<Capteur> binder = new Binder<>(Capteur.class);
 	private ChangeHandler changeHandler;
 
-	public MurEditor(MurService murService, SalleService salleService) {
-		this.murService = murService;
+	public CapteurEditor(CapteurService capteurService, MurService murService, SalleService salleService,  TypeCapteurService typeCapteurService) {
+		this.capteurService = capteurService;
 		this.salleService = salleService;
+		this.murService = murService;
+		this.typeCapteurService = typeCapteurService;
 
-		SalleComboBox.setPlaceholder("Sélectionner une salle");
-		SalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		SalleComboBox.setItemLabelGenerator(Salle::getDesc);
+		murComboBox.setPlaceholder("Sélectionner un mur");
+		murComboBox.setClearButtonVisible(true);
+		murComboBox.setItemLabelGenerator(Mur::getDesc);
 
 
-		add(libelleMur, SalleComboBox, hauteur, longueur, OrientationComboBox, actions);
+		salleComboBox.setPlaceholder("Sélectionner une salle");
+		salleComboBox.setClearButtonVisible(true);
+		salleComboBox.setItemLabelGenerator(Salle::getDesc);
+
+		typeCapteurComboBox.setPlaceholder("Sélectionner un type de capteur");
+		typeCapteurComboBox.setClearButtonVisible(true);
+		typeCapteurComboBox.setItemLabelGenerator(TypeCapteur::getDesc);
+
+		add(libelleCapteur, murComboBox,  salleComboBox, typeCapteurComboBox, positionXCapteur, positionYCapteur, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
-		binder.forField(SalleComboBox)
-            .asRequired("Salle est obligatoire")
-            .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
-
-		binder.forField(OrientationComboBox)
-            .asRequired("L'orientation est obligatoire")
-            .bind(Mur::getOrientation, Mur::setOrientation);
+		binder.forField(murComboBox)
+            .asRequired("Mur est obligatoire")
+            .bind(Capteur::getMurNavigation, Capteur::setMurNavigation);
 			
+		binder.forField(salleComboBox)
+            .asRequired("Salle est obligatoire")
+            .bind(Capteur::getSalleNavigation, Capteur::setSalleNavigation);
 		
-        binder.forField(hauteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
-			.bind(Mur::getHauteur, Mur::setHauteur);
-            
-        binder.forField(longueur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La longueur doit être un nombre"))
-			.bind(Mur::getLongueur, Mur::setLongueur);
+		binder.forField(typeCapteurComboBox)
+            .asRequired("Type capteur est obligatoire")
+            .bind(Capteur::getTypeCapteurNavigation, Capteur::setTypeCapteurNavigation);
 
-		
+		binder.forField(positionXCapteur)
+			.withNullRepresentation("") 
+			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
+			.bind(Capteur::getPositionXCapteur, Capteur::setPositionXCapteur);
+
+		binder.forField(positionYCapteur)
+			.withNullRepresentation("") 
+			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
+			.bind(Capteur::getPositionYCapteur, Capteur::setPositionYCapteur);
+
 		// Configure and style components
 		setSpacing(true);
 
@@ -105,22 +122,22 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editMur(mur));
+		cancel.addClickListener(e -> editCapteur(capteur));
 		setVisible(false);
 	}
 
 	void delete() {
-		murService.deleteMurById(mur.getId());
+		capteurService.deleteCapteurById(capteur.getId());
 		changeHandler.onChange();
 	}
 
 	void save() {
-        if (mur.getId() == null) {
+        if (capteur.getId() == null) {
             // If the livre is new, we save it
-            murService.saveMur(mur);
+            capteurService.saveCapteur(capteur);
         } else {
             // If the livre already exists, we update it
-            murService.updateMur(mur);
+            capteurService.updateCapteur(capteur);
         }
         changeHandler.onChange();
 	}
@@ -129,37 +146,37 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editMur(Mur a) {
+	public final void editCapteur(Capteur a) {
 		if (a == null) {
 			setVisible(false);
 			return;
 		}
 
-		SalleComboBox.setItems(salleService.getAllSalles());
-        OrientationComboBox.setItems(Mur.Orientation.values());
-        
+		murComboBox.setItems(murService.getAllMurs());
+		salleComboBox.setItems(salleService.getAllSalles());
+		typeCapteurComboBox.setItems(typeCapteurService.getAllTypeCapteurs());
 
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
 			// In a more complex app, you might want to load
 			// the entity/DTO with lazy loaded relations for editing
-			mur = murService.getMurById(a.getId());
+			capteur = capteurService.getCapteurById(a.getId());
 		}
 		else {
-			mur = a;
+			capteur = a;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind auteur properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(mur);
+		binder.setBean(capteur);
 
 		setVisible(true);
 
 		// Focus first name initially
-		libelleMur.focus();
+		libelleCapteur.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

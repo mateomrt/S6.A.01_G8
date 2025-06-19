@@ -114,4 +114,6 @@ public class Capteur {
             salleNavigation
         );
     }
+
+    
 }

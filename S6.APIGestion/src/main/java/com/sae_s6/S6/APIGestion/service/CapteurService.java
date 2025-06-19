@@ -131,4 +131,8 @@ public class CapteurService {
         capteurRepo.deleteById(id);
         log.debug("Capteur avec id: {} supprimé avec succès", id);
     }
+
+    public List<Capteur> getByLibelleCapteurContainingIgnoreCase(String libelleCapteur) {
+        return capteurRepo.findByLibelleCapteurContainingIgnoreCase(libelleCapteur);
+    }  
 }

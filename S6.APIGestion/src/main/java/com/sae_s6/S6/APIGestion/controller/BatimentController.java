@@ -35,7 +35,7 @@ public class BatimentController {
      *
      * @return Une réponse contenant la liste de tous les bâtiments.
      */
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Batiment>> getAllBatiments() {
         return ResponseEntity.ok(batimentService.getAllBatiments());
     }
@@ -59,7 +59,7 @@ public class BatimentController {
      * @param batiment L'entité Batiment à créer.
      * @return Une réponse contenant le bâtiment créé.
      */
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Batiment> createBatiment(@RequestBody Batiment batiment) {
         return ResponseEntity.ok(batimentService.createBatiment(batiment));
     }
@@ -71,7 +71,7 @@ public class BatimentController {
      * @param updated Les nouvelles données du bâtiment.
      * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
      */
-    @PutMapping("/{id}")
+    @PutMapping("/")
     public ResponseEntity<Batiment> updateBatiment(@PathVariable Integer id, @RequestBody Batiment updated) {
         Batiment result = batimentService.updateBatiment(id, updated);
         if (result != null) {

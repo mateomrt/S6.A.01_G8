@@ -71,4 +71,7 @@ public class TypeCapteur {
     public int hashCode() {
         return Objects.hash(id, libelleTypeCapteur, modeTypeCapteur);
     }
+    public String getDesc() {
+        return libelleTypeCapteur;
+    }
 }
