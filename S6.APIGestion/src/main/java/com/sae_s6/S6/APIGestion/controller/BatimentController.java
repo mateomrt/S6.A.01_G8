@@ -32,6 +32,7 @@ public class BatimentController {
 
     /**
      * Endpoint pour récupérer tous les bâtiments.
+     * URL: localhost:8080/api/batiment/
      *
      * @return Une réponse contenant la liste de tous les bâtiments.
      */
@@ -42,6 +43,7 @@ public class BatimentController {
 
     /**
      * Endpoint pour récupérer un bâtiment par son ID.
+     * URL: localhost:8080/api/batiment/{id}
      *
      * @param id L'identifiant du bâtiment.
      * @return Une réponse contenant le bâtiment correspondant ou une réponse 404 s'il n'est pas trouvé.
@@ -55,6 +57,7 @@ public class BatimentController {
 
     /**
      * Endpoint pour créer un nouveau bâtiment.
+     * URL: localhost:8080/api/batiment/
      *
      * @param batiment L'entité Batiment à créer.
      * @return Une réponse contenant le bâtiment créé.
@@ -66,8 +69,8 @@ public class BatimentController {
 
     /**
      * Endpoint pour mettre à jour un bâtiment existant.
+     * URL: localhost:8080/api/batiment/
      *
-     * @param id L'identifiant du bâtiment à mettre à jour.
      * @param updated Les nouvelles données du bâtiment.
      * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
      */
@@ -83,6 +86,7 @@ public class BatimentController {
 
     /**
      * Endpoint pour supprimer un bâtiment par son ID.
+     * URL: localhost:8080/api/batiment/{id}
      *
      * @param id L'identifiant du bâtiment à supprimer.
      * @return Une réponse indiquant que la suppression a été effectuée.
