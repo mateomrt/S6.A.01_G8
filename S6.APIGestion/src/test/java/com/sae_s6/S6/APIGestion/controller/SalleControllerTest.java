@@ -1,6 +1,9 @@
 package com.sae_s6.S6.APIGestion.controller;
 
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,12 +28,18 @@ public class SalleControllerTest {
 
 
     private Salle createSalle(String libelleSalle, double superficie) {
+        TypeSalle typeSalle = new TypeSalle();
+        typeSalle.setId(1);
+
+        Batiment batiment = new Batiment();
+        batiment.setId(1);
+
         Salle salle = new Salle();
         salle.setId(null); // Laisser l'auto-génération
         salle.setLibelleSalle(libelleSalle);
         salle.setSuperficie(superficie);
-        salle.setBatimentNavigation(null); // Plus nécessaire
-        salle.setTypeSalleNavigation(null); // Plus nécessaire
+        salle.setBatimentNavigation(batiment); // Plus nécessaire
+        salle.setTypeSalleNavigation(typeSalle); // Plus nécessaire
 
         ResponseEntity<Salle> response = restTemplate.postForEntity(getBaseUrl() + "/", salle, Salle.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
