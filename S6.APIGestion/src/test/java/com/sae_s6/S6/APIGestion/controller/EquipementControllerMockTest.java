@@ -3,9 +3,7 @@ package com.sae_s6.S6.APIGestion.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sae_s6.S6.APIGestion.entity.Equipement;
-import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.service.EquipementService;
-import com.sae_s6.S6.APIGestion.service.SalleService;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
