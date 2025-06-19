@@ -74,7 +74,7 @@ public class BatimentControllerTest {
     void testUpdateBatiment() {
         Batiment batiment = createBatiment(null, "Bâtiment D");
         createdBatimentId = batiment.getId();
-        
+
         batiment.setLibelleBatiment("Bâtiment D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
@@ -85,7 +85,7 @@ public class BatimentControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Batiment.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Bâtiment D - MAJ");
         assertThat(response.getBody().getId()).isEqualTo(batiment.getId()); // Vérifie que l'ID est inchangé
         assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif
        
@@ -94,7 +94,7 @@ public class BatimentControllerTest {
 
     @Test
     void testDeleteBatimentById() {
-        Batiment batiment = createBatiment(104, "Type à Supprimer");
+        Batiment batiment = createBatiment(null, "Type à Supprimer");
         Integer id = batiment.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);

@@ -73,14 +73,14 @@ public class BatimentEditor extends VerticalLayout implements KeyNotifier {
 	}
 
 	void delete() {
-		batimentService.deleteBatiment(batiment.getId());
+		batimentService.deleteBatimentById(batiment.getId());
 		changeHandler.onChange();
 	}
 
 	void save() {
         if (batiment.getId() == null) {
             // If the livre is new, we save it
-            batimentService.createBatiment(batiment);
+            batimentService.saveBatiment(batiment);
         } else {
             // If the livre already exists, we update it
             batimentService.updateBatiment(batiment);
