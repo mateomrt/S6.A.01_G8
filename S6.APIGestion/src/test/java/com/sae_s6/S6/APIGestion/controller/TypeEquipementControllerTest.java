@@ -20,7 +20,7 @@ public class TypeEquipementControllerTest {
     private TestRestTemplate restTemplate;
 
     private String getBaseUrl() {
-        return "http://localhost:" + port + "/typeequipement";
+        return "http://localhost:" + port + "/api/typeequipement";
     }
 
     // Méthode utilitaire pour créer un TypeEquipement
@@ -33,6 +33,8 @@ public class TypeEquipementControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         return response.getBody();
     }
+
+    private int createdTypeEquipementId;
 
     @Test
     void testGetAllTypeEquipements() {
@@ -47,8 +49,8 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testGetTypeEquipementById() {
-        TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
-        Integer id = typeEquipement.getId();
+        //TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
+        Integer id = 1;
 
         ResponseEntity<TypeEquipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeEquipement.class);
 
@@ -60,29 +62,40 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testSaveTypeEquipement() {
-        TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
-        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("Projecteur");
+        TypeEquipement typeEquipement = createTypeEquipement(null, "PC");
+        createdTypeEquipementId = typeEquipement.getId();
+
+        assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("PC");
+        
+        restTemplate.delete(getBaseUrl() + "/" + createdTypeEquipementId);
     }
 
     @Test
     void testUpdateTypeEquipement() {
-        TypeEquipement typeEquipement = createTypeEquipement(2, "Projecteur");
-        typeEquipement.setLibelleTypeEquipement("Projecteur - MAJ");
+
+        
+
+       TypeEquipement typeEquipement = createTypeEquipement(null, "PC");
+        createdTypeEquipementId = typeEquipement.getId();
+
+        typeEquipement.setLibelleTypeEquipement("PC - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TypeEquipement> entity = new HttpEntity<>(typeEquipement, headers);
 
-        ResponseEntity<TypeEquipement> response = restTemplate.exchange(
+        ResponseEntity<TypeEquipement> result = restTemplate.exchange(
                 getBaseUrl() + "/", HttpMethod.PUT, entity, TypeEquipement.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getLibelleTypeEquipement()).isEqualTo("Projecteur - MAJ");
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().getLibelleTypeEquipement()).isEqualTo("PC - MAJ");
+
+        restTemplate.delete(getBaseUrl() + "/" + createdTypeEquipementId);
     }
 
     @Test
     void testDeleteTypeEquipementById() {
-        TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
+        TypeEquipement typeEquipement = createTypeEquipement(null, "Ordinateur");
         Integer id = typeEquipement.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
