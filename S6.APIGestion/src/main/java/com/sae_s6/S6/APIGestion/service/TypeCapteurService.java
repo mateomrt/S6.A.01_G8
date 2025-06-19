@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sae_s6.S6.APIGestion.repository.TypeCapteurRepo;
+import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 
 
@@ -76,5 +77,9 @@ public class TypeCapteurService {
     public void deleteTypeCapteurById(Integer id) {
         typeCapteurRepo.deleteById(id);
         log.debug("Type de capteur avec id: {} supprimé avec succès", id);
+    }
+    
+    public List<TypeCapteur> getByLibelleTypeCapteurContainingIgnoreCase(String libelleTypeCapteur) {
+        return typeCapteurRepo.findByLibelleTypeCapteurContainingIgnoreCase(libelleTypeCapteur);
     }
 }
