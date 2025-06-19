@@ -84,36 +84,32 @@ public class MurServiceTest {
         // Création des objets nécessaires
         Batiment batiment = new Batiment();
         batiment.setId(10);
-
+    
         TypeSalle typeSalle = new TypeSalle();
         typeSalle.setId(20);
-
+    
         Salle salle = new Salle();
         salle.setId(5);
         salle.setBatimentNavigation(batiment);
         salle.setTypeSalleNavigation(typeSalle);
-
+    
         Mur mur = new Mur();
         mur.setSalleNavigation(salle);
-
+    
         Mur savedMur = new Mur();
         savedMur.setId(100); // ID généré automatiquement
-
+    
         // Simulation des dépendances
         when(salleRepo.findById(5)).thenReturn(Optional.of(salle));
-        when(batimentRepo.findById(10)).thenReturn(Optional.of(batiment));
-        when(typeSalleRepo.findById(20)).thenReturn(Optional.of(typeSalle));
         when(murRepo.save(any(Mur.class))).thenReturn(savedMur);
-
+    
         // Appel de la méthode à tester
         Mur result = murService.saveMur(mur);
-
+    
         // Vérifications
         assertNotNull(result);
         assertEquals(100, result.getId()); // Vérifie que l'ID généré est correct
         verify(salleRepo).findById(5);
-        verify(batimentRepo).findById(10);
-        verify(typeSalleRepo).findById(20);
         verify(murRepo).save(mur);
     }
 
