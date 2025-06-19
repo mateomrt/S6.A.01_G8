@@ -136,7 +136,7 @@ public class MurControllerMockTest {
         Mockito.doNothing().when(murService).deleteMurById(murId);
 
         // Act
-        MvcResult result = mockMvc.perform(delete("/api/mursss/" + murId)
+        MvcResult result = mockMvc.perform(delete("/api/murs/" + murId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 

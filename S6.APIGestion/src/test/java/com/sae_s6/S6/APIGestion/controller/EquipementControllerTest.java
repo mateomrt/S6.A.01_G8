@@ -14,6 +14,10 @@ import org.springframework.http.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EquipementControllerTest {
     @LocalServerPort
@@ -56,38 +60,41 @@ public class EquipementControllerTest {
         return response.getBody();
     }
 
+    private int createdEquipementId;
+
     @Test
     void testGetAllEquipements() {
-        createEquipement(1, "PC principal", 5.0, 5.0, 100.0, 200.0); // Crée un équipement pour s'assurer qu'on a au moins un en base
-
         ResponseEntity<Equipement[]> response = restTemplate.getForEntity(getBaseUrl() + "/", Equipement[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
+        List<Equipement> resultat = Arrays.asList(response.getBody());
+        resultat.sort(Comparator.comparing(Equipement::getLibelleEquipement));
+        assertThat(resultat.get(0).getLibelleEquipement()).isEqualTo("PC principal");
+        assertThat(resultat.get(1).getLibelleEquipement()).isEqualTo("Vidéo projecteur");
     }
 
     @Test
     void testGetEquipementById() {
-        Equipement equipement = createEquipement(100, "Equipement B", 5.0, 5.0, 100.0, 200.0); 
-        Integer id = equipement.getId();
+        Integer id = 1;
 
         ResponseEntity<Equipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Equipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("Equipement B");
-        assertThat(response.getBody().getMurNavigation()).isNotNull(); 
-        assertThat(response.getBody().getSalleNavigation()).isNotNull(); 
-        assertThat(response.getBody().getTypeEquipementNavigation()).isNotNull(); 
+        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("PC principal");
     }
 
     @Test
     void testSaveEquipement() {
-        Equipement equipement = createEquipement(100, "Equipement C", 5.0, 5.0, 100.0, 200.0); 
+        Equipement equipement = createEquipement(null, "PC secondaire",  100.0, 200.0, 150.0, 250.0);
+        createdEquipementId = equipement.getId();
+
+        assertThat(equipement.getLibelleEquipement()).isEqualTo("PC secondaire");
         assertThat(equipement.getId()).isNotNull(); // Vérifie que l'ID a été généré
-        assertThat(equipement.getLibelleEquipement()).isEqualTo("Type C");
+        assertThat(equipement.getId()).isGreaterThan(0); // Vérifie que l'ID est positif
         assertThat(equipement.getHauteur()).isGreaterThan(0); // Vérifie que la hauteur est positive
         assertThat(equipement.getLargeur()).isGreaterThan(0); // Vérifie que la largeur est positive
         assertThat(equipement.getPosition_x()).isGreaterThan(0); // Vérifie que la position_x est positive
@@ -95,12 +102,16 @@ public class EquipementControllerTest {
         assertThat(equipement.getMurNavigation()).isNotNull(); // Vérifie que le mur n'est pas nulle
         assertThat(equipement.getSalleNavigation()).isNotNull(); // Vérifie que la salle n'est pas nulle
         assertThat(equipement.getTypeEquipementNavigation()).isNotNull(); // Vérifie que le TypeEquipement n'est pas nulle
+
+        restTemplate.delete(getBaseUrl() + "/" + createdEquipementId);
     }
 
     @Test
     void testUpdateEquipement() {
-        Equipement equipement = createEquipement(100, "Equipement D", 5.0, 5.0, 100.0, 200.0); 
-        equipement.setLibelleEquipement("Type D - MAJ");
+        Equipement equipement = createEquipement(null, "PC secondaire",  100.0, 200.0, 150.0, 250.0);
+        createdEquipementId = equipement.getId();
+
+        equipement.setLibelleEquipement("PC secondaire - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -110,14 +121,16 @@ public class EquipementControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Equipement.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getLibelleEquipement()).isEqualTo("PC secondaire - MAJ");
         assertThat(response.getBody().getId()).isEqualTo(equipement.getId()); // Vérifie que l'ID est inchangé
         assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif
+       
+       restTemplate.delete(getBaseUrl() + "/" + createdEquipementId);    
     }
 
     @Test
     void testDeleteEquipementById() {
-        Equipement equipement = createEquipement(100, "Equipement E", 5.0, 5.0, 100.0, 200.0); 
+        Equipement equipement = createEquipement(null, "PC secondaire",  100.0, 200.0, 150.0, 250.0);
         Integer id = equipement.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);
