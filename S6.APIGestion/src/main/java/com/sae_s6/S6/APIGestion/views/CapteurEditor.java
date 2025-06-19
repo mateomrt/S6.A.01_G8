@@ -1,18 +1,14 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
-import com.sae_s6.S6.APIGestion.service.BatimentService;
 import com.sae_s6.S6.APIGestion.service.CapteurService;
 import com.sae_s6.S6.APIGestion.service.MurService;
 import com.sae_s6.S6.APIGestion.service.SalleService;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
-import com.sae_s6.S6.APIGestion.service.TypeSalleService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
