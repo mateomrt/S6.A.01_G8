@@ -45,6 +45,7 @@ public class BatimentService {
         }
         log.warn("Aucun batiment trouvée avec l'id: {}", id);
         return null;
+
     }
 
     /**
@@ -56,7 +57,7 @@ public class BatimentService {
      */
     public Batiment createBatiment(Batiment batiment) {
         if (batiment.getLibelleBatiment() == null || batiment.getLibelleBatiment().isEmpty()) {
-            throw new IllegalArgumentException("Le titre du bâtiment est obligatoire.");
+            throw new IllegalArgumentException("Le libellé du bâtiment est obligatoire.");
         }
         return batimentRepo.save(batiment);
     }
@@ -64,30 +65,16 @@ public class BatimentService {
     /**
      * Met à jour un bâtiment existant.
      *
-     * @param id L'identifiant du bâtiment à mettre à jour.
      * @param updated Les nouvelles données du bâtiment.
      * @return Le bâtiment mis à jour.
-     * @throws IllegalArgumentException Si le bâtiment avec l'ID donné n'est pas trouvé.
      */
-	// Mettre à jour un bâtiment existant
-	public Batiment updateBatiment(Batiment updated) {
-		// return batimentRepo.findById(id).map(existingBatiment -> {
-		// 	if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
-		// 		existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
-		// 	}
-		// 	// if (updated.getSalles() != null) {
-		// 	// 	existingBatiment.setSalles(updated.getSalles());
-		// 	// }
-		// 	return batimentRepo.save(updated);
-		// }).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
-		
-		Batiment updatedBatiment = batimentRepo.save(updated);
+    public Batiment updateBatiment(Batiment updated) {
+        // Sauvegarde directement les nouvelles données du bâtiment.
+        Batiment updatedBatiment = batimentRepo.save(updated);
         log.info("Bâtiment mis à jour avec succès avec l'id: {}", updatedBatiment.getId());
-        log.debug("Détails du Bâtiment après mise à jour: {}", updatedBatiment);
+        log.debug("Détails du bâtiment après mise à jour: {}", updatedBatiment);
         return updatedBatiment;
-
-	
-	}
+    }
 
     /**
      * Supprime un bâtiment par son ID.
