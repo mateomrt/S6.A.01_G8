@@ -37,8 +37,14 @@ public class BatimentService {
      * @param id L'identifiant du bâtiment.
      * @return Un Optional contenant le bâtiment si trouvé, sinon vide.
      */
-    public Optional<Batiment> getBatimentById(Integer id) {
-    	return batimentRepo.findById(id);
+    public Batiment getBatimentById(Integer id) {
+    	Optional<Batiment> optionalBatiment = batimentRepo.findById(id);
+        if (optionalBatiment.isPresent()) {
+            log.debug("Détails du batiment trouvée: {}", optionalBatiment.get());
+            return optionalBatiment.get();
+        }
+        log.warn("Aucun batiment trouvée avec l'id: {}", id);
+        return null;
     }
 
     /**

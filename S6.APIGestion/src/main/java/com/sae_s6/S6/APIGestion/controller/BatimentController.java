@@ -48,9 +48,11 @@ public class BatimentController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
-        return batimentService.getBatimentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Batiment batiment = batimentService.getBatimentById(id);
+        if (batiment == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(batiment);
     }
 
     /**
