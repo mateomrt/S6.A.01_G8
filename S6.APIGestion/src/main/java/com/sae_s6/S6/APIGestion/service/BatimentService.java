@@ -10,6 +10,7 @@ import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service pour la gestion des bâtiments.
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BatimentService {
     private final BatimentRepo batimentRepo;
 
@@ -61,17 +63,25 @@ public class BatimentService {
      * @return Le bâtiment mis à jour.
      * @throws IllegalArgumentException Si le bâtiment avec l'ID donné n'est pas trouvé.
      */
-    public Batiment updateBatiment(Integer id, Batiment updated) {
-        return batimentRepo.findById(id).map(existingBatiment -> {
-            if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
-                existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
-            }
-            // if (updated.getSalles() != null) {
-            // 	existingBatiment.setSalles(updated.getSalles());
-            // }
-            return batimentRepo.save(existingBatiment);
-        }).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
-    }
+	// Mettre à jour un bâtiment existant
+	public Batiment updateBatiment(Batiment updated) {
+		// return batimentRepo.findById(id).map(existingBatiment -> {
+		// 	if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
+		// 		existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
+		// 	}
+		// 	// if (updated.getSalles() != null) {
+		// 	// 	existingBatiment.setSalles(updated.getSalles());
+		// 	// }
+		// 	return batimentRepo.save(updated);
+		// }).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
+		
+		Batiment updatedBatiment = batimentRepo.save(updated);
+        log.info("Bâtiment mis à jour avec succès avec l'id: {}", updatedBatiment.getId());
+        log.debug("Détails du Bâtiment après mise à jour: {}", updatedBatiment);
+        return updatedBatiment;
+
+	
+	}
 
     /**
      * Supprime un bâtiment par son ID.

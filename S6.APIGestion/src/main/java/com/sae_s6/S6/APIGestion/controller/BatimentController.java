@@ -47,7 +47,7 @@ public class BatimentController {
      * @return Une réponse contenant le bâtiment correspondant ou une réponse 404 s'il n'est pas trouvé.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Batiment> getBatimentById(@PathVariable Integer id) {
+    public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
         return batimentService.getBatimentById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -72,8 +72,8 @@ public class BatimentController {
      * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
      */
     @PutMapping("/")
-    public ResponseEntity<Batiment> updateBatiment(@PathVariable Integer id, @RequestBody Batiment updated) {
-        Batiment result = batimentService.updateBatiment(id, updated);
+    public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment updated) {
+        Batiment result = batimentService.updateBatiment(updated);
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {
