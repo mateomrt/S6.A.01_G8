@@ -1,8 +1,15 @@
 package com.sae_s6.S6.APIGestion.service;
 
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Mur.Orientation;
+import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.MurRepo;
+import com.sae_s6.S6.APIGestion.repository.SalleRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +28,15 @@ public class MurServiceTest {
 
     @Mock
     private MurRepo murRepo;
+
+    @Mock
+    private SalleRepo salleRepo;
+
+    @Mock
+    private BatimentRepo batimentRepo;
+
+    @Mock
+    private TypeSalleRepo typeSalleRepo;
 
     @InjectMocks
     private MurService murService;
@@ -65,15 +81,40 @@ public class MurServiceTest {
 
     @Test
     public void testSaveMur() {
-        Mur mur = new Mur();
-        mur.setId(1);
-        when(murRepo.save(mur)).thenReturn(mur);
+        // Création des objets nécessaires
+        Batiment batiment = new Batiment();
+        batiment.setId(10);
 
+        TypeSalle typeSalle = new TypeSalle();
+        typeSalle.setId(20);
+
+        Salle salle = new Salle();
+        salle.setId(5);
+        salle.setBatimentNavigation(batiment);
+        salle.setTypeSalleNavigation(typeSalle);
+
+        Mur mur = new Mur();
+        mur.setSalleNavigation(salle);
+
+        Mur savedMur = new Mur();
+        savedMur.setId(100); // ID généré automatiquement
+
+        // Simulation des dépendances
+        when(salleRepo.findById(5)).thenReturn(Optional.of(salle));
+        when(batimentRepo.findById(10)).thenReturn(Optional.of(batiment));
+        when(typeSalleRepo.findById(20)).thenReturn(Optional.of(typeSalle));
+        when(murRepo.save(any(Mur.class))).thenReturn(savedMur);
+
+        // Appel de la méthode à tester
         Mur result = murService.saveMur(mur);
 
+        // Vérifications
         assertNotNull(result);
-        assertEquals(1, result.getId());
-        verify(murRepo, times(1)).save(mur);
+        assertEquals(100, result.getId()); // Vérifie que l'ID généré est correct
+        verify(salleRepo).findById(5);
+        verify(batimentRepo).findById(10);
+        verify(typeSalleRepo).findById(20);
+        verify(murRepo).save(mur);
     }
 
     @Test

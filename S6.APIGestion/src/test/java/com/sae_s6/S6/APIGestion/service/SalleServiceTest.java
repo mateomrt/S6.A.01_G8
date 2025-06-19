@@ -2,11 +2,16 @@ package com.sae_s6.S6.APIGestion.service;
 
 import org.junit.jupiter.api.Test;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
+import com.sae_s6.S6.APIGestion.entity.TypeSalle;
+import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.SalleRepo;
+import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
@@ -21,6 +26,12 @@ public class SalleServiceTest {
 
     @Mock
     private SalleRepo salleRepo;
+
+    @Mock
+    private BatimentRepo batimentRepo;
+
+    @Mock
+    private TypeSalleRepo typeSalleRepo;
 
     @InjectMocks
     private SalleService salleService;
@@ -65,14 +76,36 @@ public class SalleServiceTest {
 
     @Test
     public void testSaveSalle() {
+        // Création des objets nécessaires
         Salle salle = new Salle();
         salle.setId(1);
-        when(salleRepo.save(salle)).thenReturn(salle);
 
+        Batiment batiment = new Batiment();
+        batiment.setId(10);
+
+        TypeSalle typeSalle = new TypeSalle();
+        typeSalle.setId(20);
+
+        salle.setBatimentNavigation(batiment);
+        salle.setTypeSalleNavigation(typeSalle);
+
+        Salle savedSalle = new Salle();
+        savedSalle.setId(100); // ID généré automatiquement
+
+        // Simulation des dépendances
+        when(batimentRepo.findById(10)).thenReturn(Optional.of(batiment));
+        when(typeSalleRepo.findById(20)).thenReturn(Optional.of(typeSalle));
+        when(salleRepo.save(any(Salle.class))).thenReturn(savedSalle);
+
+        // Appel de la méthode à tester
         Salle result = salleService.saveSalle(salle);
 
+        // Vérifications
         assertNotNull(result);
-        assertEquals(1, result.getId());
+        assertEquals(100, result.getId()); // Vérifie que l'ID généré est correct
+        verify(batimentRepo).findById(10);
+        verify(typeSalleRepo).findById(20);
+        verify(salleRepo).save(salle);
     }
 
     @Test
