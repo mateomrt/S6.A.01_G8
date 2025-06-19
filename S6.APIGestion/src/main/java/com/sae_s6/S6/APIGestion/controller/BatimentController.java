@@ -37,7 +37,11 @@ public class BatimentController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Batiment>> getAllBatiments() {
-        return ResponseEntity.ok(batimentService.getAllBatiments());
+        List<Batiment> batiments = batimentService.getAllBatiments();
+        if (batiments == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(batiments);
     }
 
     /**
@@ -48,9 +52,11 @@ public class BatimentController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
-        return batimentService.getBatimentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Batiment batiment = batimentService.getBatimentById(id);
+        if (batiment == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(batiment);
     }
 
     /**
@@ -60,8 +66,12 @@ public class BatimentController {
      * @return Une réponse contenant le bâtiment créé.
      */
     @PostMapping("/")
-    public ResponseEntity<Batiment> createBatiment(@RequestBody Batiment batiment) {
-        return ResponseEntity.ok(batimentService.createBatiment(batiment));
+    public ResponseEntity<Batiment> saveBatiment(@RequestBody Batiment batiment) {
+        Batiment savedBatiment = batimentService.saveBatiment(batiment);
+        if (savedBatiment == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(savedBatiment);
     }
 
     /**
@@ -72,13 +82,12 @@ public class BatimentController {
      * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
      */
     @PutMapping("/")
-    public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment updated) {
-        Batiment result = batimentService.updateBatiment(updated);
-        if (result != null) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment batiment) {
+        Batiment updatedBatiment = batimentService.updateBatiment(batiment);
+        if (updatedBatiment == null) {
+            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.ok(updatedBatiment);
     }
 
     /**
@@ -88,8 +97,13 @@ public class BatimentController {
      * @return Une réponse indiquant que la suppression a été effectuée.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBatiment(@PathVariable Integer id) {
-        batimentService.deleteBatiment(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deleteBatiment(@PathVariable("id") Integer id) {
+        Batiment batiment = batimentService.getBatimentById(id);
+        if (batiment == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        batimentService.deleteBatimentById(id);
+        return ResponseEntity.ok("Bâtiment supprimé avec succès");
     }
 }
