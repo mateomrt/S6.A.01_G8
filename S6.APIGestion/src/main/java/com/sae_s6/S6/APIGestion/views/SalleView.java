@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 
 @Route (value="salle") 
 @PageTitle("Les Salles")
-@Menu(title = "Les Salle", order = 0, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Salles", order = 0, icon = "vaadin:clipboard-check")
 
 public class SalleView extends VerticalLayout {
 
