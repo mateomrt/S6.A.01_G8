@@ -88,9 +88,7 @@ public class TypeEquipementControllerMockTest {
 
         Mockito.when(typeEquipementService.saveTypeEquipement(Mockito.any()))
                     .thenReturn(newTypeEquipement);
-
-        //int maxId = typeEquipements.stream().mapToInt(TypeEquipement::getId).max().orElse(0);
-        
+                            
         // Act
         MvcResult result = mockMvc.perform(post("/api/typeequipement/")
                 .contentType(MediaType.APPLICATION_JSON)

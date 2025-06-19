@@ -82,28 +82,34 @@ public class BatimentControllerMockTest {
     @Test
     void testCreateBatiment() throws Exception {
         // Arrange
-        Batiment batiment = new Batiment(3, "Batiment C");
+        Batiment newBatiment = new Batiment(10, "Bâtiment D");
 
+        Mockito.when(batimentService.saveBatiment(Mockito.any()))
+                    .thenReturn(newBatiment);
+        
         // Act
-        MvcResult result = mockMvc.perform(post("/batiments")
+        MvcResult result = mockMvc.perform(post("/api/batiment/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(batiment)))
+                .content(objectMapper.writeValueAsString(newBatiment)))
                 .andReturn();
 
         // Assert
         String json = result.getResponse().getContentAsString();
         Batiment createdBatiment = objectMapper.readValue(json, Batiment.class);
-        assertThat(createdBatiment.getId()).isEqualTo(3);
-        assertThat(createdBatiment.getLibelleBatiment()).isEqualTo("Batiment C");
+        assertThat(createdBatiment.getId()).isEqualTo(10);
+        assertThat(createdBatiment.getLibelleBatiment()).isEqualTo("Bâtiment D");
     }
 
     @Test
     void testUpdateBatiment() throws Exception {
         // Arrange
-        Batiment updatedBatiment = new Batiment(1, "Batiment A Updated");
+        Batiment updatedBatiment = new Batiment(1, "Bâtiment F");
+
+        Mockito.when(batimentService.updateBatiment(Mockito.any()))
+                    .thenReturn(updatedBatiment);
 
         // Act
-        MvcResult result = mockMvc.perform(put("/batiments/1")
+        MvcResult result = mockMvc.perform(put("/api/batiment/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedBatiment)))
                 .andReturn();
@@ -111,15 +117,26 @@ public class BatimentControllerMockTest {
         // Assert
         String json = result.getResponse().getContentAsString();
         Batiment batiment = objectMapper.readValue(json, Batiment.class);
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value()); 
         assertThat(batiment.getId()).isEqualTo(1);
-        assertThat(batiment.getLibelleBatiment()).isEqualTo("Batiment A Updated");
+        assertThat(batiment.getLibelleBatiment()).isEqualTo("Bâtiment F");
     }
 
     @Test
     void testDeleteBatiment() throws Exception {
+        //Arrange
+        int batimentId = 1;
+        
+        Batiment batiment = new Batiment(batimentId, "Bâtiment A");
+
+        Mockito.when(batimentService.getBatimentById(batimentId))
+            .thenReturn(batiment);
+        
+        Mockito.doNothing().when(batimentService).deleteBatimentById(batimentId);
+
         // Act
-        MvcResult result = mockMvc.perform(delete("/batiments/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(delete("/api/batiment/" + batimentId)
+                .contentType(MediaType.APPLICATION_JSON))                
                 .andReturn();
 
         // Assert
