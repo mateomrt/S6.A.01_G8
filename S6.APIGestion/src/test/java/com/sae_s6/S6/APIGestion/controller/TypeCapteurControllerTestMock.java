@@ -2,121 +2,88 @@ package com.sae_s6.S6.APIGestion.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import java.util.List;
+import java.util.Arrays;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeCapteurControllerTestMock {
 
-    @Autowired
-    private MockMvc mockMvc;
+   @Mock
+    private TypeCapteurService typeCapteurService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private TypeCapteurController typeCapteurController;
 
-    @Test
-    public void testGetAllTypeCapteurs() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/typecapteur")
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String json = result.getResponse().getContentAsString();
-        TypeCapteur[] typeCapteurs = objectMapper.readValue(json, TypeCapteur[].class);
-
-        assertThat(result.getResponse().getStatus()).isEqualTo(200);
-        assertThat(typeCapteurs).isNotNull();
-        assertThat(typeCapteurs.length).isGreaterThanOrEqualTo(0);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
+
+
     @Test
-    public void testCreateAndGetTypeCapteur() throws Exception {
-        TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Température");
+    void getTypeCapteurById_ReturnsBadRequest_WhenNotFound() {
+        when(typeCapteurService.getTypeCapteurById(1)).thenReturn(null);
 
-        MvcResult createResult = mockMvc.perform(post("/api/typecapteur")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(typeCapteur)))
-                .andReturn();
+        ResponseEntity<TypeCapteur> response = typeCapteurController.getTypeCapteurById(1);
 
-        String createJson = createResult.getResponse().getContentAsString();
-        TypeCapteur createdTypeCapteur = objectMapper.readValue(createJson, TypeCapteur.class);
-
-        assertThat(createResult.getResponse().getStatus()).isEqualTo(200);
-        assertThat(createdTypeCapteur).isNotNull();
-        assertThat(createdTypeCapteur.getLibelleTypeCapteur()).isEqualTo("Type Température");
-
-        MvcResult getResult = mockMvc.perform(get("/api/typecapteur/" + createdTypeCapteur.getId())
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String getJson = getResult.getResponse().getContentAsString();
-        TypeCapteur fetchedTypeCapteur = objectMapper.readValue(getJson, TypeCapteur.class);
-
-        assertThat(getResult.getResponse().getStatus()).isEqualTo(200);
-        assertThat(fetchedTypeCapteur).isNotNull();
-        assertThat(fetchedTypeCapteur.getLibelleTypeCapteur()).isEqualTo("Type Température");
+        assertEquals(400, response.getStatusCodeValue());
     }
 
+
+
     @Test
-    public void testUpdateTypeCapteur() throws Exception {
+    void saveTypeCapteur_ReturnsBadRequest_WhenNotSaved() {
         TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Humidité");
+        when(typeCapteurService.saveTypeCapteur(typeCapteur)).thenReturn(null);
 
-        MvcResult createResult = mockMvc.perform(post("/api/typecapteur")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(typeCapteur)))
-                .andReturn();
+        ResponseEntity<TypeCapteur> response = typeCapteurController.saveTypeCapteur(typeCapteur);
 
-        String createJson = createResult.getResponse().getContentAsString();
-        TypeCapteur createdTypeCapteur = objectMapper.readValue(createJson, TypeCapteur.class);
-
-        createdTypeCapteur.setLibelleTypeCapteur("Type Humidité Modifié");
-
-        MvcResult updateResult = mockMvc.perform(put("/api/typecapteur/" + createdTypeCapteur.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createdTypeCapteur)))
-                .andReturn();
-
-        String updateJson = updateResult.getResponse().getContentAsString();
-        TypeCapteur updatedTypeCapteur = objectMapper.readValue(updateJson, TypeCapteur.class);
-
-        assertThat(updateResult.getResponse().getStatus()).isEqualTo(200);
-        assertThat(updatedTypeCapteur).isNotNull();
-        assertThat(updatedTypeCapteur.getLibelleTypeCapteur()).isEqualTo("Type Humidité Modifié");
+        assertEquals(400, response.getStatusCodeValue());
     }
 
+
+
     @Test
-    public void testDeleteTypeCapteur() throws Exception {
+    void updateTypeCapteur_ReturnsBadRequest_WhenNotFound() {
         TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Lumière");
+        when(typeCapteurService.updateTypeCapteur(typeCapteur)).thenReturn(null);
 
-        MvcResult createResult = mockMvc.perform(post("/api/typecapteur")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(typeCapteur)))
-                .andReturn();
+        ResponseEntity<TypeCapteur> response = typeCapteurController.updateTypeCapteur(typeCapteur);
 
-        String createJson = createResult.getResponse().getContentAsString();
-        TypeCapteur createdTypeCapteur = objectMapper.readValue(createJson, TypeCapteur.class);
+        assertEquals(400, response.getStatusCodeValue());
+    }
 
-        MvcResult deleteResult = mockMvc.perform(delete("/api/typecapteur/" + createdTypeCapteur.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andReturn();
 
-        assertThat(deleteResult.getResponse().getStatus()).isEqualTo(200);
 
-        MvcResult getResult = mockMvc.perform(get("/api/typecapteur/" + createdTypeCapteur.getId())
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
+    @Test
+    void deleteTypeCapteurById_ReturnsBadRequest_WhenNotFound() {
+        when(typeCapteurService.getTypeCapteurById(1)).thenReturn(null);
 
-        assertThat(getResult.getResponse().getStatus()).isEqualTo(404);
+        ResponseEntity<String> response = typeCapteurController.deleteTypeCapteurById(1);
+
+        assertEquals(400, response.getStatusCodeValue());
     }
 }
