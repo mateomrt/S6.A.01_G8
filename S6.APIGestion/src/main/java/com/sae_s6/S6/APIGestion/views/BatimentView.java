@@ -44,17 +44,7 @@ public class BatimentView extends VerticalLayout {
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "libelleSalle", "superficie");
-		
-		grid.addColumn(salle -> {
-            Batiment batiment = salle.getBatimentNavigation();
-            return batiment != null ? batiment.getDesc() : "";
-        }).setHeader("Batiment").setKey("BatimentDescription");
-
-		grid.addColumn(salle -> {
-            TypeSalle typeSalle = salle.getTypeSalleNavigation();
-            return typeSalle != null ? typeSalle.getDesc() : "";
-        }).setHeader("Type salle").setKey("typeSalleDescription");
+		grid.setColumns("id", "libelleBatiment");
 		
 		
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
@@ -65,32 +55,32 @@ public class BatimentView extends VerticalLayout {
 
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listSalles(e.getValue()));
+		filter.addValueChangeListener(e -> listBatiments(e.getValue()));
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editSalle(e.getValue());
+			editor.editBatiment(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
+		addNewBtn.addClickListener(e -> editor.editBatiment(new Batiment()));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
-			listSalles(filter.getValue());
+			listBatiments(filter.getValue());
 		});
 
 		// Initialize listing
-		listSalles(null);
+		listBatiments(null);
 	}
 
 	// tag::listSalles[]
-	void listSalles(String filterText) {
+	void listBatiments(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
+			grid.setItems(batimentService.getByLibelleBatimentContainingIgnoreCase(filterText));
 		} else {
-			grid.setItems(salleService.getAllSalles());
+			grid.setItems(batimentService.getAllBatiments());
 		}
 	}
 	// end::listCustomers[]
