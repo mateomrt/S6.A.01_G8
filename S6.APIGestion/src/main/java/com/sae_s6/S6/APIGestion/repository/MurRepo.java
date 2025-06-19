@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.sae_s6.S6.APIGestion.entity.Mur;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
 @Repository
 public interface MurRepo extends JpaRepository<Mur, Integer> {
