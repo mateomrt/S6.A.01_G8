@@ -1,24 +1,20 @@
 package com.sae_s6.S6.APIGestion.controller;
 
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contrôleur REST pour la gestion des données.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités Donnee.
+ */
 @RestController
 @RequestMapping("/api/donnee")
 @RequiredArgsConstructor
@@ -27,96 +23,83 @@ public class DonneeController {
 
     private final DonneeService donneeService;
 
-     /**
-  * Cette méthode est appelée lors d’une requête GET.
-  * URL: localhost:8080/api/Donnee/
-  * but: Récupère toute les Donnees dans la table Donnees
-  * @return List des Donnees 
-  */
-
+    /**
+     * Endpoint pour récupérer toutes les données.
+     * URL: localhost:8080/api/donnee/
+     *
+     * @return Une réponse contenant la liste de toutes les données.
+     */
     @GetMapping("/")
-    public ResponseEntity<List<Donnee>> getAllDonnees(){
-        List<Donnee> Donnees = donneeService.getAllDonnees();  
-        if (Donnees == null) {
+    public ResponseEntity<List<Donnee>> getAllDonnees() {
+        List<Donnee> donnees = donneeService.getAllDonnees();
+        if (donnees == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Donnees);
+        return ResponseEntity.ok(donnees);
     }
 
-
-
-            /**
-     * Cette méthode est appelée lors d’une requête GET.
-    * URL: localhost:8080/api/Donnee/1 (1 ou tout autre id)
-    * But: Récupère la Donnee avec l’id associé.
-    * @param id - Donnee id
-    * @return Donnee avec l’id associé.
-    */
+    /**
+     * Endpoint pour récupérer une donnée par son ID.
+     * URL: localhost:8080/api/donnee/{id}
+     *
+     * @param id L'identifiant de la donnée.
+     * @return Une réponse contenant la donnée correspondante ou une réponse 400 s'il n'est pas trouvée.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Donnee> getDonneeById(@PathVariable("id") Integer id) {
-        Donnee Donnee = donneeService.getDonneeById(id);   
-        if (Donnee == null) {
+        Donnee donnee = donneeService.getDonneeById(id);
+        if (donnee == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Donnee);
+        return ResponseEntity.ok(donnee);
     }
 
-
-            /**
-     * Cette méthode est appelée lors d’une requête POST.
-    * URL: localhost:8080/api/Donnee/
-    * Purpose: Création d’une entité Donnee
-    * @param Donnee – le body de la requête est une entité Donnee
-    * @return entité Donnee créée
-    */
+    /**
+     * Endpoint pour créer une nouvelle donnée.
+     * URL: localhost:8080/api/donnee/
+     *
+     * @param donnee L'entité Donnee à créer.
+     * @return Une réponse contenant la donnée créée.
+     */
     @PostMapping("/")
-    public ResponseEntity<Donnee> saveDonnee(@RequestBody Donnee Donnee) {
-        Donnee savedDonnee = donneeService.saveDonnee(Donnee);
+    public ResponseEntity<Donnee> saveDonnee(@RequestBody Donnee donnee) {
+        Donnee savedDonnee = donneeService.saveDonnee(donnee);
         if (savedDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(savedDonnee);
     }
 
-
-
-          /**
-     * Cette méthode est appelée lors d’une requête PUT.
-    * URL: localhost:8080/api/Donnee/
-    * Purpose: Met à jour une entité Donnee
-    * @param Donnee - entité Donnee à mettre à jour.
-    * @return  entité Donnee à mise à jour
-    */
+    /**
+     * Endpoint pour mettre à jour une donnée existante.
+     * URL: localhost:8080/api/donnee/
+     *
+     * @param donnee L'entité Donnee à mettre à jour.
+     * @return Une réponse contenant la donnée mise à jour ou une réponse 400 s'il n'est pas trouvée.
+     */
     @PutMapping("/")
-    public ResponseEntity<Donnee> updateDonnee(@RequestBody Donnee Donnee)
-    {
-        Donnee updatedDonnee = donneeService.updateDonnee(Donnee);
+    public ResponseEntity<Donnee> updateDonnee(@RequestBody Donnee donnee) {
+        Donnee updatedDonnee = donneeService.updateDonnee(donnee);
         if (updatedDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
-        
         return ResponseEntity.ok(updatedDonnee);
     }
 
-
-        /**
-     * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/Donnee/ (1 ou tout autre id)
-    * Purpose: Supprime une entité Donnee
-    * @param id - l’id du Donnee à supprimer
-    * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
-    */
+    /**
+     * Endpoint pour supprimer une donnée par son ID.
+     * URL: localhost:8080/api/donnee/{id}
+     *
+     * @param id L'identifiant de la donnée à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDonneeById(@PathVariable("id") Integer id)
-    {
-        Donnee Donnee = donneeService.getDonneeById(id);
-        if (Donnee == null) {
+    public ResponseEntity<String> deleteDonneeById(@PathVariable("id") Integer id) {
+        Donnee donnee = donneeService.getDonneeById(id);
+        if (donnee == null) {
             return ResponseEntity.badRequest().build();
         }
-    
         donneeService.deleteDonneeById(id);
-        return ResponseEntity.ok("Donnee supprimée avec succès");
+        return ResponseEntity.ok("Donnée supprimée avec succès");
     }
-
-
 }

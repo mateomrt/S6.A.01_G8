@@ -18,6 +18,10 @@ import com.sae_s6.S6.APIGestion.entity.Equipement;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 
+/**
+ * Service pour la gestion des équipements.
+ * Fournit des méthodes pour effectuer des opérations CRUD sur les entités Equipement.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,8 +32,12 @@ public class EquipementService {
     private final TypeEquipementRepo typeEquipementRepo;
     private final BatimentRepo batimentRepo;
     private final TypeSalleRepo typeSalleRepo;
-    
 
+    /**
+     * Récupère tous les équipements.
+     *
+     * @return Une liste de tous les équipements.
+     */
     public List<Equipement> getAllEquipements() {
         List<Equipement> equipements = equipementRepo.findAll();
         log.debug("Liste des équipements récupérés: {}", equipements);
@@ -37,11 +45,11 @@ public class EquipementService {
     }
 
     /**
-     * 
-     * @param id
-     * @return
+     * Récupère un équipement par son ID.
+     *
+     * @param id L'identifiant de l'équipement.
+     * @return L'équipement correspondant ou null s'il n'est pas trouvé.
      */
-
     public Equipement getEquipementById(Integer id) {
         Optional<Equipement> optionalEquipement = equipementRepo.findById(id);
         if (optionalEquipement.isPresent()) {
@@ -52,12 +60,13 @@ public class EquipementService {
         return null;
     }
 
-       /**
-         * 
-         * @param equipement
-         * @return
-         */
-
+    /**
+     * Enregistre un nouvel équipement.
+     * Hydrate les relations associées avant de sauvegarder.
+     *
+     * @param equipement L'entité Equipement à enregistrer.
+     * @return L'équipement enregistré.
+     */
     public Equipement saveEquipement(Equipement equipement) {
         Salle salle = salleRepo.findById(equipement.getSalleNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
@@ -100,14 +109,12 @@ public class EquipementService {
         return equipementRepo.save(equipement);
     }
 
-
-    
     /**
-     * 
-     * @param equipement
-     * @return
+     * Met à jour un équipement existant.
+     *
+     * @param equipement L'entité Equipement avec les nouvelles données.
+     * @return L'équipement mis à jour.
      */
-
     public Equipement updateEquipement(Equipement equipement) {
         Equipement updatedEquipement = equipementRepo.save(equipement);
         log.info("Equipement mis à jour avec succès avec l'id: {}", updatedEquipement.getId());
@@ -115,12 +122,11 @@ public class EquipementService {
         return updatedEquipement;
     }
 
-     /**
-     * 
-     * @param id
-     * @return
+    /**
+     * Supprime un équipement par son ID.
+     *
+     * @param id L'identifiant de l'équipement à supprimer.
      */
-
     public void deleteEquipementById(Integer id) {
         equipementRepo.deleteById(id);
         log.debug("Equipement avec id: {} supprimé avec succès", id);

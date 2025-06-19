@@ -19,19 +19,24 @@ import com.sae_s6.S6.APIGestion.service.MurService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Contrôleur REST pour la gestion des murs.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités Mur.
+ */
 @RestController
 @RequestMapping("/api/murs")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
 public class MurController {
+
     private final MurService murService;
 
     /**
-     * Cette méthode est appelée lors d’une requête GET.
+     * Endpoint pour récupérer tous les murs.
      * URL: localhost:8080/api/murs/
-     * But: Récupère tous les murs dans la table mur.
-     * @return Liste des murs.
+     *
+     * @return Une réponse contenant la liste de tous les murs.
      */
     @GetMapping("/")
     public ResponseEntity<List<Mur>> getAllMurs() {
@@ -43,11 +48,11 @@ public class MurController {
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête GET.
+     * Endpoint pour récupérer un mur par son ID.
      * URL: localhost:8080/api/murs/{id}
-     * But: Récupère le mur avec l’id associé.
-     * @param id - id du mur.
-     * @return Mur avec l’id associé.
+     *
+     * @param id L'identifiant du mur.
+     * @return Une réponse contenant le mur correspondant ou une réponse 400 s'il n'est pas trouvé.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Mur> getMurById(@PathVariable("id") Integer id) {
@@ -59,11 +64,11 @@ public class MurController {
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête POST.
+     * Endpoint pour créer un nouveau mur.
      * URL: localhost:8080/api/murs/
-     * But: Création d’une entité mur.
-     * @param mur – le body de la requête est une entité mur.
-     * @return Entité mur créée.
+     *
+     * @param mur L'entité Mur à créer.
+     * @return Une réponse contenant le mur créé.
      */
     @PostMapping("/")
     public ResponseEntity<Mur> saveMur(@RequestBody Mur mur) {
@@ -78,11 +83,11 @@ public class MurController {
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête PUT.
+     * Endpoint pour mettre à jour un mur existant.
      * URL: localhost:8080/api/murs/
-     * But: Met à jour une entité mur.
-     * @param mur - entité mur à mettre à jour.
-     * @return Entité mur mise à jour.
+     *
+     * @param mur L'entité Mur à mettre à jour.
+     * @return Une réponse contenant le mur mis à jour ou une réponse 400 s'il n'est pas trouvé.
      */
     @PutMapping("/")
     public ResponseEntity<Mur> updateMur(@RequestBody Mur mur) {
@@ -94,11 +99,11 @@ public class MurController {
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête DELETE.
+     * Endpoint pour supprimer un mur par son ID.
      * URL: localhost:8080/api/murs/{id}
-     * But: Supprime une entité mur.
-     * @param id - l’id du mur à supprimer.
-     * @return Un message indiquant que l’enregistrement a été supprimé avec succès.
+     *
+     * @param id L'identifiant du mur à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMurById(@PathVariable("id") Integer id) {

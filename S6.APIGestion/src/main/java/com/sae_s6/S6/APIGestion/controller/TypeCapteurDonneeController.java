@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
@@ -19,6 +12,10 @@ import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contrôleur REST pour la gestion des associations entre types de capteurs et données.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités TypeCapteurDonnee.
+ */
 @RestController
 @RequestMapping("/api/type_capteur_donnee")
 @RequiredArgsConstructor
@@ -28,90 +25,90 @@ public class TypeCapteurDonneeController {
     private final TypeCapteurDonneeService typeCapteurDonneeService;
 
     /**
-     * Cette méthode est appelée lors d’une requête GET.
+     * Endpoint pour récupérer toutes les associations entre types de capteurs et données.
      * URL: localhost:8080/api/type_capteur_donnee/
-     * But: Récupère toutes les Donnees dans la table Donnees.
-     * @return Liste des Donnees.
+     *
+     * @return Une réponse contenant la liste de toutes les associations TypeCapteurDonnee.
      */
     @GetMapping("/")
-    public ResponseEntity<List<TypeCapteurDonnee>> getAllDonnees() {
-        List<TypeCapteurDonnee> Donnees = typeCapteurDonneeService.getAllTypeCapteurDonnee();
-        if (Donnees == null) {
+    public ResponseEntity<List<TypeCapteurDonnee>> getAllTypeCapteurDonnees() {
+        List<TypeCapteurDonnee> typeCapteurDonnees = typeCapteurDonneeService.getAllTypeCapteurDonnee();
+        if (typeCapteurDonnees == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Donnees);
+        return ResponseEntity.ok(typeCapteurDonnees);
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête GET.
+     * Endpoint pour récupérer une association TypeCapteurDonnee par sa clé composite.
      * URL: localhost:8080/api/type_capteur_donnee/{donneeId}/{typeCapteurId}
-     * But: Récupère la Donnee avec l’id composite associé.
-     * @param donneeId - ID de la Donnee.
-     * @param typeCapteurId - ID du TypeCapteur.
-     * @return Donnee avec l’id composite associé.
+     *
+     * @param donneeId L'identifiant de la donnée.
+     * @param typeCapteurId L'identifiant du type de capteur.
+     * @return Une réponse contenant l'association TypeCapteurDonnee correspondante ou une réponse 400 si elle n'est pas trouvée.
      */
     @GetMapping("/{donneeId}/{typeCapteurId}")
-    public ResponseEntity<TypeCapteurDonnee> getDonneeById(
+    public ResponseEntity<TypeCapteurDonnee> getTypeCapteurDonneeById(
             @PathVariable("donneeId") Integer donneeId,
             @PathVariable("typeCapteurId") Integer typeCapteurId) {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
-        TypeCapteurDonnee Donnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
-        if (Donnee == null) {
+        TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
+        if (typeCapteurDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Donnee);
+        return ResponseEntity.ok(typeCapteurDonnee);
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête POST.
+     * Endpoint pour créer une nouvelle association TypeCapteurDonnee.
      * URL: localhost:8080/api/type_capteur_donnee/
-     * Purpose: Création d’une entité Donnee.
-     * @param Donnee – le body de la requête est une entité Donnee.
-     * @return Entité Donnee créée.
+     *
+     * @param typeCapteurDonnee L'entité TypeCapteurDonnee à créer.
+     * @return Une réponse contenant l'association TypeCapteurDonnee créée.
      */
     @PostMapping("/")
-    public ResponseEntity<TypeCapteurDonnee> saveDonnee(@RequestBody TypeCapteurDonnee Donnee) {
-        TypeCapteurDonnee savedDonnee = typeCapteurDonneeService.saveTypeCapteurDonnee(Donnee);
-        if (savedDonnee == null) {
+    public ResponseEntity<TypeCapteurDonnee> saveTypeCapteurDonnee(@RequestBody TypeCapteurDonnee typeCapteurDonnee) {
+        TypeCapteurDonnee savedTypeCapteurDonnee = typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
+        if (savedTypeCapteurDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(savedDonnee);
+        return ResponseEntity.ok(savedTypeCapteurDonnee);
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête PUT.
+     * Endpoint pour mettre à jour une association TypeCapteurDonnee existante.
      * URL: localhost:8080/api/type_capteur_donnee/
-     * Purpose: Met à jour une entité Donnee.
-     * @param Donnee - Entité Donnee à mettre à jour.
-     * @return Entité Donnee mise à jour.
+     *
+     * @param typeCapteurDonnee L'entité TypeCapteurDonnee à mettre à jour.
+     * @return Une réponse contenant l'association TypeCapteurDonnee mise à jour ou une réponse 400 si elle n'est pas trouvée.
      */
     @PutMapping("/")
-    public ResponseEntity<TypeCapteurDonnee> updateDonnee(@RequestBody TypeCapteurDonnee Donnee) {
-        TypeCapteurDonnee updatedDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(Donnee);
-        if (updatedDonnee == null) {
+    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurDonnee(@RequestBody TypeCapteurDonnee typeCapteurDonnee) {
+        TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(typeCapteurDonnee);
+        if (updatedTypeCapteurDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(updatedDonnee);
+        return ResponseEntity.ok(updatedTypeCapteurDonnee);
     }
 
     /**
-     * Cette méthode est appelée lors d’une requête DELETE.
+     * Endpoint pour supprimer une association TypeCapteurDonnee par sa clé composite.
      * URL: localhost:8080/api/type_capteur_donnee/{donneeId}/{typeCapteurId}
-     * Purpose: Supprime une entité Donnee.
-     * @param donneeId - ID de la Donnee à supprimer.
-     * @param typeCapteurId - ID du TypeCapteur à supprimer.
-     * @return Un message indiquant que l’enregistrement a été supprimé avec succès.
+     *
+     * @param donneeId L'identifiant de la donnée.
+     * @param typeCapteurId L'identifiant du type de capteur.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
      */
     @DeleteMapping("/{donneeId}/{typeCapteurId}")
-    public ResponseEntity<String> deleteDonneeById(
+    public ResponseEntity<String> deleteTypeCapteurDonneeById(
             @PathVariable("donneeId") Integer donneeId,
             @PathVariable("typeCapteurId") Integer typeCapteurId) {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
-        TypeCapteurDonnee Donnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
-        if (Donnee == null) {
+        TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
+        if (typeCapteurDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
         typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
-        return ResponseEntity.ok("Donnee supprimée avec succès");
+        return ResponseEntity.ok("Association TypeCapteurDonnee supprimée avec succès");
     }
 }
