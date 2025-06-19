@@ -131,4 +131,8 @@ public class EquipementService {
         equipementRepo.deleteById(id);
         log.debug("Equipement avec id: {} supprimé avec succès", id);
     }
+
+    public List<Equipement> getByLibelleEquipementContainingIgnoreCase(String libelleEquipement) {
+        return equipementRepo.findByLibelleEquipementContainingIgnoreCase(libelleEquipement);
+    }
 }
