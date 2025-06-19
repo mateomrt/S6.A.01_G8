@@ -9,9 +9,11 @@ import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BatimentService {
 	private final BatimentRepo batimentRepo;
 
@@ -36,16 +38,23 @@ public class BatimentService {
 	}
 
 	// Mettre à jour un bâtiment existant
-	public Batiment updateBatiment(Integer id, Batiment updated) {
-		return batimentRepo.findById(id).map(existingBatiment -> {
-			if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
-				existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
-			}
-			// if (updated.getSalles() != null) {
-			// 	existingBatiment.setSalles(updated.getSalles());
-			// }
-			return batimentRepo.save(existingBatiment);
-		}).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
+	public Batiment updateBatiment(Batiment updated) {
+		// return batimentRepo.findById(id).map(existingBatiment -> {
+		// 	if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
+		// 		existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
+		// 	}
+		// 	// if (updated.getSalles() != null) {
+		// 	// 	existingBatiment.setSalles(updated.getSalles());
+		// 	// }
+		// 	return batimentRepo.save(updated);
+		// }).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
+		
+		Batiment updatedBatiment = batimentRepo.save(updated);
+        log.info("Bâtiment mis à jour avec succès avec l'id: {}", updatedBatiment.getId());
+        log.debug("Détails du Bâtiment après mise à jour: {}", updatedBatiment);
+        return updatedBatiment;
+
+	
 	}
 
 	// Supprimer un bâtiment par son ID

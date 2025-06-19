@@ -38,7 +38,6 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testGetAllTypeEquipements() {
-        //createTypeEquipement(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<TypeEquipement[]> response = restTemplate.getForEntity(getBaseUrl() + "/", TypeEquipement[].class);
 
@@ -49,7 +48,6 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testGetTypeEquipementById() {
-        //TypeEquipement typeEquipement = createTypeEquipement(1, "Ordinateur");
         Integer id = 1;
 
         ResponseEntity<TypeEquipement> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeEquipement.class);
@@ -66,6 +64,8 @@ public class TypeEquipementControllerTest {
         createdTypeEquipementId = typeEquipement.getId();
 
         assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("PC");
+        assertThat(typeEquipement.getId()).isNotNull(); // Vérifie que l'ID a été généré
+        assertThat(typeEquipement.getId()).isGreaterThan(0); // Vérifie que l'ID est positif
         
         restTemplate.delete(getBaseUrl() + "/" + createdTypeEquipementId);
     }
@@ -84,11 +84,13 @@ public class TypeEquipementControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TypeEquipement> entity = new HttpEntity<>(typeEquipement, headers);
 
-        ResponseEntity<TypeEquipement> result = restTemplate.exchange(
+        ResponseEntity<TypeEquipement> response = restTemplate.exchange(
                 getBaseUrl() + "/", HttpMethod.PUT, entity, TypeEquipement.class);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getBody().getLibelleTypeEquipement()).isEqualTo("PC - MAJ");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getLibelleTypeEquipement()).isEqualTo("PC - MAJ");
+        assertThat(response.getBody().getId()).isEqualTo(typeEquipement.getId()); // Vérifie que l'ID est inchangé
+        assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif
 
         restTemplate.delete(getBaseUrl() + "/" + createdTypeEquipementId);
     }

@@ -34,7 +34,7 @@ public class BatimentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Batiment> getBatimentById(@PathVariable Integer id) {
+    public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
         return batimentService.getBatimentById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -46,8 +46,8 @@ public class BatimentController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Batiment> updateBatiment(@PathVariable Integer id, @RequestBody Batiment updated) {
-        Batiment result = batimentService.updateBatiment(id, updated);
+    public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment updated) {
+        Batiment result = batimentService.updateBatiment(updated);
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {
