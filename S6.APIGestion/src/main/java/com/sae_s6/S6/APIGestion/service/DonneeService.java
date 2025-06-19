@@ -84,4 +84,8 @@ public class DonneeService {
         donneeRepo.deleteById(id);
         log.debug("Donnée avec id: {} supprimée avec succès", id);
     }
+
+    public List<Donnee> getByLibelleDonneeContainingIgnoreCase(String libelleDonnee) {
+        return donneeRepo.findByLibelleDonneeContainingIgnoreCase(libelleDonnee);
+    }
 }
