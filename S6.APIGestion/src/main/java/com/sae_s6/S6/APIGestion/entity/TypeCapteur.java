@@ -12,6 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Représente un type de capteur dans le système.
+ * Cette classe est une entité JPA associée à la table "typecapteur" dans la base de données.
+ */
 @Entity
 @Table(name = "typecapteur")
 @Data
@@ -19,22 +23,35 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TypeCapteur {
 
+    /**
+     * Identifiant unique du type de capteur.
+     * Généré automatiquement par la base de données.
+     */
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    /**
+     * Libellé du type de capteur.
+     * Ce champ est obligatoire et sa longueur maximale est de 100 caractères.
+     */
     @Column(name = "libelle_typecapteur", nullable = false, length = 100)
     private String libelleTypeCapteur;
 
+    /**
+     * Mode du type de capteur.
+     * Ce champ est obligatoire et sa longueur maximale est de 50 caractères.
+     */
     @Column(name = "mode", nullable = false, length = 50)
     private String modeTypeCapteur;
 
-    //@OneToMany(mappedBy = "typeCapteurNavigation")
-    //private List<Capteur> capteurs;
-
-    // @OneToMany(mappedBy = "typeCapteurNavigation")
-    // private List<TypeCapteurDonnee> typeCapteurDonnees;
-
+    /**
+     * Vérifie si deux objets TypeCapteur sont égaux.
+     * Deux types de capteurs sont considérés égaux s'ils ont le même identifiant, libellé et mode.
+     *
+     * @param o L'objet à comparer.
+     * @return true si les objets sont égaux, false sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,8 +61,17 @@ public class TypeCapteur {
                Objects.equals(modeTypeCapteur, typeCapteur.modeTypeCapteur);
     }
 
+    /**
+     * Calcule le hash code de l'objet TypeCapteur.
+     * Utilise les champs id, libellé et mode pour le calcul.
+     *
+     * @return Le hash code de l'objet.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id, libelleTypeCapteur, modeTypeCapteur);
+    }
+    public String getDesc() {
+        return libelleTypeCapteur;
     }
 }

@@ -18,6 +18,10 @@ import com.sae_s6.S6.APIGestion.service.BatimentService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contrôleur REST pour la gestion des bâtiments.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités Batiment.
+ */
 @RestController
 @RequestMapping("/api/batiment")
 @RequiredArgsConstructor
@@ -26,13 +30,22 @@ public class BatimentController {
 
     private final BatimentService batimentService;
 
-    
-
+    /**
+     * Endpoint pour récupérer tous les bâtiments.
+     *
+     * @return Une réponse contenant la liste de tous les bâtiments.
+     */
     @GetMapping("/")
     public ResponseEntity<List<Batiment>> getAllBatiments() {
         return ResponseEntity.ok(batimentService.getAllBatiments());
     }
 
+    /**
+     * Endpoint pour récupérer un bâtiment par son ID.
+     *
+     * @param id L'identifiant du bâtiment.
+     * @return Une réponse contenant le bâtiment correspondant ou une réponse 404 s'il n'est pas trouvé.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
         return batimentService.getBatimentById(id)
@@ -40,11 +53,24 @@ public class BatimentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Endpoint pour créer un nouveau bâtiment.
+     *
+     * @param batiment L'entité Batiment à créer.
+     * @return Une réponse contenant le bâtiment créé.
+     */
     @PostMapping("/")
     public ResponseEntity<Batiment> createBatiment(@RequestBody Batiment batiment) {
         return ResponseEntity.ok(batimentService.createBatiment(batiment));
     }
 
+    /**
+     * Endpoint pour mettre à jour un bâtiment existant.
+     *
+     * @param id L'identifiant du bâtiment à mettre à jour.
+     * @param updated Les nouvelles données du bâtiment.
+     * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
+     */
     @PutMapping("/")
     public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment updated) {
         Batiment result = batimentService.updateBatiment(updated);
@@ -55,6 +81,12 @@ public class BatimentController {
         }
     }
 
+    /**
+     * Endpoint pour supprimer un bâtiment par son ID.
+     *
+     * @param id L'identifiant du bâtiment à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBatiment(@PathVariable Integer id) {
         batimentService.deleteBatiment(id);
