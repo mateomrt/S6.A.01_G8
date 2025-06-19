@@ -4,114 +4,101 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
 import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contrôleur REST pour la gestion des types d'équipements.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités TypeEquipement.
+ */
 @RestController
 @RequestMapping("/api/typeequipement")
 @RequiredArgsConstructor
 @Validated
 public class TypeEquipementController {
+
     private final TypeEquipementService typeEquipementService;
 
-     /**
-  * Cette méthode est appelée lors d’une requête GET.
-  * URL: localhost:8080/api/typeequipement/
-  * but: Récupère toute les TypeEquipement dans la table TypeEquipement
-  * @return List des TypeEquipements 
-  */
-
+    /**
+     * Endpoint pour récupérer tous les types d'équipements.
+     * URL: localhost:8080/api/typeequipement/
+     *
+     * @return Une réponse contenant la liste de tous les types d'équipements.
+     */
     @GetMapping("/")
-    public ResponseEntity<List<TypeEquipement>> getAllTypeEquipements(){
-        List<TypeEquipement> typeEquipements = typeEquipementService.getAllTypeEquipements();  
+    public ResponseEntity<List<TypeEquipement>> getAllTypeEquipements() {
+        List<TypeEquipement> typeEquipements = typeEquipementService.getAllTypeEquipements();
         if (typeEquipements == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body(typeEquipements);
+        return ResponseEntity.ok(typeEquipements);
     }
 
-
-             /**
-     * Cette méthode est appelée lors d’une requête GET.
-    * URL: localhost:8080/api/typeequipement/1 (1 ou tout autre id)
-    * But: Récupère la typeequipement avec l’id associé.
-    * @param id - typeequipement id
-    * @return typeequipement avec l’id associé.
-    */
+    /**
+     * Endpoint pour récupérer un type d'équipement par son ID.
+     * URL: localhost:8080/api/typeequipement/{id}
+     *
+     * @param id L'identifiant du type d'équipement.
+     * @return Une réponse contenant le type d'équipement correspondant ou une réponse 400 s'il n'est pas trouvé.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TypeEquipement> getTypeEquipementById(@PathVariable("id") Integer id) {
-        TypeEquipement typeEquipement = typeEquipementService.getTypeEquipementById(id);   
+        TypeEquipement typeEquipement = typeEquipementService.getTypeEquipementById(id);
         if (typeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(typeEquipement);
     }
 
-
-    
-            /**
-     * Cette méthode est appelée lors d’une requête POST.
-    * URL: localhost:8080/api/typeequipement/
-    * Purpose: Création d’une entité typeEquipement
-    * @param typeEquipement – le body de la requête est une entité typeEquipement
-    * @return entité typeEquipement créée
-    */
+    /**
+     * Endpoint pour créer un nouveau type d'équipement.
+     * URL: localhost:8080/api/typeequipement/
+     *
+     * @param typeEquipement L'entité TypeEquipement à créer.
+     * @return Une réponse contenant le type d'équipement créé.
+     */
     @PostMapping("/")
-    public ResponseEntity<TypeEquipement> saveTypeEquipement(@RequestBody TypeEquipement typeEquipemennt) {
-        TypeEquipement savedTypeEquipement = typeEquipementService.saveTypeEquipement(typeEquipemennt);
+    public ResponseEntity<TypeEquipement> saveTypeEquipement(@RequestBody TypeEquipement typeEquipement) {
+        TypeEquipement savedTypeEquipement = typeEquipementService.saveTypeEquipement(typeEquipement);
         if (savedTypeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(savedTypeEquipement);
     }
 
-
-
-             /**
-     * Cette méthode est appelée lors d’une requête PUT.
-    * URL: localhost:8080/api/typeequipement/
-    * Purpose: Met à jour une entité typeEquipement
-    * @param typeEquipement - entité typeEquipement à mettre à jour.
-    * @return  entité typeEquipement à mise à jour
-    */
+    /**
+     * Endpoint pour mettre à jour un type d'équipement existant.
+     * URL: localhost:8080/api/typeequipement/
+     *
+     * @param typeEquipement L'entité TypeEquipement à mettre à jour.
+     * @return Une réponse contenant le type d'équipement mis à jour ou une réponse 400 s'il n'est pas trouvé.
+     */
     @PutMapping("/")
-    public ResponseEntity<TypeEquipement> updateTypeEquipement(@RequestBody TypeEquipement typeEquipement)
-    {
+    public ResponseEntity<TypeEquipement> updateTypeEquipement(@RequestBody TypeEquipement typeEquipement) {
         TypeEquipement updatedTypeEquipement = typeEquipementService.updateTypeEquipement(typeEquipement);
         if (updatedTypeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
-        
         return ResponseEntity.ok(updatedTypeEquipement);
     }
 
-
-        /**
-     * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/api/typeequipement/1 (1 ou tout autre id)
-    * Purpose: Supprime une entité typeEquipement
-    * @param id - l’id du typeEquipement à supprimer
-    * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
-    */
+    /**
+     * Endpoint pour supprimer un type d'équipement par son ID.
+     * URL: localhost:8080/api/typeequipement/{id}
+     *
+     * @param id L'identifiant du type d'équipement à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTypeEquipementById(@PathVariable("id") Integer id)
-    {
+    public ResponseEntity<String> deleteTypeEquipementById(@PathVariable("id") Integer id) {
         TypeEquipement typeEquipement = typeEquipementService.getTypeEquipementById(id);
         if (typeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
-    
         typeEquipementService.deleteTypeEquipementById(id);
         return ResponseEntity.ok("Type équipement supprimé avec succès");
     }

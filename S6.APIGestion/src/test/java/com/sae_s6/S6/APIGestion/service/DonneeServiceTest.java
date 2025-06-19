@@ -93,4 +93,64 @@ public class DonneeServiceTest {
         donneeService.deleteDonneeById(id);
         verify(donneeRepo, times(1)).deleteById(id);
     }
+
+    @Test
+    void testDeleteDonneeById2() {
+        
+    }
+
+    @Test
+    void testGetAllDonnees2() {
+        
+    }
+
+    @Test
+    void testGetByLibelleDonneeContainingIgnoreCase() {
+        
+    }
+
+    @Test
+    void testGetDonneeById() {
+        
+    }
+
+    @Test
+    void testSaveDonnee2() {
+        
+    }
+
+    @Test
+    void testUpdateDonnee2() {
+        
+    }
+
+    @Test
+    void testDeleteDonneeById3() {
+        
+    }
+
+    @Test
+    void testGetAllDonnees3() {
+        
+    }
+
+    @Test
+    void testGetByLibelleDonneeContainingIgnoreCase2() {
+        
+    }
+
+    @Test
+    void testGetDonneeById2() {
+        
+    }
+
+    @Test
+    void testSaveDonnee3() {
+        
+    }
+
+    @Test
+    void testUpdateDonnee3() {
+        
+    }
 }

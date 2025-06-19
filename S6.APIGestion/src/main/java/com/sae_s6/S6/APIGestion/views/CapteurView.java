@@ -1,9 +1,12 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
+
+import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
-import com.sae_s6.S6.APIGestion.service.MurService;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+import com.sae_s6.S6.APIGestion.service.CapteurService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -16,42 +19,52 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-@Route (value="mur") 
-@PageTitle("Les Murs")
-@Menu(title = "Les Murs", order = 2, icon = "vaadin:clipboard-check")
+@Route (value="capteur") 
+@PageTitle("Les Capteurs")
+@Menu(title = "Les Capteurs", order = 3, icon = "vaadin:clipboard-check")
 
-public class MurView extends VerticalLayout {
+public class CapteurView extends VerticalLayout {
 
 	//private final AuteurRepo repo;
-	private final MurService murService;
+	private final CapteurService capteurService;
 
-	final Grid<Mur> grid;
+	final Grid<Capteur> grid;
 
 	final TextField filter;
 
 	private final Button addNewBtn;
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public MurView(MurService murService, MurEditor editor) {
+	public CapteurView(CapteurService capteurService, CapteurEditor editor) {
 		//this.repo = repo;
-		this.murService = murService;
+		this.capteurService = capteurService;
 		//this.editor = editor;
-		this.grid = new Grid<>(Mur.class);
+		this.grid = new Grid<>(Capteur.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un mur", VaadinIcon.PLUS.create());
+		this.addNewBtn = new Button("Ajouter un capteur", VaadinIcon.PLUS.create());
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "libelleMur", "hauteur", "longueur", "orientation");
+		grid.setColumns("id", "libelleCapteur", "positionXCapteur", "positionYCapteur");
 		
-		grid.addColumn(mur -> {
-            Salle salle = mur.getSalleNavigation();
+		grid.addColumn(capteur -> {
+            Mur mur = capteur.getMurNavigation();
+            return mur != null ? mur.getDesc() : "";
+        }).setHeader("Mur").setKey("MurDescription");
+
+		grid.addColumn(capteur -> {
+            Salle salle = capteur.getSalleNavigation();
             return salle != null ? salle.getDesc() : "";
         }).setHeader("Salle").setKey("SalleDescription");
 
+		grid.addColumn(capteur -> {
+            TypeCapteur typeCapteur = capteur.getTypeCapteurNavigation();
+            return typeCapteur != null ? typeCapteur.getDesc() : "";
+        }).setHeader("Type capteur").setKey("typeCapteurDescription");
+		
 		
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
@@ -61,32 +74,32 @@ public class MurView extends VerticalLayout {
 
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listMurs(e.getValue()));
+		filter.addValueChangeListener(e -> listCapteurs(e.getValue()));
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editMur(e.getValue());
+			editor.editCapteur(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editMur(new Mur()));
+		addNewBtn.addClickListener(e -> editor.editCapteur(new Capteur()));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
-			listMurs(filter.getValue());
+			listCapteurs(filter.getValue());
 		});
 
 		// Initialize listing
-		listMurs(null);
+		listCapteurs(null);
 	}
 
 	// tag::listSalles[]
-	void listMurs(String filterText) {
+	void listCapteurs(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(murService.getByLibelleMurContainingIgnoreCase(filterText));
+			grid.setItems(capteurService.getByLibelleCapteurContainingIgnoreCase(filterText));
 		} else {
-			grid.setItems(murService.getAllMurs());
+			grid.setItems(capteurService.getAllCapteurs());
 		}
 	}
 	// end::listCustomers[]

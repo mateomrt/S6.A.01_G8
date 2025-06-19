@@ -1,8 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
-import com.sae_s6.S6.APIGestion.service.TypeSalleService;
+import com.sae_s6.S6.APIGestion.entity.Batiment;
+import com.sae_s6.S6.APIGestion.service.BatimentService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -25,21 +24,21 @@ import com.vaadin.flow.spring.annotation.UIScope;
  */
 @SpringComponent
 @UIScope
-public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
+public class BatimentEditor extends VerticalLayout implements KeyNotifier {
 
-	private final TypeSalleService typeSalleService;
+	private final BatimentService batimentService;
 
 	/**
 	 * The currently edited auteur
 	 */
-	private TypeSalle typeSalle;
+	private Batiment batiment;
 
 	/* Fields to edit properties in Auteur entity */
-	TextField libelleTypeSalle = new TextField("Libellé type salle");
+	TextField libelleBatiment = new TextField("Libellé batiment");
     
 	
 
-	HorizontalLayout fields = new HorizontalLayout(libelleTypeSalle);
+	HorizontalLayout fields = new HorizontalLayout(libelleBatiment);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -47,21 +46,18 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<TypeSalle> binder = new Binder<>(TypeSalle.class);
+	Binder<Batiment> binder = new Binder<>(Batiment.class);
 	private ChangeHandler changeHandler;
 
-	public TypeSalleEditor(TypeSalleService typeSalleService) {
-		this.typeSalleService = typeSalleService;
+	public BatimentEditor(BatimentService batimentService) {
+		this.batimentService = batimentService;
 
-		
 
-		add(libelleTypeSalle, actions);
+		add(libelleBatiment, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
 		
-
-		// Configure and style components
 		setSpacing(true);
 
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -72,22 +68,22 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editTypeSalle(typeSalle));
+		cancel.addClickListener(e -> editBatiment(batiment));
 		setVisible(false);
 	}
 
 	void delete() {
-		typeSalleService.deleteTypeSalleById(typeSalle.getId());
+		batimentService.deleteBatimentById(batiment.getId());
 		changeHandler.onChange();
 	}
 
 	void save() {
-        if (typeSalle.getId() == null) {
+        if (batiment.getId() == null) {
             // If the livre is new, we save it
-            typeSalleService.saveTypeSalle(typeSalle);
+            batimentService.saveBatiment(batiment);
         } else {
             // If the livre already exists, we update it
-            typeSalleService.updateTypeSalle(typeSalle);
+            batimentService.updateBatiment(batiment);
         }
         changeHandler.onChange();
 	}
@@ -96,33 +92,34 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editTypeSalle(TypeSalle a) {
+	public final void editBatiment(Batiment a) {
 		if (a == null) {
 			setVisible(false);
 			return;
 		}
+
 
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
 			// In a more complex app, you might want to load
 			// the entity/DTO with lazy loaded relations for editing
-			typeSalle = typeSalleService.getTypeSalleById(a.getId());
+			batiment = batimentService.getBatimentById(a.getId());
 		}
 		else {
-			typeSalle = a;
+			batiment = a;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind auteur properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(typeSalle);
+		binder.setBean(batiment);
 
 		setVisible(true);
 
 		// Focus first name initially
-		libelleTypeSalle.focus();
+		libelleBatiment.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

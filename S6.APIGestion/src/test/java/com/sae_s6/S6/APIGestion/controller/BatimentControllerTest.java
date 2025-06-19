@@ -20,7 +20,7 @@ public class BatimentControllerTest {
     private TestRestTemplate restTemplate;
 
     private String getBaseUrl() {
-        return "http://localhost:" + port + "/api/typesalle";
+        return "http://localhost:" + port + "/api/batiment";
     }
 
     // Méthode utilitaire pour créer un Batiment
@@ -34,9 +34,10 @@ public class BatimentControllerTest {
         return response.getBody();
     }
 
+    private int createdBatimentId;
+
     @Test
     void testGetAllBatiments() {
-        createBatiment(100, "Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
 
         ResponseEntity<Batiment[]> response = restTemplate.getForEntity(getBaseUrl() + "/", Batiment[].class);
 
@@ -47,29 +48,34 @@ public class BatimentControllerTest {
 
     @Test
     void testGetBatimentById() {
-        Batiment batiment = createBatiment(101, "Type B");
-        Integer id = batiment.getId();
+        Integer id = 1;
 
         ResponseEntity<Batiment> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Batiment.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Type B");
+        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Bâtiment A");
     }
 
     @Test
     void testSaveBatiment() {
-        Batiment batiment = createBatiment(102, "Type C");
-        assertThat(batiment.getLibelleBatiment()).isEqualTo("Type C");
+        Batiment batiment = createBatiment(null, "Bâtiment C");
+        createdBatimentId = batiment.getId();
+
+        assertThat(batiment.getLibelleBatiment()).isEqualTo("Bâtiment C");
         assertThat(batiment.getId()).isNotNull(); // Vérifie que l'ID a été généré
         assertThat(batiment.getId()).isGreaterThan(0); // Vérifie que l'ID est positif
+
+        restTemplate.delete(getBaseUrl() + "/" + createdBatimentId);
     }
 
     @Test
     void testUpdateBatiment() {
-        Batiment batiment = createBatiment(103, "Type D");
-        batiment.setLibelleBatiment("Type D - MAJ");
+        Batiment batiment = createBatiment(null, "Bâtiment D");
+        createdBatimentId = batiment.getId();
+
+        batiment.setLibelleBatiment("Bâtiment D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -79,14 +85,16 @@ public class BatimentControllerTest {
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Batiment.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Type D - MAJ");
+        assertThat(response.getBody().getLibelleBatiment()).isEqualTo("Bâtiment D - MAJ");
         assertThat(response.getBody().getId()).isEqualTo(batiment.getId()); // Vérifie que l'ID est inchangé
         assertThat(response.getBody().getId()).isGreaterThan(0); // Vérifie que l'ID est positif
+       
+        restTemplate.delete(getBaseUrl() + "/" + createdBatimentId);    
     }
 
     @Test
     void testDeleteBatimentById() {
-        Batiment batiment = createBatiment(104, "Type à Supprimer");
+        Batiment batiment = createBatiment(null, "Type à Supprimer");
         Integer id = batiment.getId();
 
         restTemplate.delete(getBaseUrl() + "/" + id);

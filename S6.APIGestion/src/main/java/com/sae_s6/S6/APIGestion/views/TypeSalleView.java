@@ -1,7 +1,6 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.TypeSalleService;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +17,7 @@ import org.springframework.util.StringUtils;
 
 @Route (value="typeSalle") 
 @PageTitle("Les Types de salle")
-@Menu(title = "Les types de salle", order = 0, icon = "vaadin:clipboard-check")
+@Menu(title = "Les types de salle", order = 1, icon = "vaadin:clipboard-check")
 
 public class TypeSalleView extends VerticalLayout {
 

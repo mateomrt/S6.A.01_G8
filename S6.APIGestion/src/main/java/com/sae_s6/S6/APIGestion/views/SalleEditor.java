@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-import java.util.Locale;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;

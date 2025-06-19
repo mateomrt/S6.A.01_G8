@@ -1,11 +1,9 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.entity.Salle;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
-import com.sae_s6.S6.APIGestion.service.SalleService;
 
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -18,46 +16,36 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-@Route (value="salle") 
-@PageTitle("Les Salles")
-@Menu(title = "Les Salles", order = 0, icon = "vaadin:clipboard-check")
+@Route (value="typeCapteur") 
+@PageTitle("Les types de capteur")
+@Menu(title = "Les types de capteur", order = 4, icon = "vaadin:clipboard-check")
 
-public class SalleView extends VerticalLayout {
+public class TypeCapteurView extends VerticalLayout {
 
 	//private final AuteurRepo repo;
-	private final SalleService salleService;
+	private final TypeCapteurService typeCapteurService;
 
-	final Grid<Salle> grid;
+	final Grid<TypeCapteur> grid;
 
 	final TextField filter;
 
 	private final Button addNewBtn;
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public SalleView(SalleService salleService, SalleEditor editor) {
+	public TypeCapteurView(TypeCapteurService typeCapteurService, TypeCapteurEditor editor) {
 		//this.repo = repo;
-		this.salleService = salleService;
+		this.typeCapteurService = typeCapteurService;
 		//this.editor = editor;
-		this.grid = new Grid<>(Salle.class);
+		this.grid = new Grid<>(TypeCapteur.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
+		this.addNewBtn = new Button("Ajouter un type de capteur", VaadinIcon.PLUS.create());
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "libelleSalle", "superficie");
-		
-		grid.addColumn(salle -> {
-            Batiment batiment = salle.getBatimentNavigation();
-            return batiment != null ? batiment.getDesc() : "";
-        }).setHeader("Batiment").setKey("BatimentDescription");
-
-		grid.addColumn(salle -> {
-            TypeSalle typeSalle = salle.getTypeSalleNavigation();
-            return typeSalle != null ? typeSalle.getDesc() : "";
-        }).setHeader("Type salle").setKey("typeSalleDescription");
+		grid.setColumns("id", "libelleTypeCapteur", "modeTypeCapteur");
 		
 		
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
@@ -68,32 +56,32 @@ public class SalleView extends VerticalLayout {
 
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listSalles(e.getValue()));
+		filter.addValueChangeListener(e -> listTypesCapteur(e.getValue()));
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editSalle(e.getValue());
+			editor.editTypeCapteur(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
+		addNewBtn.addClickListener(e -> editor.editTypeCapteur(new TypeCapteur()));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
-			listSalles(filter.getValue());
+			listTypesCapteur(filter.getValue());
 		});
 
 		// Initialize listing
-		listSalles(null);
+		listTypesCapteur(null);
 	}
 
 	// tag::listSalles[]
-	void listSalles(String filterText) {
+	void listTypesCapteur(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
+			grid.setItems(typeCapteurService.getByLibelleTypeCapteurContainingIgnoreCase(filterText));
 		} else {
-			grid.setItems(salleService.getAllSalles());
+			grid.setItems(typeCapteurService.getAllTypeCapteurs());
 		}
 	}
 	// end::listCustomers[]
