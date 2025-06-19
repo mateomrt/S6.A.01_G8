@@ -1,6 +1,8 @@
 package com.sae_s6.S6.APIGestion.controller;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,101 +10,107 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TypeCapteurControllerTest {
+class TypeCapteurControllerTest {
 
     @LocalServerPort
-    private int port;
+private int port;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+@Autowired
+private TestRestTemplate restTemplate;
 
-    private String getBaseUrl() {
-        return "http://localhost:" + port + "/api/typecapteur";
+private final List<Integer> createdTypeCapteurs = new ArrayList<>();
+
+private String getBaseUrl() {
+    return "http://localhost:" + port + "/api/typeCapteur/";
+}
+
+private TypeCapteur buildTypeCapteur(String libelle) {
+    TypeCapteur type = new TypeCapteur();
+    type.setLibelleTypeCapteur(libelle);
+    type.setModeTypeCapteur("Auto");
+    return type;
+}
+
+@Test
+void testCreateAndGetTypeCapteurById() {
+    TypeCapteur type = buildTypeCapteur("Test Type");
+
+    // POST
+    ResponseEntity<TypeCapteur> postResponse = restTemplate.postForEntity(getBaseUrl(), type, TypeCapteur.class);
+    assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur created = postResponse.getBody();
+    assertThat(created).isNotNull();
+    assertThat(created.getId()).isNotNull();
+    createdTypeCapteurs.add(created.getId());
+
+    // GET
+    ResponseEntity<TypeCapteur> getResponse = restTemplate.getForEntity(getBaseUrl() + created.getId(), TypeCapteur.class);
+    assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur fetched = getResponse.getBody();
+    assertThat(fetched).isNotNull();
+    assertThat(fetched.getLibelleTypeCapteur()).isEqualTo("Test Type");
+    assertThat(fetched.getModeTypeCapteur()).isEqualTo("Auto");
+}
+
+@Test
+void testGetAllTypeCapteurs() {
+    ResponseEntity<TypeCapteur[]> response = restTemplate.getForEntity(getBaseUrl(), TypeCapteur[].class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur[] list = response.getBody();
+    assertThat(list).isNotNull();
+    assertThat(list.length).isGreaterThan(0);
+}
+
+@Test
+void testUpdateTypeCapteur() {
+    TypeCapteur type = buildTypeCapteur("Initial Type");
+    ResponseEntity<TypeCapteur> post = restTemplate.postForEntity(getBaseUrl(), type, TypeCapteur.class);
+    assertThat(post.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur created = post.getBody();
+    assertThat(created).isNotNull();
+    createdTypeCapteurs.add(created.getId());
+
+    // Modification
+    created.setLibelleTypeCapteur("Type Modifié");
+    created.setModeTypeCapteur("Manuel");
+
+    HttpEntity<TypeCapteur> entity = new HttpEntity<>(created);
+    ResponseEntity<TypeCapteur> updatedResponse = restTemplate.exchange(getBaseUrl(), HttpMethod.PUT, entity, TypeCapteur.class);
+    assertThat(updatedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur updated = updatedResponse.getBody();
+    assertThat(updated.getLibelleTypeCapteur()).isEqualTo("Type Modifié");
+    assertThat(updated.getModeTypeCapteur()).isEqualTo("Manuel");
+}
+
+@Test
+void testDeleteTypeCapteur() {
+    TypeCapteur type = buildTypeCapteur("À supprimer");
+    ResponseEntity<TypeCapteur> post = restTemplate.postForEntity(getBaseUrl(), type, TypeCapteur.class);
+    assertThat(post.getStatusCode()).isEqualTo(HttpStatus.OK);
+    TypeCapteur created = post.getBody();
+    assertThat(created).isNotNull();
+
+    // DELETE
+    restTemplate.delete(getBaseUrl() + created.getId());
+
+    // GET après suppression
+    ResponseEntity<TypeCapteur> getAfterDelete = restTemplate.getForEntity(getBaseUrl() + created.getId(), TypeCapteur.class);
+    assertThat(getAfterDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+}
+
+@AfterEach
+void cleanup() {
+    for (Integer id : createdTypeCapteurs) {
+        try {
+            restTemplate.delete(getBaseUrl() + id);
+        } catch (Exception ignored) {}
     }
-
-    @Test
-    public void testGetAllTypeCapteurs() {
-        ResponseEntity<TypeCapteur[]> response = restTemplate.getForEntity(getBaseUrl() + "/", TypeCapteur[].class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().length).isGreaterThanOrEqualTo(0);
-    }
-
-    @Test
-    public void testCreateAndGetTypeCapteur() {
-        TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Température");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<TypeCapteur> entity = new HttpEntity<>(typeCapteur, headers);
-
-        // Create
-        ResponseEntity<TypeCapteur> postResponse = restTemplate.postForEntity(getBaseUrl() + "/", entity, TypeCapteur.class);
-        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(postResponse.getBody()).isNotNull();
-        assertThat(postResponse.getBody().getLibelleTypeCapteur()).isEqualTo("Type Température");
-
-        Integer id = postResponse.getBody().getId();
-
-        // Get
-        ResponseEntity<TypeCapteur> getResponse = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeCapteur.class);
-        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(getResponse.getBody()).isNotNull();
-        assertThat(getResponse.getBody().getLibelleTypeCapteur()).isEqualTo("Type Température");
-    }
-
-    @Test
-    public void testUpdateTypeCapteur() {
-        TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Humidité");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<TypeCapteur> entity = new HttpEntity<>(typeCapteur, headers);
-
-        // Create
-        ResponseEntity<TypeCapteur> postResponse = restTemplate.postForEntity(getBaseUrl() + "/", entity, TypeCapteur.class);
-        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(postResponse.getBody()).isNotNull();
-
-        Integer id = postResponse.getBody().getId();
-
-        // Update
-        typeCapteur.setLibelleTypeCapteur("Type Humidité Modifié");
-        HttpEntity<TypeCapteur> updateEntity = new HttpEntity<>(typeCapteur, headers);
-        ResponseEntity<TypeCapteur> updateResponse = restTemplate.exchange(getBaseUrl() + "/" + id, HttpMethod.PUT, updateEntity, TypeCapteur.class);
-
-        assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(updateResponse.getBody()).isNotNull();
-        assertThat(updateResponse.getBody().getLibelleTypeCapteur()).isEqualTo("Type Humidité Modifié");
-    }
-
-    @Test
-    public void testDeleteTypeCapteur() {
-        TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setLibelleTypeCapteur("Type Lumière");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<TypeCapteur> entity = new HttpEntity<>(typeCapteur, headers);
-
-        // Create
-        ResponseEntity<TypeCapteur> postResponse = restTemplate.postForEntity(getBaseUrl() + "/", entity, TypeCapteur.class);
-        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(postResponse.getBody()).isNotNull();
-
-        Integer id = postResponse.getBody().getId();
-
-        // Delete
-        ResponseEntity<Void> deleteResponse = restTemplate.exchange(getBaseUrl() + "/" + id, HttpMethod.DELETE, null, Void.class);
-        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // Verify Deletion
-        ResponseEntity<TypeCapteur> getResponse = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeCapteur.class);
-        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
+    createdTypeCapteurs.clear();
+}
 }

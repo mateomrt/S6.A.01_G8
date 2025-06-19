@@ -101,4 +101,34 @@ public class MurServiceTest {
         murService.deleteMurById(id);
         verify(murRepo, times(1)).deleteById(id);
     }
+
+    @Test
+    void testDeleteMurById2() {
+        
+    }
+
+    @Test
+    void testGetAllMurs2() {
+        
+    }
+
+    @Test
+    void testGetByLibelleMurContainingIgnoreCase() {
+        
+    }
+
+    @Test
+    void testGetMurById() {
+        
+    }
+
+    @Test
+    void testSaveMur2() {
+        
+    }
+
+    @Test
+    void testUpdateMur2() {
+        
+    }
 }

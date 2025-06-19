@@ -1,6 +1,8 @@
 package com.sae_s6.S6.APIGestion.controller;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
+import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +11,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BatimentControllerTest {
@@ -44,6 +50,10 @@ public class BatimentControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
+        List<Batiment> resultat = Arrays.asList(response.getBody());
+        resultat.sort(Comparator.comparing(Batiment::getLibelleBatiment));
+        assertThat(resultat.get(0).getLibelleBatiment()).isEqualTo("Bâtiment A");
+        assertThat(resultat.get(1).getLibelleBatiment()).isEqualTo("Bâtiment B");
     }
 
     @Test
