@@ -9,6 +9,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,6 +48,10 @@ public class TypeEquipementControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
+        List<TypeEquipement> resultat = Arrays.asList(response.getBody());
+        resultat.sort(Comparator.comparing(TypeEquipement::getLibelleTypeEquipement));
+        assertThat(resultat.get(0).getLibelleTypeEquipement()).isEqualTo("Ordinateur");
+        assertThat(resultat.get(1).getLibelleTypeEquipement()).isEqualTo("Projecteur");
     }
 
     @Test
