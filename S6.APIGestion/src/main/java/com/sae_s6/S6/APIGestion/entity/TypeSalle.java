@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Représente un type de salle dans le système.
+ * Cette classe est une entité JPA associée à la table "typesalle" dans la base de données.
+ */
 @Entity
 @Table(name = "typesalle")
 @Data
@@ -18,16 +21,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TypeSalle {
 
+    /**
+     * Identifiant unique du type de salle.
+     * Généré automatiquement par la base de données.
+     */
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    /**
+     * Libellé du type de salle.
+     * Ce champ est obligatoire et sa longueur maximale est de 100 caractères.
+     */
     @Column(name = "libelle_typesalle", nullable = false, length = 100)
     private String libelleTypeSalle;
 
-    // @OneToMany(mappedBy = "typeSalleNavigation")
-    // private List<Salle> salles;
-
+    /**
+     * Vérifie si deux objets TypeSalle sont égaux.
+     * Deux types de salle sont considérés égaux s'ils ont le même identifiant et libellé.
+     *
+     * @param obj L'objet à comparer.
+     * @return true si les objets sont égaux, false sinon.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -50,6 +65,12 @@ public class TypeSalle {
         return true;
     }
 
+    /**
+     * Calcule le hash code de l'objet TypeSalle.
+     * Utilise les champs id et libellé pour le calcul.
+     *
+     * @return Le hash code de l'objet.
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -59,6 +80,12 @@ public class TypeSalle {
         return result;
     }
 
+    /**
+     * Retourne la description du type de salle.
+     * Actuellement, cela correspond au libellé du type de salle.
+     *
+     * @return Le libellé du type de salle.
+     */
     public String getDesc() {
         return libelleTypeSalle;
     }

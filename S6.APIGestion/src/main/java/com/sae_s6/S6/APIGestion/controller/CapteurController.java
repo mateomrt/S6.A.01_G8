@@ -11,101 +11,95 @@ import com.sae_s6.S6.APIGestion.service.CapteurService;
 
 import java.util.List;
 
+/**
+ * Contrôleur REST pour la gestion des capteurs.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités Capteur.
+ */
 @RestController
 @RequestMapping("/api/capteur")
 @RequiredArgsConstructor
 @Validated
 public class CapteurController {
-    private final CapteurService CapteurService;
 
-     /**
-  * Cette méthode est appelée lors d’une requête GET.
-  * URL: localhost:8080/api/Capteur/
-  * but: Récupère toute les équipements dans la table Capteur
-  * @return List des équipements 
-  */
+    private final CapteurService capteurService;
 
+    /**
+     * Endpoint pour récupérer tous les capteurs.
+     * URL: localhost:8080/api/capteur/
+     *
+     * @return Une réponse contenant la liste de tous les capteurs.
+     */
     @GetMapping("/")
-    public ResponseEntity<List<Capteur>> getAllCapteurs(){
-        List<Capteur> Capteurs = CapteurService.getAllCapteurs();  
-        if (Capteurs == null) {
+    public ResponseEntity<List<Capteur>> getAllCapteurs() {
+        List<Capteur> capteurs = capteurService.getAllCapteurs();
+        if (capteurs == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Capteurs);
+        return ResponseEntity.ok(capteurs);
     }
 
-
-
-            /**
-     * Cette méthode est appelée lors d’une requête GET.
-    * URL: localhost:8080/api/Capteur/1 (1 ou tout autre id)
-    * But: Récupère l'équipement avec l’id associé.
-    * @param id - id de l'équipement
-    * @return équipement avec l’id associé.
-    */
+    /**
+     * Endpoint pour récupérer un capteur par son ID.
+     * URL: localhost:8080/api/capteur/{id}
+     *
+     * @param id L'identifiant du capteur.
+     * @return Une réponse contenant le capteur correspondant ou une réponse 400 s'il n'est pas trouvé.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Capteur> getCapteurById(@PathVariable("id") Integer id) {
-        Capteur Capteur = CapteurService.getCapteurById(id);   
-        if (Capteur == null) {
+        Capteur capteur = capteurService.getCapteurById(id);
+        if (capteur == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Capteur);
+        return ResponseEntity.ok(capteur);
     }
 
-
-            /**
-     * Cette méthode est appelée lors d’une requête POST.
-    * URL: localhost:8080/api/Capteur/
-    * Purpose: Création d’une entité Capteur
-    * @param Capteur – le body de la requête est une entité équipement
-    * @return entité équipement créé
-    */
+    /**
+     * Endpoint pour créer un nouveau capteur.
+     * URL: localhost:8080/api/capteur/
+     *
+     * @param capteur L'entité Capteur à créer.
+     * @return Une réponse contenant le capteur créé.
+     */
     @PostMapping("/")
-    public ResponseEntity<Capteur> saveCapteur(@RequestBody Capteur Capteur) {
-        Capteur savedCapteur = CapteurService.saveCapteur(Capteur);
+    public ResponseEntity<Capteur> saveCapteur(@RequestBody Capteur capteur) {
+        Capteur savedCapteur = capteurService.saveCapteur(capteur);
         if (savedCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(savedCapteur);
     }
 
-
-
-          /**
-     * Cette méthode est appelée lors d’une requête PUT.
-    * URL: localhost:8080/api/Capteur/
-    * Purpose: Met à jour une entité Salle
-    * @param Capteur - entité équipement à mettre à jour.
-    * @return  entité équipement à mise à jour
-    */
+    /**
+     * Endpoint pour mettre à jour un capteur existant.
+     * URL: localhost:8080/api/capteur/
+     *
+     * @param capteur L'entité Capteur à mettre à jour.
+     * @return Une réponse contenant le capteur mis à jour ou une réponse 400 s'il n'est pas trouvé.
+     */
     @PutMapping("/")
-    public ResponseEntity<Capteur> updateCapteur(@RequestBody Capteur Capteur)
-    {
-        Capteur updatedCapteur = CapteurService.updateCapteur(Capteur);
+    public ResponseEntity<Capteur> updateCapteur(@RequestBody Capteur capteur) {
+        Capteur updatedCapteur = capteurService.updateCapteur(capteur);
         if (updatedCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
-        
         return ResponseEntity.ok(updatedCapteur);
     }
 
-
-        /**
-     * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/Capteur/ (1 ou tout autre id)
-    * Purpose: Supprime une entité équipement
-    * @param id - l’id de l'équipement à supprimer
-    * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
-    */
+    /**
+     * Endpoint pour supprimer un capteur par son ID.
+     * URL: localhost:8080/api/capteur/{id}
+     *
+     * @param id L'identifiant du capteur à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCapteurById(@PathVariable("id") Integer id)
-    {
-        Capteur Capteur = CapteurService.getCapteurById(id);
-        if (Capteur == null) {
+    public ResponseEntity<String> deleteCapteurById(@PathVariable("id") Integer id) {
+        Capteur capteur = capteurService.getCapteurById(id);
+        if (capteur == null) {
             return ResponseEntity.badRequest().build();
         }
-    
-        CapteurService.deleteCapteurById(id);
+        capteurService.deleteCapteurById(id);
         return ResponseEntity.ok("Capteur supprimé avec succès");
     }
 }

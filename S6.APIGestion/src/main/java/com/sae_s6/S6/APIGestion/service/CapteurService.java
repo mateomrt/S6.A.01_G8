@@ -19,6 +19,10 @@ import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 
+/**
+ * Service pour la gestion des capteurs.
+ * Fournit des méthodes pour effectuer des opérations CRUD sur les entités Capteur.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,34 +34,40 @@ public class CapteurService {
     private final BatimentRepo batimentRepo;
     private final TypeSalleRepo typeSalleRepo;
 
+    /**
+     * Récupère tous les capteurs.
+     *
+     * @return Une liste de tous les capteurs.
+     */
     public List<Capteur> getAllCapteurs() {
         List<Capteur> capteurs = capteurRepo.findAll();
-        log.debug("Liste des équipements récupérés: {}", capteurs);
+        log.debug("Liste des capteurs récupérés: {}", capteurs);
         return capteurs;
     }
 
     /**
-     * 
-     * @param id
-     * @return
+     * Récupère un capteur par son ID.
+     *
+     * @param id L'identifiant du capteur.
+     * @return Le capteur correspondant ou null s'il n'est pas trouvé.
      */
-
     public Capteur getCapteurById(Integer id) {
         Optional<Capteur> optionalCapteur = capteurRepo.findById(id);
         if (optionalCapteur.isPresent()) {
-            log.debug("Détails de l'équipement trouvé: {}", optionalCapteur.get());
+            log.debug("Détails du capteur trouvé: {}", optionalCapteur.get());
             return optionalCapteur.get();
         }
-        log.warn("Aucun équipement trouvé avec l'id: {}", id);
+        log.warn("Aucun capteur trouvé avec l'id: {}", id);
         return null;
     }
 
-       /**
-         * 
-         * @param Capteur
-         * @return
-         */
-
+    /**
+     * Enregistre un nouveau capteur.
+     * Hydrate les relations associées avant de sauvegarder.
+     *
+     * @param capteur L'entité Capteur à enregistrer.
+     * @return Le capteur enregistré.
+     */
     public Capteur saveCapteur(Capteur capteur) {
         // Hydrater la salle liée
         Salle salle = salleRepo.findById(capteur.getSalleNavigation().getId())
@@ -76,7 +86,7 @@ public class CapteurService {
         Mur mur = murRepo.findById(capteur.getMurNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Mur non trouvé"));
 
-        // Si nécessaire, hydrater la salle du mur (optionnel selon besoin)
+        // Hydrater la salle du mur (optionnel selon besoin)
         Salle salleMur = salleRepo.findById(mur.getSalleNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Salle du mur non trouvée"));
         salleMur.setBatimentNavigation(
@@ -99,32 +109,29 @@ public class CapteurService {
         return capteurRepo.save(capteur);
     }
 
-
-    
     /**
-     * 
-     * @param Capteur
-     * @return
+     * Met à jour un capteur existant.
+     *
+     * @param capteur L'entité Capteur avec les nouvelles données.
+     * @return Le capteur mis à jour.
      */
-
-    public Capteur updateCapteur(Capteur Capteur) {
-        Capteur updatedCapteur = capteurRepo.save(Capteur);
+    public Capteur updateCapteur(Capteur capteur) {
+        Capteur updatedCapteur = capteurRepo.save(capteur);
         log.info("Capteur mis à jour avec succès avec l'id: {}", updatedCapteur.getId());
-        log.debug("Détails de l'équipement après mise à jour: {}", updatedCapteur);
+        log.debug("Détails du capteur après mise à jour: {}", updatedCapteur);
         return updatedCapteur;
     }
 
-     /**
-     * 
-     * @param id
-     * @return
+    /**
+     * Supprime un capteur par son ID.
+     *
+     * @param id L'identifiant du capteur à supprimer.
      */
-
     public void deleteCapteurById(Integer id) {
         capteurRepo.deleteById(id);
         log.debug("Capteur avec id: {} supprimé avec succès", id);
     }
-    
+
     public List<Capteur> getByLibelleCapteurContainingIgnoreCase(String libelleCapteur) {
         return capteurRepo.findByLibelleCapteurContainingIgnoreCase(libelleCapteur);
     }  

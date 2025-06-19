@@ -10,49 +10,78 @@ import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service pour la gestion des bâtiments.
+ * Fournit des méthodes pour effectuer des opérations CRUD sur les entités Batiment.
+ */
 @Service
 @RequiredArgsConstructor
 public class BatimentService {
-	private final BatimentRepo batimentRepo;
+    private final BatimentRepo batimentRepo;
 
-	
+    /**
+     * Récupère tous les bâtiments.
+     *
+     * @return Une liste de tous les bâtiments.
+     */
+    public List<Batiment> getAllBatiments() {
+        return batimentRepo.findAll();
+    }
 
-	// Récupérer tous les bâtiments
-	public List<Batiment> getAllBatiments() {
-		return batimentRepo.findAll();
-	}
+    /**
+     * Récupère un bâtiment par son ID.
+     *
+     * @param id L'identifiant du bâtiment.
+     * @return Un Optional contenant le bâtiment si trouvé, sinon vide.
+     */
+    public Optional<Batiment> getBatimentById(Integer id) {
+    	return batimentRepo.findById(id);
+    }
 
-	// Récupérer un bâtiment par son ID
-	public Optional<Batiment> getBatimentById(Integer id) {
-		return batimentRepo.findById(id);
-	}
+    /**
+     * Crée un nouveau bâtiment.
+     *
+     * @param batiment L'entité Batiment à créer.
+     * @return Le bâtiment créé.
+     * @throws IllegalArgumentException Si le libellé du bâtiment est null ou vide.
+     */
+    public Batiment createBatiment(Batiment batiment) {
+        if (batiment.getLibelleBatiment() == null || batiment.getLibelleBatiment().isEmpty()) {
+            throw new IllegalArgumentException("Le titre du bâtiment est obligatoire.");
+        }
+        return batimentRepo.save(batiment);
+    }
 
-	// Créer un nouveau bâtiment
-	public Batiment createBatiment(Batiment batiment) {
-		if (batiment.getLibelleBatiment() == null || batiment.getLibelleBatiment().isEmpty()) {
-			throw new IllegalArgumentException("Le titre du bâtiment est obligatoire.");
-		}
-		return batimentRepo.save(batiment);
-	}
+    /**
+     * Met à jour un bâtiment existant.
+     *
+     * @param id L'identifiant du bâtiment à mettre à jour.
+     * @param updated Les nouvelles données du bâtiment.
+     * @return Le bâtiment mis à jour.
+     * @throws IllegalArgumentException Si le bâtiment avec l'ID donné n'est pas trouvé.
+     */
+    public Batiment updateBatiment(Integer id, Batiment updated) {
+        return batimentRepo.findById(id).map(existingBatiment -> {
+            if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
+                existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
+            }
+            // if (updated.getSalles() != null) {
+            // 	existingBatiment.setSalles(updated.getSalles());
+            // }
+            return batimentRepo.save(existingBatiment);
+        }).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
+    }
 
-	// Mettre à jour un bâtiment existant
-	public Batiment updateBatiment(Integer id, Batiment updated) {
-		return batimentRepo.findById(id).map(existingBatiment -> {
-			if (updated.getLibelleBatiment() != null && !updated.getLibelleBatiment().isEmpty()) {
-				existingBatiment.setLibelleBatiment(updated.getLibelleBatiment());
-			}
-			// if (updated.getSalles() != null) {
-			// 	existingBatiment.setSalles(updated.getSalles());
-			// }
-			return batimentRepo.save(existingBatiment);
-		}).orElseThrow(() -> new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé."));
-	}
-
-	// Supprimer un bâtiment par son ID
-	public void deleteBatiment(Integer id) {
-		if (!batimentRepo.existsById(id)) {
-			throw new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé.");
-		}
-		batimentRepo.deleteById(id);
-	}
+    /**
+     * Supprime un bâtiment par son ID.
+     *
+     * @param id L'identifiant du bâtiment à supprimer.
+     * @throws IllegalArgumentException Si le bâtiment avec l'ID donné n'est pas trouvé.
+     */
+    public void deleteBatiment(Integer id) {
+        if (!batimentRepo.existsById(id)) {
+            throw new IllegalArgumentException("Bâtiment avec l'ID " + id + " non trouvé.");
+        }
+        batimentRepo.deleteById(id);
+    }
 }

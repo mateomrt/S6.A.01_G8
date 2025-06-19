@@ -4,115 +4,102 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contrôleur REST pour la gestion des types de capteurs.
+ * Fournit des endpoints pour effectuer des opérations CRUD sur les entités TypeCapteur.
+ */
 @RestController
 @RequestMapping("/api/typeCapteur")
 @RequiredArgsConstructor
 @Validated
 public class TypeCapteurController {
+
     private final TypeCapteurService typeCapteurService;
 
-     /**
-  * Cette méthode est appelée lors d’une requête GET.
-  * URL: localhost:8080/api/typeCapteur/
-  * but: Récupère toute les TypeCapteur dans la table TypeCapteur
-  * @return List des TypeCapteurs 
-  */
-
+    /**
+     * Endpoint pour récupérer tous les types de capteurs.
+     * URL: localhost:8080/api/typeCapteur/
+     *
+     * @return Une réponse contenant la liste de tous les types de capteurs.
+     */
     @GetMapping("/")
-    public ResponseEntity<List<TypeCapteur>> getAllTypeCapteurs(){
-        List<TypeCapteur> typeCapteurs = typeCapteurService.getAllTypeCapteurs();  
+    public ResponseEntity<List<TypeCapteur>> getAllTypeCapteurs() {
+        List<TypeCapteur> typeCapteurs = typeCapteurService.getAllTypeCapteurs();
         if (typeCapteurs == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(typeCapteurs);
     }
 
-
-             /**
-     * Cette méthode est appelée lors d’une requête GET.
-    * URL: localhost:8080/api/typeCapteur/1 (1 ou tout autre id)
-    * But: Récupère la typeCapteur avec l’id associé.
-    * @param id - typeCapteur id
-    * @return typeCapteur avec l’id associé.
-    */
+    /**
+     * Endpoint pour récupérer un type de capteur par son ID.
+     * URL: localhost:8080/api/typeCapteur/{id}
+     *
+     * @param id L'identifiant du type de capteur.
+     * @return Une réponse contenant le type de capteur correspondant ou une réponse 400 s'il n'est pas trouvé.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TypeCapteur> getTypeCapteurById(@PathVariable("id") Integer id) {
-        TypeCapteur typeCapteur = typeCapteurService.getTypeCapteurById(id);   
+        TypeCapteur typeCapteur = typeCapteurService.getTypeCapteurById(id);
         if (typeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(typeCapteur);
     }
 
-
-    
-            /**
-     * Cette méthode est appelée lors d’une requête POST.
-    * URL: localhost:8080/api/typeCapteur/
-    * Purpose: Création d’une entité typeCapteur
-    * @param typeCapteur – le body de la requête est une entité typeCapteur
-    * @return entité typeCapteur créée
-    */
+    /**
+     * Endpoint pour créer un nouveau type de capteur.
+     * URL: localhost:8080/api/typeCapteur/
+     *
+     * @param typeCapteur L'entité TypeCapteur à créer.
+     * @return Une réponse contenant le type de capteur créé.
+     */
     @PostMapping("/")
-    public ResponseEntity<TypeCapteur> saveTypeCapteur(@RequestBody TypeCapteur typeEquipemennt) {
-        TypeCapteur savedTypeCapteur = typeCapteurService.saveTypeCapteur(typeEquipemennt);
+    public ResponseEntity<TypeCapteur> saveTypeCapteur(@RequestBody TypeCapteur typeCapteur) {
+        TypeCapteur savedTypeCapteur = typeCapteurService.saveTypeCapteur(typeCapteur);
         if (savedTypeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(savedTypeCapteur);
     }
 
-
-
-             /**
-     * Cette méthode est appelée lors d’une requête PUT.
-    * URL: localhost:8080/api/typeCapteur/
-    * Purpose: Met à jour une entité typeCapteur
-    * @param typeCapteur - entité typeCapteur à mettre à jour.
-    * @return  entité typeCapteur à mise à jour
-    */
+    /**
+     * Endpoint pour mettre à jour un type de capteur existant.
+     * URL: localhost:8080/api/typeCapteur/
+     *
+     * @param typeCapteur L'entité TypeCapteur à mettre à jour.
+     * @return Une réponse contenant le type de capteur mis à jour ou une réponse 400 s'il n'est pas trouvé.
+     */
     @PutMapping("/")
-    public ResponseEntity<TypeCapteur> updateTypeCapteur(@RequestBody TypeCapteur typeCapteur)
-    {
+    public ResponseEntity<TypeCapteur> updateTypeCapteur(@RequestBody TypeCapteur typeCapteur) {
         TypeCapteur updatedTypeCapteur = typeCapteurService.updateTypeCapteur(typeCapteur);
         if (updatedTypeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
-        
         return ResponseEntity.ok(updatedTypeCapteur);
     }
 
-
-        /**
-     * Cette méthode est appelée lors d’une requête DELETE.
-    * URL: localhost:8080/biblio/api/typeCapteur/1 (1 ou tout autre id)
-    * Purpose: Supprime une entité typeCapteur
-    * @param id - l’id du typeCapteur à supprimer
-    * @return un message String indiquant que l’enregistrement a été supprimé avec succès.
-    */
+    /**
+     * Endpoint pour supprimer un type de capteur par son ID.
+     * URL: localhost:8080/api/typeCapteur/{id}
+     *
+     * @param id L'identifiant du type de capteur à supprimer.
+     * @return Une réponse indiquant que la suppression a été effectuée avec succès.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTypeCapteurById(@PathVariable("id") Integer id)
-    {
+    public ResponseEntity<String> deleteTypeCapteurById(@PathVariable("id") Integer id) {
         TypeCapteur typeCapteur = typeCapteurService.getTypeCapteurById(id);
         if (typeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
-    
         typeCapteurService.deleteTypeCapteurById(id);
-        return ResponseEntity.ok("Type équipement supprimé avec succès");
+        return ResponseEntity.ok("Type capteur supprimé avec succès");
     }
 }

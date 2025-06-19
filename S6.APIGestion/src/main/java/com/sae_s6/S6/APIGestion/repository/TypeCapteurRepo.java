@@ -10,4 +10,5 @@ public interface TypeCapteurRepo extends JpaRepository<TypeCapteur, Integer>{
     
     List<TypeCapteur> findByLibelleTypeCapteurContainingIgnoreCase(String libelleTypeCapteur);
 
+
 }

@@ -11,76 +11,87 @@ import java.util.Optional;
 import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 
+/**
+ * Service pour la gestion des types de salles.
+ * Fournit des méthodes pour effectuer des opérations CRUD sur les entités TypeSalle.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TypeSalleService {
 
-    private final TypeSalleRepo typeSalleRepo; 
+    private final TypeSalleRepo typeSalleRepo;
 
+    /**
+     * Récupère tous les types de salles.
+     *
+     * @return Une liste de tous les types de salles.
+     */
     public List<TypeSalle> getAllTypeSalles() {
         List<TypeSalle> typeSalles = typeSalleRepo.findAll();
-        log.debug("Liste des Type de salles récupérées: {}", typeSalles);
+        log.debug("Liste des types de salles récupérées: {}", typeSalles);
         return typeSalles;
     }
 
-
-     /**
-     * 
-     * @param id
-     * @return
+    /**
+     * Récupère un type de salle par son ID.
+     *
+     * @param id L'identifiant du type de salle.
+     * @return Le type de salle correspondant ou null s'il n'est pas trouvé.
      */
-
-     public TypeSalle getTypeSalleById(Integer id) {
+    public TypeSalle getTypeSalleById(Integer id) {
         Optional<TypeSalle> optionalTypeSalle = typeSalleRepo.findById(id);
         if (optionalTypeSalle.isPresent()) {
-            log.debug("Détails de la salle trouvée: {}", optionalTypeSalle.get());
+            log.debug("Détails du type de salle trouvé: {}", optionalTypeSalle.get());
             return optionalTypeSalle.get();
         }
-        log.warn("Aucune salle trouvée avec l'id: {}", id);
+        log.warn("Aucun type de salle trouvé avec l'id: {}", id);
         return null;
     }
 
-       /**
-         * 
-         * @param typeSalle
-         * @return
-         */
-
-    public TypeSalle saveTypeSalle(TypeSalle typeSalle) {
-        TypeSalle savedtypeSalle = typeSalleRepo.save(typeSalle);
-        log.info("Salle sauvegardée avec succès avec l'id: {}", savedtypeSalle.getId());
-        log.debug("Détails de la salle sauvegardée: {}", savedtypeSalle);
-        return savedtypeSalle;
-    }
-
-    
     /**
-     * 
-     * @param typeSalle
-     * @return
+     * Enregistre un nouveau type de salle.
+     *
+     * @param typeSalle L'entité TypeSalle à enregistrer.
+     * @return Le type de salle enregistré.
      */
-
-    public TypeSalle updateTypeSalle(TypeSalle typeSalle) {
-        TypeSalle updatedtypeSalle = typeSalleRepo.save(typeSalle);
-        log.info("Salle mise à jour avec succès avec l'id: {}", updatedtypeSalle.getId());
-        log.debug("Détails de la salle après mise à jour: {}", updatedtypeSalle);
-        return updatedtypeSalle;
+    public TypeSalle saveTypeSalle(TypeSalle typeSalle) {
+        TypeSalle savedTypeSalle = typeSalleRepo.save(typeSalle);
+        log.info("Type de salle sauvegardé avec succès avec l'id: {}", savedTypeSalle.getId());
+        log.debug("Détails du type de salle sauvegardé: {}", savedTypeSalle);
+        return savedTypeSalle;
     }
 
-     /**
-     * 
-     * @param id
-     * @return
+    /**
+     * Met à jour un type de salle existant.
+     *
+     * @param typeSalle L'entité TypeSalle avec les nouvelles données.
+     * @return Le type de salle mis à jour.
      */
+    public TypeSalle updateTypeSalle(TypeSalle typeSalle) {
+        TypeSalle updatedTypeSalle = typeSalleRepo.save(typeSalle);
+        log.info("Type de salle mis à jour avec succès avec l'id: {}", updatedTypeSalle.getId());
+        log.debug("Détails du type de salle après mise à jour: {}", updatedTypeSalle);
+        return updatedTypeSalle;
+    }
 
+    /**
+     * Supprime un type de salle par son ID.
+     *
+     * @param id L'identifiant du type de salle à supprimer.
+     */
     public void deleteTypeSalleById(Integer id) {
         typeSalleRepo.deleteById(id);
-        log.debug("Salle with id: {} deleted successfully", id);
+        log.debug("Type de salle avec id: {} supprimé avec succès", id);
     }
 
+    /**
+     * Recherche les types de salle dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleSalle La chaîne de caractères à rechercher dans le libellé des types de salle.
+     * @return Une liste de types de salle correspondant à la recherche.
+     */
     public List<TypeSalle> getByLibelleTypeSalleContainingIgnoreCase(String libelleSalle) {
         return typeSalleRepo.findByLibelleTypeSalleContainingIgnoreCase(libelleSalle);
-    }  
-
+    }
 }
