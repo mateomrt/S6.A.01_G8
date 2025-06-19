@@ -63,4 +63,8 @@ public class TypeEquipement {
     public int hashCode() {
         return Objects.hash(id, libelleTypeEquipement);
     }
+
+    public String getDesc() {
+        return libelleTypeEquipement;
+    }
 }
