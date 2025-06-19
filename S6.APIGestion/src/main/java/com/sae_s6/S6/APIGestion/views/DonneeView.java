@@ -1,8 +1,9 @@
 package com.sae_s6.S6.APIGestion.views;
 
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.service.BatimentService;
+
+import com.sae_s6.S6.APIGestion.entity.Donnee;
+import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -15,37 +16,36 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-@Route (value="batiment") 
-@PageTitle("Les Batiments")
-@Menu(title = "Les Batiments", order = 4, icon = "vaadin:clipboard-check")
+@Route (value="donnee") 
+@PageTitle("Les Données")
+@Menu(title = "Les Données", order = 4, icon = "vaadin:clipboard-check")
 
-public class BatimentView extends VerticalLayout {
+public class DonneeView extends VerticalLayout {
 
 	//private final AuteurRepo repo;
-	private final BatimentService batimentService;
+	private final DonneeService donneeService;
 
-	final Grid<Batiment> grid;
+	final Grid<Donnee> grid;
 
 	final TextField filter;
 
 	private final Button addNewBtn;
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public BatimentView(BatimentService batimentService, BatimentEditor editor) {
+	public DonneeView(DonneeService donneeService, DonneeEditor editor) {
 		//this.repo = repo;
-		this.batimentService = batimentService;
+		this.donneeService = donneeService;
 		//this.editor = editor;
-		this.grid = new Grid<>(Batiment.class);
+		this.grid = new Grid<>(Donnee.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un batiment", VaadinIcon.PLUS.create());
+		this.addNewBtn = new Button("Ajouter une donnée", VaadinIcon.PLUS.create());
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		add(actions, grid, editor);
 
 		grid.setHeight("300px");
-		grid.setColumns("id", "libelleBatiment");
-		
+		grid.setColumns("id", "libelleDonnee", "unite");
 		
 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
@@ -55,32 +55,32 @@ public class BatimentView extends VerticalLayout {
 
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listBatiments(e.getValue()));
+		filter.addValueChangeListener(e -> listDonnees(e.getValue()));
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editBatiment(e.getValue());
+			editor.editDonnee(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editBatiment(new Batiment()));
+		addNewBtn.addClickListener(e -> editor.editDonnee(new Donnee()));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
-			listBatiments(filter.getValue());
+			listDonnees(filter.getValue());
 		});
 
 		// Initialize listing
-		listBatiments(null);
+		listDonnees(null);
 	}
 
 	// tag::listSalles[]
-	void listBatiments(String filterText) {
+	void listDonnees(String filterText) {
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(batimentService.getByLibelleBatimentContainingIgnoreCase(filterText));
+			grid.setItems(donneeService.getByLibelleDonneeContainingIgnoreCase(filterText));
 		} else {
-			grid.setItems(batimentService.getAllBatiments());
+			grid.setItems(donneeService.getAllDonnees());
 		}
 	}
 	// end::listCustomers[]
