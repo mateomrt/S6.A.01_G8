@@ -1,7 +1,6 @@
 package com.sae_s6.S6.APIGestion.controller;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

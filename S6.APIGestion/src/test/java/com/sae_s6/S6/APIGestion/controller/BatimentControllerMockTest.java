@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sae_s6.S6.APIGestion.entity.Batiment;
-import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
 import com.sae_s6.S6.APIGestion.service.BatimentService;
 
 import static org.assertj.core.api.Assertions.assertThat;
