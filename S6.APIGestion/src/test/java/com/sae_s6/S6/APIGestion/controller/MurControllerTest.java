@@ -65,8 +65,8 @@ public class MurControllerTest {
         List<Mur> murs = Arrays.asList(response.getBody());
         murs.sort(Comparator.comparing(Mur::getLibelleMur));
 
-        assertThat(murs.get(0).getLibelleMur()).isEqualTo("Mur Nord");
-        assertThat(murs.get(1).getLibelleMur()).isEqualTo("Mur est");
+        assertThat(murs.get(0).getLibelleMur()).isEqualTo("Mur est");
+        assertThat(murs.get(1).getLibelleMur()).isEqualTo("Mur nord");
         assertThat(murs.get(2).getLibelleMur()).isEqualTo("Mur ouest");
         assertThat(murs.get(3).getLibelleMur()).isEqualTo("Mur sud");
     }
@@ -82,7 +82,7 @@ public class MurControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getLibelleMur()).isEqualTo("Mur Nord");
+        assertThat(response.getBody().getLibelleMur()).isEqualTo("Mur nord");
         assertThat(response.getBody().getHauteur()).isEqualTo(250.0);
         assertThat(response.getBody().getLongueur()).isEqualTo(600.0);
         assertThat(response.getBody().getOrientation()).isEqualTo(Mur.Orientation.N);
