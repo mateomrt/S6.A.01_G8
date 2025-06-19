@@ -65,22 +65,18 @@ public class MurService {
      * @return Le mur enregistré.
      */
     public Mur saveMur(Mur mur) {
-        Salle salleInput = mur.getSalleNavigation();
-        Salle salle = salleRepo.findById(salleInput.getId())
+        Salle salle = salleRepo.findById(mur.getSalleNavigation().getId())
             .orElseThrow(() -> new RuntimeException("Salle non trouvée"));
-
-        Batiment batiment = batimentRepo.findById(salleInput.getBatimentNavigation().getId())
-            .orElseThrow(() -> new RuntimeException("Batiment non trouvé"));
-
-        TypeSalle typeSalle = typeSalleRepo.findById(salleInput.getTypeSalleNavigation().getId())
-            .orElseThrow(() -> new RuntimeException("Type de salle non trouvé"));
-
-        salle.setBatimentNavigation(batiment);
-        salle.setTypeSalleNavigation(typeSalle);
-
+    
+        // On suppose ici que la salle a bien ses relations déjà définies en base
+        if (salle.getBatimentNavigation() == null || salle.getTypeSalleNavigation() == null) {
+            throw new RuntimeException("Salle mal configurée : relations manquantes");
+        }
+    
         mur.setSalleNavigation(salle);
         return murRepo.save(mur);
     }
+    
 
     /**
      * Met à jour un mur existant.
