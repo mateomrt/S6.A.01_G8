@@ -28,7 +28,7 @@ public class BatimentController {
 
     
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Batiment>> getAllBatiments() {
         return ResponseEntity.ok(batimentService.getAllBatiments());
     }
@@ -40,12 +40,12 @@ public class BatimentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Batiment> createBatiment(@RequestBody Batiment batiment) {
         return ResponseEntity.ok(batimentService.createBatiment(batiment));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/")
     public ResponseEntity<Batiment> updateBatiment(@PathVariable Integer id, @RequestBody Batiment updated) {
         Batiment result = batimentService.updateBatiment(id, updated);
         if (result != null) {
