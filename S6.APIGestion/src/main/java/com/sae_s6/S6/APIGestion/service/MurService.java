@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
 import com.sae_s6.S6.APIGestion.repository.MurRepo;
 import com.sae_s6.S6.APIGestion.repository.SalleRepo;
-import com.sae_s6.S6.APIGestion.repository.TypeSalleRepo;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Mur;
-import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 
 /**
@@ -27,8 +23,6 @@ import com.sae_s6.S6.APIGestion.entity.Salle;
 public class MurService {
     private final MurRepo murRepo;
     private final SalleRepo salleRepo;
-    private final BatimentRepo batimentRepo;
-    private final TypeSalleRepo typeSalleRepo;
 
     /**
      * Récupère tous les murs.

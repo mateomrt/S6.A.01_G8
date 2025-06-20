@@ -2,7 +2,6 @@ package com.sae_s6.S6.APIGestion.service;
 
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Mur;
-import com.sae_s6.S6.APIGestion.entity.Mur.Orientation;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.repository.BatimentRepo;
