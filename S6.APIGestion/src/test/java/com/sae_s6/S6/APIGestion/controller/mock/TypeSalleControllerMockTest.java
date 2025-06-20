@@ -1,4 +1,4 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.mock;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

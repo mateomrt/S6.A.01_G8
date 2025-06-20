@@ -1,4 +1,4 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.unit;
 
 import com.sae_s6.S6.APIGestion.entity.Equipement;
 import com.sae_s6.S6.APIGestion.entity.Mur;

@@ -1,5 +1,6 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.mock;
 
+import com.sae_s6.S6.APIGestion.controller.DonneeController;
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import org.junit.jupiter.api.BeforeEach;
