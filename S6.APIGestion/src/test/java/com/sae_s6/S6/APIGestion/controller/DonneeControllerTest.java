@@ -43,6 +43,7 @@ public class DonneeControllerTest {
      * @return Donnee créé
      */
     private Donnee createDonnee(Integer id, String libelle, String unite) {
+        // Crée une donnee fictive
         Donnee donnee = new Donnee();
         donnee.setId(id);
         donnee.setLibelleDonnee(libelle);
