@@ -16,6 +16,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Classe de test unitaire pour le contrôleur TypeCapteurDonneeController.
+ * Utilise Mockito pour simuler le service TypeCapteurDonneeService.
+ */
 class TypeCapteurDonneeControllerMockTest {
 
     @Mock
@@ -24,11 +28,17 @@ class TypeCapteurDonneeControllerMockTest {
     @InjectMocks
     private TypeCapteurDonneeController typeCapteurDonneeController;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de toutes les associations TypeCapteurDonnee (cas succès).
+     */
     @Test
     void getAllTypeCapteurDonnees_ReturnsList_WhenNotNull() {
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
@@ -42,6 +52,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals(1, response.getBody().size());
     }
 
+    /**
+     * Teste la récupération de toutes les associations TypeCapteurDonnee (cas liste nulle).
+     */
     @Test
     void getAllTypeCapteurDonnees_ReturnsBadRequest_WhenNull() {
         when(typeCapteurDonneeService.getAllTypeCapteurDonnee()).thenReturn(null);
@@ -51,6 +64,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la récupération d'une association TypeCapteurDonnee par son identifiant (cas succès).
+     */
     @Test
     void getTypeCapteurDonneeById_ReturnsTypeCapteurDonnee_WhenFound() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -63,6 +79,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertNotNull(response.getBody());
     }
 
+    /**
+     * Teste la récupération d'une association TypeCapteurDonnee par son identifiant (cas non trouvé).
+     */
     @Test
     void getTypeCapteurDonneeById_ReturnsBadRequest_WhenNotFound() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -73,6 +92,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la création d'une association TypeCapteurDonnee (cas succès).
+     */
     @Test
     void saveTypeCapteurDonnee_ReturnsTypeCapteurDonnee_WhenSaved() {
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
@@ -84,6 +106,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertNotNull(response.getBody());
     }
 
+    /**
+     * Teste la création d'une association TypeCapteurDonnee (cas échec).
+     */
     @Test
     void saveTypeCapteurDonnee_ReturnsBadRequest_WhenNotSaved() {
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
@@ -94,6 +119,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la mise à jour d'une association TypeCapteurDonnee (cas succès).
+     */
     @Test
     void updateTypeCapteurDonnee_ReturnsUpdated_WhenUpdated() {
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
@@ -105,6 +133,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertNotNull(response.getBody());
     }
 
+    /**
+     * Teste la mise à jour d'une association TypeCapteurDonnee (cas échec).
+     */
     @Test
     void updateTypeCapteurDonnee_ReturnsBadRequest_WhenNotFound() {
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
@@ -115,6 +146,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la suppression d'une association TypeCapteurDonnee par son identifiant (cas succès).
+     */
     @Test
     void deleteTypeCapteurDonneeById_ReturnsOk_WhenFoundAndDeleted() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -128,6 +162,9 @@ class TypeCapteurDonneeControllerMockTest {
         assertEquals("Association TypeCapteurDonnee supprimée avec succès", response.getBody());
     }
 
+    /**
+     * Teste la suppression d'une association TypeCapteurDonnee par son identifiant (cas non trouvé).
+     */
     @Test
     void deleteTypeCapteurDonneeById_ReturnsBadRequest_WhenNotFound() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);

@@ -22,6 +22,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.List;
 
+/**
+ * Classe de test unitaire pour le service SalleService.
+ * Utilise Mockito pour simuler les repositories.
+ */
 public class SalleServiceTest {
 
     @Mock
@@ -36,11 +40,17 @@ public class SalleServiceTest {
     @InjectMocks
     private SalleService salleService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de toutes les salles.
+     */
     @Test
     public void testGetAllSalles() {
         Salle salle1 = new Salle();
@@ -53,6 +63,9 @@ public class SalleServiceTest {
         verify(salleRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'une salle par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetSalleById_Found() {
         Salle salle = new Salle();
@@ -65,6 +78,9 @@ public class SalleServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'une salle par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetSalleById_NotFound() {
         when(salleRepo.findById(1)).thenReturn(Optional.empty());
@@ -74,6 +90,9 @@ public class SalleServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'une salle.
+     */
     @Test
     public void testSaveSalle() {
         // Création des objets nécessaires
@@ -108,6 +127,9 @@ public class SalleServiceTest {
         verify(salleRepo).save(salle);
     }
 
+    /**
+     * Teste la mise à jour d'une salle.
+     */
     @Test
     public void testUpdateSalle() {
         Salle salle = new Salle();
@@ -119,6 +141,9 @@ public class SalleServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la suppression d'une salle par son identifiant.
+     */
     @Test
     public void testDeleteSalleById() {
         salleService.deleteSalleById(1);

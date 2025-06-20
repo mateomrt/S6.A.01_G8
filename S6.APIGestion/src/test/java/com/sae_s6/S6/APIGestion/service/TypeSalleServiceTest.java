@@ -23,11 +23,17 @@ public class TypeSalleServiceTest {
     @InjectMocks
     private TypeSalleService typeSalleService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les types de salle.
+     */
     @Test
     public void testGetAllTypeSalles() {
         TypeSalle typeSalle1 = new TypeSalle();
@@ -40,6 +46,9 @@ public class TypeSalleServiceTest {
         verify(typeSalleRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un type de salle par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetTypeSalleById_Found() {
         TypeSalle typeSalle = new TypeSalle();
@@ -52,6 +61,9 @@ public class TypeSalleServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'un type de salle par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetTypeSalleById_NotFound() {
         when(typeSalleRepo.findById(1)).thenReturn(Optional.empty());
@@ -61,6 +73,9 @@ public class TypeSalleServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'un type de salle.
+     */
     @Test
     public void testSaveTypeSalle() {
         TypeSalle typeSalle = new TypeSalle();
@@ -74,6 +89,9 @@ public class TypeSalleServiceTest {
         verify(typeSalleRepo, times(1)).save(typeSalle);
     }
 
+    /**
+     * Teste la mise à jour d'un type de salle.
+     */
     @Test
     public void testUpdateTypeSalle() {
         TypeSalle typeSalle = new TypeSalle();
@@ -87,6 +105,9 @@ public class TypeSalleServiceTest {
         verify(typeSalleRepo, times(1)).save(typeSalle);
     }
 
+    /**
+     * Teste la suppression d'un type de salle par son identifiant.
+     */
     @Test
     public void testDeleteTypeSalleById() {
         Integer id = 1;

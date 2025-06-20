@@ -15,6 +15,10 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le contrôleur DonneeController.
+ * Utilise Mockito pour simuler le service DonneeService.
+ */
 class DonneeControllerMockTest {
 
     @Mock
@@ -23,26 +27,38 @@ class DonneeControllerMockTest {
     @InjectMocks
     private DonneeController donneeController;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de toutes les données (cas succès).
+     */
     @Test
     void testGetAllDonnees() {
         Donnee donnee1 = new Donnee(1, "Température", "°C");
         Donnee donnee2 = new Donnee(2, "Humidité", "%");
         List<Donnee> donnees = Arrays.asList(donnee1, donnee2);
 
+        // Simule le retour du service
         when(donneeService.getAllDonnees()).thenReturn(donnees);
 
+        // Appel du contrôleur
         ResponseEntity<List<Donnee>> response = donneeController.getAllDonnees();
 
+        // Vérifications
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(donnees, response.getBody());
         verify(donneeService, times(1)).getAllDonnees();
     }
 
+    /**
+     * Teste la récupération de toutes les données (cas liste nulle).
+     */
     @Test
     void testGetAllDonnees_NullList() {
         when(donneeService.getAllDonnees()).thenReturn(null);
@@ -52,6 +68,9 @@ class DonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la récupération d'une donnée par son identifiant (cas succès).
+     */
     @Test
     void testGetDonneeById() {
         Donnee donnee = new Donnee(1, "Pression", "Pa");
@@ -64,6 +83,9 @@ class DonneeControllerMockTest {
         verify(donneeService, times(1)).getDonneeById(1);
     }
 
+    /**
+     * Teste la récupération d'une donnée par son identifiant (cas non trouvé).
+     */
     @Test
     void testGetDonneeById_NotFound() {
         when(donneeService.getDonneeById(1)).thenReturn(null);
@@ -73,6 +95,9 @@ class DonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la création d'une donnée (cas succès).
+     */
     @Test
     void testSaveDonnee() {
         Donnee donnee = new Donnee(null, "Vitesse", "m/s");
@@ -86,6 +111,9 @@ class DonneeControllerMockTest {
         verify(donneeService, times(1)).saveDonnee(donnee);
     }
 
+    /**
+     * Teste la création d'une donnée (cas échec).
+     */
     @Test
     void testSaveDonnee_Failure() {
         Donnee donnee = new Donnee(null, "Vitesse", "m/s");
@@ -96,6 +124,9 @@ class DonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la mise à jour d'une donnée (cas succès).
+     */
     @Test
     void testUpdateDonnee() {
         Donnee donnee = new Donnee(1, "Vitesse", "m/s");
@@ -108,6 +139,9 @@ class DonneeControllerMockTest {
         verify(donneeService, times(1)).updateDonnee(donnee);
     }
 
+    /**
+     * Teste la mise à jour d'une donnée (cas échec).
+     */
     @Test
     void testUpdateDonnee_Failure() {
         Donnee donnee = new Donnee(1, "Vitesse", "m/s");
@@ -118,6 +152,9 @@ class DonneeControllerMockTest {
         assertEquals(400, response.getStatusCodeValue());
     }
 
+    /**
+     * Teste la suppression d'une donnée par son identifiant (cas succès).
+     */
     @Test
     void testDeleteDonneeById() {
         Donnee donnee = new Donnee(1, "Pression", "Pa");
@@ -131,6 +168,9 @@ class DonneeControllerMockTest {
         verify(donneeService, times(1)).deleteDonneeById(1);
     }
 
+    /**
+     * Teste la suppression d'une donnée par son identifiant (cas non trouvé).
+     */
     @Test
     void testDeleteDonneeById_NotFound() {
         when(donneeService.getDonneeById(1)).thenReturn(null);

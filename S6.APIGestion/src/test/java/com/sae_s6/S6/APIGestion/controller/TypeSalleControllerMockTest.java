@@ -22,6 +22,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * Classe de test d'intégration pour le contrôleur TypeSalleController.
+ * Utilise MockMvc et Mockito pour simuler les appels HTTP et le service TypeSalleService.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeSalleControllerMockTest {
@@ -35,22 +39,27 @@ public class TypeSalleControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Teste la récupération de tous les types de salle via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testGetAllTypeSalles() throws Exception {
-        // Arrange
+        // Arrange : création de types fictifs
         TypeSalle typeSalle1 = new TypeSalle(1, "Amphithéâtre");
         TypeSalle typeSalle2 = new TypeSalle(2, "Laboratoire");
         List<TypeSalle> typeSalles = Arrays.asList(typeSalle1, typeSalle2);
 
+        // Simulation du service
         Mockito.when(typeSalleService.getAllTypeSalles())
                 .thenReturn(typeSalles);
 
-        // Act
+        // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/typesalle/")
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         List<TypeSalle> resultat = objectMapper.readValue(json, new TypeReference<List<TypeSalle>>() {});
         assertThat(resultat).isNotEmpty();
@@ -58,63 +67,78 @@ public class TypeSalleControllerMockTest {
         assertThat(resultat.get(1).getLibelleTypeSalle()).isEqualTo("Laboratoire");
     }
 
+    /**
+     * Teste la récupération d'un type de salle par son identifiant via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testGetTypeSalleById() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un type fictif
         int typeSalleId = 1;
         TypeSalle typeSalle = new TypeSalle(typeSalleId, "Amphithéâtre");
 
+        // Simulation du service
         Mockito.when(typeSalleService.getTypeSalleById(typeSalleId))
                 .thenReturn(typeSalle);
 
-        // Act
+        // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/typesalle/" + typeSalleId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         TypeSalle resultat = objectMapper.readValue(json, TypeSalle.class);
         assertThat(resultat.getId()).isEqualTo(typeSalleId);
         assertThat(resultat.getLibelleTypeSalle()).isEqualTo("Amphithéâtre");
     }
 
+    /**
+     * Teste la création d'un type de salle via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testCreateTypeSalle() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un nouveau type
         TypeSalle newTypeSalle = new TypeSalle(10, "Salle de Réunion");
 
+        // Simulation du service
         Mockito.when(typeSalleService.saveTypeSalle(Mockito.any()))
                 .thenReturn(newTypeSalle);
 
-        // Act
+        // Act : appel POST simulé
         MvcResult result = mockMvc.perform(post("/api/typesalle/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newTypeSalle)))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         TypeSalle createdTypeSalle = objectMapper.readValue(json, TypeSalle.class);
         assertThat(createdTypeSalle.getId()).isEqualTo(10);
         assertThat(createdTypeSalle.getLibelleTypeSalle()).isEqualTo("Salle de Réunion");
     }
 
+    /**
+     * Teste la mise à jour d'un type de salle via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testUpdateTypeSalle() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un type modifié
         TypeSalle updatedTypeSalle = new TypeSalle(1, "Salle Informatique");
 
+        // Simulation du service
         Mockito.when(typeSalleService.updateTypeSalle(Mockito.any()))
                 .thenReturn(updatedTypeSalle);
 
-        // Act
+        // Act : appel PUT simulé
         MvcResult result = mockMvc.perform(put("/api/typesalle/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedTypeSalle)))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat et du code HTTP
         String json = result.getResponse().getContentAsString();
         TypeSalle typeSalle = objectMapper.readValue(json, TypeSalle.class);
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -122,23 +146,28 @@ public class TypeSalleControllerMockTest {
         assertThat(typeSalle.getLibelleTypeSalle()).isEqualTo("Salle Informatique");
     }
 
+    /**
+     * Teste la suppression d'un type de salle via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testDeleteTypeSalle() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un type à supprimer
         int typeSalleId = 1;
         TypeSalle typeSalle = new TypeSalle(typeSalleId, "Amphithéâtre");
 
+        // Simulation du service pour la récupération et la suppression
         Mockito.when(typeSalleService.getTypeSalleById(typeSalleId))
                 .thenReturn(typeSalle);
 
         Mockito.doNothing().when(typeSalleService).deleteTypeSalleById(typeSalleId);
 
-        // Act
+        // Act : appel DELETE simulé
         MvcResult result = mockMvc.perform(delete("/api/typesalle/" + typeSalleId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du code HTTP de succès
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 }

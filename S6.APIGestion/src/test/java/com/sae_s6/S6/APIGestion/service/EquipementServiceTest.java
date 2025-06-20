@@ -24,6 +24,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Classe de test unitaire pour le service EquipementService.
+ * Utilise Mockito pour simuler les repositories.
+ */
 public class EquipementServiceTest {
 
     @Mock
@@ -42,11 +46,17 @@ public class EquipementServiceTest {
     @InjectMocks
     private EquipementService equipementService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les équipements.
+     */
     @Test
     void testGetAllEquipements() {
         Equipement e1 = new Equipement();
@@ -59,6 +69,9 @@ public class EquipementServiceTest {
         verify(equipementRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un équipement par son identifiant (cas trouvé).
+     */
     @Test
     void testGetEquipementById_Found() {
         Equipement equipement = new Equipement();
@@ -72,6 +85,9 @@ public class EquipementServiceTest {
         verify(equipementRepo).findById(1);
     }
 
+    /**
+     * Teste la récupération d'un équipement par son identifiant (cas non trouvé).
+     */
     @Test
     void testGetEquipementById_NotFound() {
         when(equipementRepo.findById(1)).thenReturn(Optional.empty());
@@ -82,7 +98,9 @@ public class EquipementServiceTest {
         verify(equipementRepo).findById(1);
     }
 
-
+    /**
+     * Teste la sauvegarde d'un équipement lorsque le mur n'est pas trouvé.
+     */
     @Test
     void testSaveEquipement_MurNotFound_Throws() {
         Batiment batiment = new Batiment();
@@ -119,6 +137,9 @@ public class EquipementServiceTest {
         verifyNoMoreInteractions(typeEquipementRepo, equipementRepo);
     }
 
+    /**
+     * Teste la mise à jour d'un équipement.
+     */
     @Test
     void testUpdateEquipement() {
         Equipement equipement = new Equipement();
@@ -133,6 +154,9 @@ public class EquipementServiceTest {
         verify(equipementRepo).save(equipement);
     }
 
+    /**
+     * Teste la suppression d'un équipement par son identifiant.
+     */
     @Test
     void testDeleteEquipementById() {
         doNothing().when(equipementRepo).deleteById(1);

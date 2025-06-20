@@ -26,7 +26,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Classe de test d'intégration pour le contrôleur CapteurController.
+ * Utilise TestRestTemplate pour effectuer de vrais appels HTTP sur un serveur démarré aléatoirement.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CapteurControllerTest {
 
@@ -36,11 +39,20 @@ class CapteurControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    /**
+     * Retourne l'URL de base pour les appels à l'API Capteur.
+     * @return URL complète de l'API Capteur
+     */
     private String getBaseUrl() {
         return "http://localhost:" + port + "/api/capteur/";
     }
+
+    // Liste pour garder trace des capteurs créés pendant les tests (pour nettoyage)
     private List<Integer> capteursCreeIds = new ArrayList<>();
 
+    /**
+     * Teste la création d'un capteur puis sa récupération par ID via l'API.
+     */
     @Test
     void testPostCapteurAndGetById() {
         // Création du capteur avec ses relations valides
@@ -61,7 +73,7 @@ class CapteurControllerTest {
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(typeCapteur);
     
-        // POST
+        // POST : création du capteur
         ResponseEntity<Capteur> postResponse = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur capteurCree = postResponse.getBody();
@@ -69,7 +81,7 @@ class CapteurControllerTest {
         assertThat(capteurCree.getId()).isNotNull();
         capteursCreeIds.add(capteurCree.getId());
     
-        // GET
+        // GET : récupération du capteur par son ID
         ResponseEntity<Capteur> getResponse = restTemplate.getForEntity(getBaseUrl() + capteurCree.getId(), Capteur.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur capteurFetched = getResponse.getBody();
@@ -84,8 +96,12 @@ class CapteurControllerTest {
         assertThat(capteurFetched.getTypeCapteurNavigation().getId()).isEqualTo(1);
     }
 
+    /**
+     * Teste la récupération de tous les capteurs via l'API.
+     */
     @Test
     public void testGetAllCapteurs() {
+        // GET : récupération de tous les capteurs
         ResponseEntity<Capteur[]> response = restTemplate.getForEntity(getBaseUrl(), Capteur[].class);
         
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -95,6 +111,9 @@ class CapteurControllerTest {
         assertThat(capteurs.length).isGreaterThan(0);
     }
 
+    /**
+     * Teste la mise à jour d'un capteur via l'API.
+     */
     @Test
     void testUpdateCapteur() {
         // Création du capteur initial
@@ -111,16 +130,18 @@ class CapteurControllerTest {
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(type);
     
+        // POST : création du capteur
         ResponseEntity<Capteur> post = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         Capteur created = post.getBody();
         assertThat(created).isNotNull();
         assertThat(created.getId()).isNotNull();
         capteursCreeIds.add(created.getId());
     
-        // Modification
+        // Modification des valeurs du capteur
         created.setLibelleCapteur("Capteur Modifié");
         created.setPositionXCapteur(42.0);
     
+        // PUT : mise à jour du capteur
         HttpEntity<Capteur> requestEntity = new HttpEntity<>(created);
         ResponseEntity<Capteur> response = restTemplate.exchange(getBaseUrl(), HttpMethod.PUT, requestEntity, Capteur.class);
     
@@ -131,9 +152,12 @@ class CapteurControllerTest {
         assertThat(updated.getPositionXCapteur()).isEqualTo(42.0);
     }
 
+    /**
+     * Teste la suppression d'un capteur via l'API.
+     */
     @Test
     void testDeleteCapteur() {
-        // Création
+        // Création du capteur à supprimer
         Capteur capteur = new Capteur();
         capteur.setLibelleCapteur("Capteur à Supprimer");
         capteur.setPositionXCapteur(1.0);
@@ -147,18 +171,23 @@ class CapteurControllerTest {
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(type);
     
+        // POST : création du capteur
         ResponseEntity<Capteur> post = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         Capteur created = post.getBody();
         assertThat(created).isNotNull();
         capteursCreeIds.add(created.getId());
     
-        // DELETE
+        // DELETE : suppression du capteur
         restTemplate.delete(getBaseUrl() + created.getId());
     
         // Vérification que le capteur n'existe plus
         ResponseEntity<Capteur> getResponse = restTemplate.getForEntity(getBaseUrl() + created.getId(), Capteur.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Nettoyage après chaque test : supprime tous les capteurs créés pendant les tests.
+     */
     @AfterEach
     void cleanUpCapteurs() {
         for (Integer id : new ArrayList<>(capteursCreeIds)) {
