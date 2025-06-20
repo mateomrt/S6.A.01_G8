@@ -80,9 +80,6 @@ public class TypeEquipementControllerTest {
 
     @Test
     void testUpdateTypeEquipement() {
-
-        
-
        TypeEquipement typeEquipement = createTypeEquipement(null, "PC");
         createdTypeEquipementId = typeEquipement.getId();
 
