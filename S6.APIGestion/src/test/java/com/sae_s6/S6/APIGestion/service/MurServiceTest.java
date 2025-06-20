@@ -24,6 +24,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le service MurService.
+ * Utilise Mockito pour simuler les repositories.
+ */
 public class MurServiceTest {
 
     @Mock
@@ -41,11 +45,17 @@ public class MurServiceTest {
     @InjectMocks
     private MurService murService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les murs.
+     */
     @Test
     public void testGetAllMurs() {
         Mur mur1 = new Mur();
@@ -58,6 +68,9 @@ public class MurServiceTest {
         verify(murRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un mur par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetMurById_Found() {
         Mur mur = new Mur();
@@ -70,6 +83,9 @@ public class MurServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'un mur par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetMurById_NotFound() {
         when(murRepo.findById(1)).thenReturn(Optional.empty());
@@ -79,6 +95,9 @@ public class MurServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'un mur.
+     */
     @Test
     public void testSaveMur() {
         // Création des objets nécessaires
@@ -113,6 +132,9 @@ public class MurServiceTest {
         verify(murRepo).save(mur);
     }
 
+    /**
+     * Teste la mise à jour d'un mur.
+     */
     @Test
     public void testUpdateMur() {
         Mur existingMur = new Mur();
@@ -132,40 +154,13 @@ public class MurServiceTest {
         verify(murRepo, times(1)).save(updatedMur);
     }
 
+    /**
+     * Teste la suppression d'un mur par son identifiant.
+     */
     @Test
     public void testDeleteMurById() {
         Integer id = 1;
         murService.deleteMurById(id);
         verify(murRepo, times(1)).deleteById(id);
-    }
-
-    @Test
-    void testDeleteMurById2() {
-        
-    }
-
-    @Test
-    void testGetAllMurs2() {
-        
-    }
-
-    @Test
-    void testGetByLibelleMurContainingIgnoreCase() {
-        
-    }
-
-    @Test
-    void testGetMurById() {
-        
-    }
-
-    @Test
-    void testSaveMur2() {
-        
-    }
-
-    @Test
-    void testUpdateMur2() {
-        
     }
 }

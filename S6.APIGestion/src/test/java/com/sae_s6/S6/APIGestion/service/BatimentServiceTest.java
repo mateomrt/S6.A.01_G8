@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le service BatimentService.
+ * Utilise Mockito pour simuler le repository BatimentRepo.
+ */
 public class BatimentServiceTest {
 
     @Mock
@@ -23,11 +27,17 @@ public class BatimentServiceTest {
     @InjectMocks
     private BatimentService batimentService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les bâtiments (cas succès).
+     */
     @Test
     void testGetAllBatiments() {
         Batiment b1 = new Batiment();
@@ -40,6 +50,9 @@ public class BatimentServiceTest {
         verify(batimentRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un bâtiment par son identifiant (cas trouvé).
+     */
     @Test
     void testGetBatimentById_Found() {
         Batiment b = new Batiment();
@@ -52,6 +65,9 @@ public class BatimentServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'un bâtiment par son identifiant (cas non trouvé).
+     */
     @Test
     void testGetBatimentById_NotFound() {
         when(batimentRepo.findById(1)).thenReturn(Optional.empty());
@@ -61,7 +77,9 @@ public class BatimentServiceTest {
         assertNull(result);
     }
 
-
+    /**
+     * Teste la mise à jour d'un bâtiment (cas succès).
+     */
     @Test
     void testUpdateBatiment() {
         Batiment b = new Batiment();
@@ -75,8 +93,9 @@ public class BatimentServiceTest {
         verify(batimentRepo, times(1)).save(b);
     }
 
-    
-
+    /**
+     * Teste la recherche de bâtiments par libellé (ignore la casse).
+     */
     @Test
     void testGetByLibelleBatimentContainingIgnoreCase() {
         Batiment b1 = new Batiment();

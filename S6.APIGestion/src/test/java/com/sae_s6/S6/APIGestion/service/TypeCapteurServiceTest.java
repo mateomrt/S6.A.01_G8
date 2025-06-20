@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le service TypeCapteurService.
+ * Utilise Mockito pour simuler le repository TypeCapteurRepo.
+ */
 public class TypeCapteurServiceTest {
 
     @Mock
@@ -23,11 +27,17 @@ public class TypeCapteurServiceTest {
     @InjectMocks
     private TypeCapteurService typeCapteurService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les types de capteurs.
+     */
     @Test
     public void testGetAllTypeCapteurs() {
         TypeCapteur capteur1 = new TypeCapteur();
@@ -40,6 +50,9 @@ public class TypeCapteurServiceTest {
         verify(typeCapteurRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un type de capteur par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetTypeCapteurById_Found() {
         TypeCapteur capteur = new TypeCapteur();
@@ -52,6 +65,9 @@ public class TypeCapteurServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'un type de capteur par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetTypeCapteurById_NotFound() {
         when(typeCapteurRepo.findById(1)).thenReturn(Optional.empty());
@@ -61,6 +77,9 @@ public class TypeCapteurServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'un type de capteur.
+     */
     @Test
     public void testSaveTypeCapteur() {
         TypeCapteur capteur = new TypeCapteur();
@@ -74,6 +93,9 @@ public class TypeCapteurServiceTest {
         verify(typeCapteurRepo, times(1)).save(capteur);
     }
 
+    /**
+     * Teste la mise à jour d'un type de capteur.
+     */
     @Test
     public void testUpdateTypeCapteur() {
         TypeCapteur capteur = new TypeCapteur();
@@ -87,6 +109,9 @@ public class TypeCapteurServiceTest {
         verify(typeCapteurRepo, times(1)).save(capteur);
     }
 
+    /**
+     * Teste la suppression d'un type de capteur par son identifiant.
+     */
     @Test
     public void testDeleteTypeCapteurById() {
         Integer id = 1;

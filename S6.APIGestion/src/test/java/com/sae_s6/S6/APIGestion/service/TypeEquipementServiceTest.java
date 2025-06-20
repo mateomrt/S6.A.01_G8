@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le service TypeEquipementService.
+ * Utilise Mockito pour simuler le repository TypeEquipementRepo.
+ */
 public class TypeEquipementServiceTest {
 
     @Mock
@@ -23,11 +27,17 @@ public class TypeEquipementServiceTest {
     @InjectMocks
     private TypeEquipementService typeEquipementService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de tous les types d'équipement.
+     */
     @Test
     public void testGetAllTypeEquipements() {
         TypeEquipement eq1 = new TypeEquipement();
@@ -40,6 +50,9 @@ public class TypeEquipementServiceTest {
         verify(typeEquipementRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'un type d'équipement par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetTypeEquipementById_Found() {
         TypeEquipement eq = new TypeEquipement();
@@ -52,6 +65,9 @@ public class TypeEquipementServiceTest {
         assertEquals(1, result.getId());
     }
 
+    /**
+     * Teste la récupération d'un type d'équipement par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetTypeEquipementById_NotFound() {
         when(typeEquipementRepo.findById(1)).thenReturn(Optional.empty());
@@ -61,6 +77,9 @@ public class TypeEquipementServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'un type d'équipement.
+     */
     @Test
     public void testSaveTypeEquipement() {
         TypeEquipement eq = new TypeEquipement();
@@ -74,6 +93,9 @@ public class TypeEquipementServiceTest {
         verify(typeEquipementRepo, times(1)).save(eq);
     }
 
+    /**
+     * Teste la mise à jour d'un type d'équipement.
+     */
     @Test
     public void testUpdateTypeEquipement() {
         TypeEquipement eq = new TypeEquipement();
@@ -87,6 +109,9 @@ public class TypeEquipementServiceTest {
         verify(typeEquipementRepo, times(1)).save(eq);
     }
 
+    /**
+     * Teste la suppression d'un type d'équipement par son identifiant.
+     */
     @Test
     public void testDeleteTypeEquipementById() {
         Integer id = 1;

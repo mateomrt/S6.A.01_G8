@@ -24,11 +24,17 @@ public class TypeCapteurDonneeServiceTest {
     @InjectMocks
     private TypeCapteurDonneeService typeCapteurDonneeService;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Teste la récupération de toutes les associations TypeCapteurDonnee.
+     */
     @Test
     public void testGetAllTypeCapteurDonnee() {
         TypeCapteurDonnee tcd1 = new TypeCapteurDonnee();
@@ -41,6 +47,9 @@ public class TypeCapteurDonneeServiceTest {
         verify(typeCapteurDonneeRepo, times(1)).findAll();
     }
 
+    /**
+     * Teste la récupération d'une association TypeCapteurDonnee par son identifiant (cas trouvé).
+     */
     @Test
     public void testGetTypeCapteurDonneeById_Found() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -54,6 +63,9 @@ public class TypeCapteurDonneeServiceTest {
         assertEquals(id, result.getId());
     }
 
+    /**
+     * Teste la récupération d'une association TypeCapteurDonnee par son identifiant (cas non trouvé).
+     */
     @Test
     public void testGetTypeCapteurDonneeById_NotFound() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -64,6 +76,9 @@ public class TypeCapteurDonneeServiceTest {
         assertNull(result);
     }
 
+    /**
+     * Teste la sauvegarde d'une association TypeCapteurDonnee.
+     */
     @Test
     public void testSaveTypeCapteurDonnee() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -78,6 +93,9 @@ public class TypeCapteurDonneeServiceTest {
         verify(typeCapteurDonneeRepo, times(1)).save(tcd);
     }
 
+    /**
+     * Teste la mise à jour d'une association TypeCapteurDonnee.
+     */
     @Test
     public void testUpdateTypeCapteurDonnee() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
@@ -92,6 +110,9 @@ public class TypeCapteurDonneeServiceTest {
         verify(typeCapteurDonneeRepo, times(1)).save(tcd);
     }
 
+    /**
+     * Teste la suppression d'une association TypeCapteurDonnee par son identifiant.
+     */
     @Test
     public void testDeleteTypeCapteurDonneeById() {
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);

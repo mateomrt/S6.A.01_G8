@@ -22,6 +22,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Classe de test pour le contrôleur BatimentController.
+ * Utilise MockMvc et Mockito pour simuler les appels HTTP et le service BatimentService.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BatimentControllerMockTest {
@@ -35,21 +39,27 @@ public class BatimentControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Teste la récupération de tous les bâtiments via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testGetAllBatiments() throws Exception {
+        // Arrange : création de données fictives
         Batiment batiment1 = new Batiment(1, "Bâtiment A");
         Batiment batiment2 = new Batiment(2, "Bâtiment B");
         List<Batiment> batiments = Arrays.asList(batiment1, batiment2);
 
+        // Simulation du service
         Mockito.when(batimentService.getAllBatiments())
                     .thenReturn(batiments);
 
-        // Act
+        // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/batiment/")
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         List<Batiment> resultat = objectMapper.readValue(json, new TypeReference<List<Batiment>>() {});
         assertThat(resultat).isNotEmpty();
@@ -57,63 +67,78 @@ public class BatimentControllerMockTest {
         assertThat(resultat.get(1).getLibelleBatiment()).isEqualTo("Bâtiment B");
     }
 
+    /**
+     * Teste la récupération d'un bâtiment par son identifiant via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testGetBatimentById() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un bâtiment fictif
         int batimentId = 1;
         Batiment batiment = new Batiment(batimentId, "Bâtiment A");
 
+        // Simulation du service
         Mockito.when(batimentService.getBatimentById(batimentId))
                     .thenReturn(batiment);
 
-        // Act
+        // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/batiment/" + batimentId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         Batiment resultat = objectMapper.readValue(json, Batiment.class);
         assertThat(resultat.getId()).isEqualTo(batimentId);
-        assertThat(resultat.getLibelleBatiment()).isEqualTo("Bâtiment A"); // Assuming "Bâtiment A" is the expected title
+        assertThat(resultat.getLibelleBatiment()).isEqualTo("Bâtiment A"); // Vérifie le libellé attendu
     }    
 
+    /**
+     * Teste la création d'un bâtiment via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testCreateBatiment() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un nouveau bâtiment
         Batiment newBatiment = new Batiment(10, "Bâtiment D");
 
+        // Simulation du service
         Mockito.when(batimentService.saveBatiment(Mockito.any()))
                     .thenReturn(newBatiment);
         
-        // Act
+        // Act : appel POST simulé
         MvcResult result = mockMvc.perform(post("/api/batiment/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newBatiment)))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat
         String json = result.getResponse().getContentAsString();
         Batiment createdBatiment = objectMapper.readValue(json, Batiment.class);
         assertThat(createdBatiment.getId()).isEqualTo(10);
         assertThat(createdBatiment.getLibelleBatiment()).isEqualTo("Bâtiment D");
     }
 
+    /**
+     * Teste la mise à jour d'un bâtiment via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testUpdateBatiment() throws Exception {
-        // Arrange
+        // Arrange : préparation d'un bâtiment mis à jour
         Batiment updatedBatiment = new Batiment(1, "Bâtiment F");
 
+        // Simulation du service
         Mockito.when(batimentService.updateBatiment(Mockito.any()))
                     .thenReturn(updatedBatiment);
 
-        // Act
+        // Act : appel PUT simulé
         MvcResult result = mockMvc.perform(put("/api/batiment/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedBatiment)))
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du résultat et du code HTTP
         String json = result.getResponse().getContentAsString();
         Batiment batiment = objectMapper.readValue(json, Batiment.class);
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value()); 
@@ -121,24 +146,27 @@ public class BatimentControllerMockTest {
         assertThat(batiment.getLibelleBatiment()).isEqualTo("Bâtiment F");
     }
 
+    /**
+     * Teste la suppression d'un bâtiment via l'API.
+     * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
+     */
     @Test
     void testDeleteBatiment() throws Exception {
-        //Arrange
+        // Arrange : préparation d'un bâtiment à supprimer
         int batimentId = 1;
-        
         Batiment batiment = new Batiment(batimentId, "Bâtiment A");
 
+        // Simulation du service pour la récupération et la suppression
         Mockito.when(batimentService.getBatimentById(batimentId))
             .thenReturn(batiment);
-        
         Mockito.doNothing().when(batimentService).deleteBatimentById(batimentId);
 
-        // Act
+        // Act : appel DELETE simulé
         MvcResult result = mockMvc.perform(delete("/api/batiment/" + batimentId)
                 .contentType(MediaType.APPLICATION_JSON))                
                 .andReturn();
 
-        // Assert
+        // Assert : vérification du code HTTP de succès
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
     }
 }
