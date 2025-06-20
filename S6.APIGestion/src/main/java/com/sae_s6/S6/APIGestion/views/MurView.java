@@ -1,6 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.Mur;
+import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.service.MurService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -44,7 +45,12 @@ public class MurView extends VerticalLayout {
         add(actions, grid, editor);
 
         grid.setHeight("300px");
-        grid.setColumns("id", "nom");
+        grid.setColumns("id", "libelleMur", "hauteur", "longueur", "orientation");
+        grid.addColumn(mur -> {
+            Salle salle = mur.getSalleNavigation();
+            return salle != null ? salle.getDesc() : "";
+        }).setHeader("Salle").setKey("SalleDescription");
+
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
         filter.setPlaceholder("Filtrer par nom");
