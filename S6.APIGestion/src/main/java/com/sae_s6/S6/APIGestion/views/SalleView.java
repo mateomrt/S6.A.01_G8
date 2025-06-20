@@ -1,11 +1,9 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.SalleService;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -18,84 +16,79 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-@Route (value="salle") 
+@Route(value = "salle")
 @PageTitle("Les Salles")
 @Menu(title = "Les Salles", order = 0, icon = "vaadin:clipboard-check")
-
 public class SalleView extends VerticalLayout {
 
-	//private final AuteurRepo repo;
-	private final SalleService salleService;
+    private final SalleService salleService;
 
-	final Grid<Salle> grid;
+    public final Grid<Salle> grid;
+    public final TextField filter;
+    private final Button addNewBtn;
+    public final SalleEditor editor;
 
-	final TextField filter;
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 
-	private final Button addNewBtn;
+    public SalleView(SalleService salleService, SalleEditor editor) {
+        this.salleService = salleService;
+        this.editor = editor;
+        this.grid = new Grid<>(Salle.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
 
-	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public SalleView(SalleService salleService, SalleEditor editor) {
-		//this.repo = repo;
-		this.salleService = salleService;
-		//this.editor = editor;
-		this.grid = new Grid<>(Salle.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
+        // Build layout
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+        grid.setHeight("300px");
+        grid.setColumns("id", "libelleSalle", "superficie");
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "libelleSalle", "superficie");
-		
-		grid.addColumn(salle -> {
+        grid.addColumn(salle -> {
             Batiment batiment = salle.getBatimentNavigation();
             return batiment != null ? batiment.getDesc() : "";
         }).setHeader("Batiment").setKey("BatimentDescription");
 
-		grid.addColumn(salle -> {
+        grid.addColumn(salle -> {
             TypeSalle typeSalle = salle.getTypeSalleNavigation();
             return typeSalle != null ? typeSalle.getDesc() : "";
         }).setHeader("Type salle").setKey("typeSalleDescription");
-		
-		
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		filter.setPlaceholder("Filtrer par nom");
+        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		// Hook logic to components
+        filter.setPlaceholder("Filtrer par nom");
 
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listSalles(e.getValue()));
+        // Hook logic to components
 
-		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editSalle(e.getValue());
-		});
+        // Replace listing with filtered content when user changes filter
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listSalles(e.getValue()));
 
-		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
+        // Connect selected Salle to editor or hide if none is selected
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editSalle(e.getValue());
+        });
 
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listSalles(filter.getValue());
-		});
+        // Instantiate and edit new Salle when the new button is clicked
+        addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
 
-		// Initialize listing
-		listSalles(null);
-	}
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listSalles(filter.getValue());
+        });
 
-	// tag::listSalles[]
-	void listSalles(String filterText) {
-		if (StringUtils.hasText(filterText)) {
-			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
-		} else {
-			grid.setItems(salleService.getAllSalles());
-		}
-	}
-	// end::listCustomers[]
+        // Initialize listing
+        listSalles(null);
+    }
 
+    void listSalles(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
+        } else {
+            grid.setItems(salleService.getAllSalles());
+        }
+    }
 }

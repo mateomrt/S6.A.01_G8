@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
 import com.sae_s6.S6.APIGestion.entity.Batiment;
 import com.sae_s6.S6.APIGestion.entity.Salle;
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
@@ -21,151 +20,117 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class SalleEditor extends VerticalLayout implements KeyNotifier {
 
-	private final SalleService salleService;
-	private final BatimentService batimentService;
-	private final TypeSalleService typeSalleService;
+    private final SalleService salleService;
+    private final BatimentService batimentService;
+    private final TypeSalleService typeSalleService;
 
-	/**
-	 * The currently edited auteur
-	 */
-	private Salle salle;
+    private Salle salle;
 
-	/* Fields to edit properties in Auteur entity */
-	TextField libelleSalle = new TextField("Libellé salle");
-	TextField superficie = new TextField("Superficie");
-    
-	ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
-	ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
-	
+    public TextField libelleSalle = new TextField("Libellé salle");
+    public TextField superficie = new TextField("Superficie");
+    public ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
+    public ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
 
-	HorizontalLayout fields = new HorizontalLayout(libelleSalle, superficie);
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    Binder<Salle> binder = new Binder<>(Salle.class);
+    private ChangeHandler changeHandler;
 
-	Binder<Salle> binder = new Binder<>(Salle.class);
-	private ChangeHandler changeHandler;
+    public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
+        this.salleService = salleService;
+        this.batimentService = batimentService;
+        this.typeSalleService = typeSalleService;
 
-	public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
-		this.salleService = salleService;
-		this.batimentService = batimentService;
-		this.typeSalleService = typeSalleService;
+        batimentComboBox.setPlaceholder("Sélectionner un batiment");
+        batimentComboBox.setClearButtonVisible(true);
+        batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
 
-		batimentComboBox.setPlaceholder("Sélectionner un batiment");
-		batimentComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
+        typeSalleComboBox.setPlaceholder("Sélectionner un type salle");
+        typeSalleComboBox.setClearButtonVisible(true);
+        typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
 
-		typeSalleComboBox.setPlaceholder("Sélectionner un type salle");
-		typeSalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
+        add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
 
-		add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
+        binder.bindInstanceFields(this);
+        binder.forField(batimentComboBox)
+              .asRequired("Batiment est obligatoire")
+              .bind(Salle::getBatimentNavigation, Salle::setBatimentNavigation);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
-		binder.forField(batimentComboBox)
-            .asRequired("Batiment est obligatoire")
-            .bind(Salle::getBatimentNavigation, Salle::setBatimentNavigation);
-			
-		binder.forField(typeSalleComboBox)
-            .asRequired("Auteur est obligatoire")
-            .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
+        binder.forField(typeSalleComboBox)
+              .asRequired("Type salle est obligatoire")
+              .bind(Salle::getTypeSalleNavigation, Salle::setTypeSalleNavigation);
 
-		binder.forField(superficie)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
-			.bind(Salle::getSuperficie, Salle::setSuperficie);
+        binder.forField(superficie)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La superficie doit être un nombre"))
+              .bind(Salle::getSuperficie, Salle::setSuperficie);
 
-		// Configure and style components
-		setSpacing(true);
+        setSpacing(true);
 
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        addKeyPressListener(Key.ENTER, e -> save());
 
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editSalle(salle));
-		setVisible(false);
-	}
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
 
-	void delete() {
-		salleService.deleteSalleById(salle.getId());
-		changeHandler.onChange();
-	}
-
-	void save() {
-        if (salle.getId() == null) {
-            // If the livre is new, we save it
-            salleService.saveSalle(salle);
-        } else {
-            // If the livre already exists, we update it
-            salleService.updateSalle(salle);
-        }
+    void delete() {
+        salleService.deleteSalleById(salle.getId());
         changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void save() {
+        salleService.saveSalle(salle);
+        changeHandler.onChange();
+    }
 
-	public final void editSalle(Salle a) {
-		if (a == null) {
-			setVisible(false);
-			return;
-		}
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		batimentComboBox.setItems(batimentService.getAllBatiments());
-		typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		final boolean persisted = a.getId() != null;
-		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
-			salle = salleService.getSalleById(a.getId());
-		}
-		else {
-			salle = a;
-		}
-		cancel.setVisible(persisted);
+    public final void editSalle(Salle s) {
+        if (s == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
-		binder.setBean(salle);
+        batimentComboBox.setItems(batimentService.getAllBatiments());
+        typeSalleComboBox.setItems(typeSalleService.getAllTypeSalles());
 
-		setVisible(true);
+        final boolean isNewSalle = (s.getId() == null);
 
-		// Focus first name initially
-		libelleSalle.focus();
-	}
+        if (isNewSalle) {
+            salle = s;
+            delete.setVisible(false); // Pas de bouton supprimer pour une nouvelle salle
+        } else {
+            salle = salleService.getSalleById(s.getId());
+            delete.setVisible(true); // Afficher le bouton supprimer pour une salle existante
+        }
 
-	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
-		changeHandler = h;
-	}
+        binder.setBean(salle);
+        setVisible(true);
+        libelleSalle.focus();
+    }
 
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }
