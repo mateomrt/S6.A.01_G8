@@ -82,4 +82,15 @@ public class TypeEquipementService {
         typeEquipementRepo.deleteById(id);
         log.debug("Type d'équipement avec id: {} supprimé avec succès", id);
     }
+
+        /**
+     * Recherche les types d'équipement dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleEquipement La chaîne de caractères à rechercher dans le libellé des types d'équipement.
+     * @return Une liste de types d'équipement correspondant à la recherche.
+     */
+    public List<TypeEquipement> getByLibelleTypeEquipementContainingIgnoreCase(String libelleTypeEquipement) {
+        return typeEquipementRepo.findByLibelleTypeEquipementContainingIgnoreCase(libelleTypeEquipement);
+    }
+
 }
