@@ -14,73 +14,68 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
-
-@Route (value="typeEquipement") 
+@Route(value = "typeEquipement")
 @PageTitle("Les Types d'équipement")
-@Menu(title = "Les types d'équipement", order = 1, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Types d'équipement", order = 1, icon = "vaadin:clipboard-check")
+public class TypeEquipementView extends VerticalLayout {
 
+    private final TypeEquipementService typeEquipementService;
 
-public class TypeEquipementView extends VerticalLayout{
-	private final TypeEquipementService typeEquipementService;
+    public final Grid<TypeEquipement> grid;
+    public final TextField filter;
+    private final Button addNewBtn;
+    public final TypeEquipementEditor editor;
 
-	final Grid<TypeEquipement> grid;
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 
-	final TextField filter;
+    public TypeEquipementView(TypeEquipementService typeEquipementService, TypeEquipementEditor editor) {
+        this.typeEquipementService = typeEquipementService;
+        this.editor = editor;
+        this.grid = new Grid<>(TypeEquipement.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter un type d'équipement", VaadinIcon.PLUS.create());
 
-	private final Button addNewBtn;
+        // Build layout
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-    	
-	public TypeEquipementView(TypeEquipementService typeEquipementService, TypeEquipementEditor editor) {
-		//this.repo = repo;
-		this.typeEquipementService = typeEquipementService;
-		//this.editor = editor;
-		this.grid = new Grid<>(TypeEquipement.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un type d'équipement", VaadinIcon.PLUS.create());
+        grid.setHeight("300px");
+        grid.setColumns("id", "libelleTypeEquipement");
+        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+        filter.setPlaceholder("Filtrer par nom");
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "libelleTypeEquipement");
-		
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+        // Hook logic to components
 
-		filter.setPlaceholder("Filtrer par nom");
+        // Replace listing with filtered content when user changes filter
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listTypeEquipement(e.getValue()));
 
-		// Hook logic to components
+        // Connect selected TypeEquipement to editor or hide if none is selected
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editTypeEquipement(e.getValue());
+        });
 
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listTypeEquipement(e.getValue()));
+        // Instantiate and edit new TypeEquipement when the new button is clicked
+        addNewBtn.addClickListener(e -> editor.editTypeEquipement(new TypeEquipement()));
 
-		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editTypeEquipement(e.getValue());
-		});
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listTypeEquipement(filter.getValue());
+        });
 
-		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editTypeEquipement(new TypeEquipement()));
+        // Initialize listing
+        listTypeEquipement(null);
+    }
 
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listTypeEquipement(filter.getValue());
-		});
-
-		// Initialize listing
-		listTypeEquipement(null);
-	}
-
-	// tag::listTypeEquipement[]
-	void listTypeEquipement(String filterText) {
-		if (StringUtils.hasText(filterText)) {
-			grid.setItems(typeEquipementService.getByLibelleTypeEquipementContainingIgnoreCase(filterText));
-		} else {
-			grid.setItems(typeEquipementService.getAllTypeEquipements());
-		}
-	}
-	// end::listCustomers[]
-
+    void listTypeEquipement(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(typeEquipementService.getByLibelleTypeEquipementContainingIgnoreCase(filterText));
+        } else {
+            grid.setItems(typeEquipementService.getAllTypeEquipements());
+        }
+    }
 }

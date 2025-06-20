@@ -14,31 +14,18 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 
 	private final TypeCapteurService typeCapteurService;
 
-	/**
-	 * The currently edited auteur
-	 */
 	private TypeCapteur typeCapteur;
+	private TypeCapteur originalTypeCapteur;
 
-	/* Fields to edit properties in Auteur entity */
+	/* Fields to edit properties in TypeCapteur entity */
 	TextField libelleTypeCapteur = new TextField("Libellé type capteur");
 	TextField modeTypeCapteur = new TextField("Mode du type capteur");
-    
-
-	HorizontalLayout fields = new HorizontalLayout(libelleTypeCapteur, modeTypeCapteur);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -54,21 +41,22 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 
 		add(libelleTypeCapteur, modeTypeCapteur, actions);
 
-		// bind using naming convention
+		// Configuration du binder
 		binder.bindInstanceFields(this);
 
-		// Configure and style components
+		// Configuration et style des composants
 		setSpacing(true);
-
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		addKeyPressListener(Key.ENTER, e -> save());
 
-		// wire action buttons to save, delete and reset
+		// Configuration des actions des boutons
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editTypeCapteur(typeCapteur));
+		cancel.addClickListener(e -> cancel());
+		
+		// L'éditeur est caché par défaut
 		setVisible(false);
 	}
 
@@ -78,14 +66,33 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 	}
 
 	void save() {
-        if (typeCapteur.getId() == null) {
-            // If the livre is new, we save it
-            typeCapteurService.saveTypeCapteur(typeCapteur);
-        } else {
-            // If the livre already exists, we update it
-            typeCapteurService.updateTypeCapteur(typeCapteur);
-        }
-        changeHandler.onChange();
+		// Validation avant sauvegarde
+		if (!binder.validate().isOk()) {
+			return;
+		}
+
+		if (typeCapteur.getId() == null) {
+			typeCapteurService.saveTypeCapteur(typeCapteur);
+		} else {
+			typeCapteurService.updateTypeCapteur(typeCapteur);
+		}
+		changeHandler.onChange();
+	}
+
+	void cancel() {
+		// Dans tous les cas, on ferme l'éditeur et on nettoie le formulaire
+		setVisible(false);
+		clearForm();
+		// Notifier le changement pour actualiser la vue principale
+		if (changeHandler != null) {
+			changeHandler.onChange();
+		}
+	}
+
+	private void clearForm() {
+		binder.setBean(null);
+		libelleTypeCapteur.clear();
+		modeTypeCapteur.clear();
 	}
 
 	public interface ChangeHandler {
@@ -95,37 +102,34 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 	public final void editTypeCapteur(TypeCapteur a) {
 		if (a == null) {
 			setVisible(false);
+			clearForm();
 			return;
 		}
 
-
 		final boolean persisted = a.getId() != null;
+		
 		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
+			// TypeCapteur existant : on charge depuis la BD
+			originalTypeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
 			typeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
-		}
-		else {
+		} else {
+			// Nouveau TypeCapteur
+			originalTypeCapteur = null;
 			typeCapteur = a;
 		}
-		cancel.setVisible(persisted);
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
+		// Configuration de la visibilité des boutons
+		cancel.setVisible(true); // Le bouton annuler est toujours visible
+		delete.setVisible(persisted); // Le bouton supprimer n'est visible que pour les types existants
+
+		// Binding des données
 		binder.setBean(typeCapteur);
 
 		setVisible(true);
-
-		// Focus first name initially
 		libelleTypeCapteur.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
 		changeHandler = h;
 	}
-
 }

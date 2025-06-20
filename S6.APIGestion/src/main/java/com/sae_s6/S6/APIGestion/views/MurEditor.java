@@ -19,153 +19,120 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class MurEditor extends VerticalLayout implements KeyNotifier {
 
-	private final MurService murService;
-	private final SalleService salleService;
+    private final MurService murService;
+    private final SalleService salleService;
 
-	/**
-	 * The currently edited auteur
-	 */
-	private Mur mur;
+    private Mur mur;
 
-	/* Fields to edit properties in Auteur entity */
-	TextField libelleMur = new TextField("Libellé mur");
-	TextField hauteur = new TextField("Hauteur");
-	TextField longueur = new TextField("longueur");
-    
-	ComboBox<Orientation> OrientationComboBox = new ComboBox<>("Orientation");
-	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
-	
+    public TextField libelleMur = new TextField("Libellé du mur");
+    public TextField hauteur = new TextField("Hauteur");
+    public TextField longueur = new TextField("Longueur");
+    public ComboBox<Orientation> orientationComboBox = new ComboBox<>("Orientation");
+    public ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
 
-	HorizontalLayout fields = new HorizontalLayout(libelleMur, hauteur, longueur);
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    Binder<Mur> binder = new Binder<>(Mur.class);
+    private ChangeHandler changeHandler;
 
-	Binder<Mur> binder = new Binder<>(Mur.class);
-	private ChangeHandler changeHandler;
+    public MurEditor(MurService murService, SalleService salleService) {
+        this.murService = murService;
+        this.salleService = salleService;
 
-	public MurEditor(MurService murService, SalleService salleService) {
-		this.murService = murService;
-		this.salleService = salleService;
+        salleComboBox.setPlaceholder("Sélectionner une salle");
+        salleComboBox.setClearButtonVisible(true);
+        salleComboBox.setItemLabelGenerator(Salle::getDesc);
 
-		SalleComboBox.setPlaceholder("Sélectionner une salle");
-		SalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		SalleComboBox.setItemLabelGenerator(Salle::getDesc);
+        orientationComboBox.setItems(Orientation.values());
+        orientationComboBox.setItemLabelGenerator(Orientation::name);
 
+        add(libelleMur, salleComboBox, hauteur, longueur, orientationComboBox, actions);
 
-		add(libelleMur, SalleComboBox, hauteur, longueur, OrientationComboBox, actions);
+        binder.bindInstanceFields(this);
+        binder.forField(salleComboBox)
+              .asRequired("Salle est obligatoire")
+              .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
-		binder.forField(SalleComboBox)
-            .asRequired("Salle est obligatoire")
-            .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
+        binder.forField(orientationComboBox)
+              .asRequired("Orientation est obligatoire")
+              .bind(Mur::getOrientation, Mur::setOrientation);
 
-		binder.forField(OrientationComboBox)
-            .asRequired("L'orientation est obligatoire")
-            .bind(Mur::getOrientation, Mur::setOrientation);
-			
-		
         binder.forField(hauteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
-			.bind(Mur::getHauteur, Mur::setHauteur);
-            
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
+              .bind(Mur::getHauteur, Mur::setHauteur);
+
         binder.forField(longueur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La longueur doit être un nombre"))
-			.bind(Mur::getLongueur, Mur::setLongueur);
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La longueur doit être un nombre"))
+              .bind(Mur::getLongueur, Mur::setLongueur);
 
-		
-		// Configure and style components
-		setSpacing(true);
+        setSpacing(true);
 
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        addKeyPressListener(Key.ENTER, e -> save());
 
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editMur(mur));
-		setVisible(false);
-	}
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
 
-	void delete() {
-		murService.deleteMurById(mur.getId());
-		changeHandler.onChange();
-	}
-
-	void save() {
-        if (mur.getId() == null) {
-            // If the livre is new, we save it
-            murService.saveMur(mur);
-        } else {
-            // If the livre already exists, we update it
-            murService.updateMur(mur);
-        }
+    void delete() {
+        murService.deleteMurById(mur.getId());
         changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void save() {
+        murService.saveMur(mur);
+        changeHandler.onChange();
+    }
 
-	public final void editMur(Mur a) {
-		if (a == null) {
-			setVisible(false);
-			return;
-		}
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		SalleComboBox.setItems(salleService.getAllSalles());
-        OrientationComboBox.setItems(Mur.Orientation.values());
-        
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		final boolean persisted = a.getId() != null;
-		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
-			mur = murService.getMurById(a.getId());
-		}
-		else {
-			mur = a;
-		}
-		cancel.setVisible(persisted);
+    public final void editMur(Mur m) {
+        if (m == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
-		binder.setBean(mur);
+        salleComboBox.setItems(salleService.getAllSalles());
+        orientationComboBox.setItems(Orientation.values());
 
-		setVisible(true);
+        final boolean isNewMur = (m.getId() == null);
 
-		// Focus first name initially
-		libelleMur.focus();
-	}
+        if (isNewMur) {
+            mur = m;
+            delete.setVisible(false);
+        } else {
+            mur = murService.getMurById(m.getId());
+            delete.setVisible(true);
+        }
 
-	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
-		changeHandler = h;
-	}
+        binder.setBean(mur);
+        setVisible(true);
+        libelleMur.focus();
+    }
 
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }

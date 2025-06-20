@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.vaadin.flow.component.Key;
@@ -15,114 +14,88 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 
-	private final DonneeService donneeService;
+    private final DonneeService donneeService;
 
-	/**
-	 * The currently edited auteur
-	 */
-	private Donnee donnee;
+    private Donnee donnee;
 
-	/* Fields to edit properties in Auteur entity */
-	TextField libelleDonnee = new TextField("Libellé donnée");
-	TextField unite = new TextField("Unité");
-    
-	HorizontalLayout fields = new HorizontalLayout(libelleDonnee, unite);
+    public TextField libelleDonnee = new TextField("Libellé donnée");
+    public TextField unite = new TextField("Unité");
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Donnee> binder = new Binder<>(Donnee.class);
-	private ChangeHandler changeHandler;
+    Binder<Donnee> binder = new Binder<>(Donnee.class);
+    private ChangeHandler changeHandler;
 
-	public DonneeEditor(DonneeService donneeService) {
-		this.donneeService = donneeService;
+    public DonneeEditor(DonneeService donneeService) {
+        this.donneeService = donneeService;
 
-		add(libelleDonnee, unite, actions);
-		binder.bindInstanceFields(this);
-		// Configure and style components
-		setSpacing(true);
+        add(libelleDonnee, unite, actions);
 
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        binder.bindInstanceFields(this);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        setSpacing(true);
 
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editDonnee(donnee));
-		setVisible(false);
-	}
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-	void delete() {
-		donneeService.deleteDonneeById(donnee.getId());
-		changeHandler.onChange();
-	}
+        addKeyPressListener(Key.ENTER, e -> save());
 
-	void save() {
-        if (donnee.getId() == null) {
-            // If the livre is new, we save it
-            donneeService.saveDonnee(donnee);
-        } else {
-            // If the livre already exists, we update it
-            donneeService.updateDonnee(donnee);
-        }
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
+
+    void delete() {
+        donneeService.deleteDonneeById(donnee.getId());
         changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void save() {
+        donneeService.saveDonnee(donnee);
+        changeHandler.onChange();
+    }
 
-	public final void editDonnee(Donnee a) {
-		if (a == null) {
-			setVisible(false);
-			return;
-		}
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		final boolean persisted = a.getId() != null;
-		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
-			donnee = donneeService.getDonneeById(a.getId());
-		}
-		else {
-			donnee = a;
-		}
-		cancel.setVisible(persisted);
+    public final void editDonnee(Donnee d) {
+        if (d == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
-		binder.setBean(donnee);
+        final boolean isNewDonnee = (d.getId() == null);
 
-		setVisible(true);
+        if (isNewDonnee) {
+            donnee = d;
+            delete.setVisible(false); // Pas de bouton supprimer pour une nouvelle donnée
+        } else {
+            donnee = donneeService.getDonneeById(d.getId());
+            delete.setVisible(true); // Afficher le bouton supprimer pour une donnée existante
+        }
 
-		// Focus first name initially
-		libelleDonnee.focus();
-	}
+        binder.setBean(donnee);
+        setVisible(true);
+        libelleDonnee.focus();
+    }
 
-	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
-		changeHandler = h;
-	}
-
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }
