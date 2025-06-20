@@ -41,7 +41,6 @@ public class BatimentEditor extends VerticalLayout implements KeyNotifier {
     Binder<Batiment> binder = new Binder<>(Batiment.class);
     private ChangeHandler changeHandler;
 
-    @Autowired
     public BatimentEditor(BatimentService batimentService) {
         this.batimentService = batimentService;
 

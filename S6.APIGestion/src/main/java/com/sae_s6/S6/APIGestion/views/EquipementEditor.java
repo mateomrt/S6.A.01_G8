@@ -22,14 +22,6 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class EquipementEditor extends VerticalLayout implements KeyNotifier {
@@ -39,13 +31,11 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 	private final SalleService salleService;
 	private final TypeEquipementService typeEquipementService;
 
-	/**
-	 * The currently edited auteur
-	 */
 	private Equipement equipement;
+	private Equipement originalEquipement; // Pour stocker l'état original
 
-	/* Fields to edit properties in Auteur entity */
-	TextField libelleEquipement = new TextField("Libellé equipement");
+	/* Fields to edit properties in Equipement entity */
+	TextField libelleEquipement = new TextField("Libellé équipement");
 	TextField hauteur = new TextField("Hauteur");
 	TextField largeur = new TextField("Largeur");
 	TextField position_x = new TextField("Position X");
@@ -53,10 +43,7 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
     
 	ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
 	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
-	ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type equipement");
-	
-
-	HorizontalLayout fields = new HorizontalLayout(libelleEquipement, hauteur, largeur, position_x, position_y);
+	ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -73,6 +60,7 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 		this.salleService = salleService;
 		this.typeEquipementService = typeEquipementService;
 
+		// Configuration des ComboBox
 		MurComboBox.setPlaceholder("Sélectionner un mur");
 		MurComboBox.setClearButtonVisible(true);
 		MurComboBox.setItemLabelGenerator(Mur::getDesc);
@@ -85,10 +73,42 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 		TypeEquipementComboBox.setClearButtonVisible(true);
 		TypeEquipementComboBox.setItemLabelGenerator(TypeEquipement::getDesc);
 
-		add(libelleEquipement, MurComboBox, SalleComboBox, TypeEquipementComboBox, hauteur, largeur, position_x, position_y, actions);
+		// Organisation des champs en lignes horizontales
+		// Ligne 1 : Libellé, Mur, Salle
+		HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleEquipement, MurComboBox, SalleComboBox);
+		fieldsRow1.setWidthFull();
+		fieldsRow1.setSpacing(true);
 
-		// bind using naming convention
+		// Ligne 2 : Type équipement, Hauteur, Largeur
+		HorizontalLayout fieldsRow2 = new HorizontalLayout(TypeEquipementComboBox, hauteur, largeur);
+		fieldsRow2.setWidthFull();
+		fieldsRow2.setSpacing(true);
+
+		// Ligne 3 : Position X, Position Y (avec un champ vide pour l'alignement)
+		HorizontalLayout fieldsRow3 = new HorizontalLayout(position_x, position_y);
+		fieldsRow3.setSpacing(true);
+		fieldsRow3.setWidthFull();
+
+		// Configuration de la largeur des champs pour une répartition équitable
+		// Ligne 1 - 3 champs
+		libelleEquipement.setWidthFull();
+		MurComboBox.setWidthFull();
+		SalleComboBox.setWidthFull();
+
+		// Ligne 2 - 3 champs
+		TypeEquipementComboBox.setWidthFull();
+		hauteur.setWidthFull();
+		largeur.setWidthFull();
+
+		// Ligne 3 - 2 champs (chaque champ prend 33.33% pour s'aligner avec les lignes du dessus)
+		position_x.setWidth("calc(33.33% - 5px)");
+		position_y.setWidth("calc(33.33% - 5px)");
+
+		add(fieldsRow1, fieldsRow2, fieldsRow3, actions);
+
+		// Configuration du binder
 		binder.bindInstanceFields(this);
+		
 		binder.forField(MurComboBox)
             .asRequired("Mur est obligatoire")
             .bind(Equipement::getMurNavigation, Equipement::setMurNavigation);
@@ -98,12 +118,12 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
             .bind(Equipement::getSalleNavigation, Equipement::setSalleNavigation);
 			
 		binder.forField(TypeEquipementComboBox)
-            .asRequired("Type equipement est obligatoire")
+            .asRequired("Type équipement est obligatoire")
             .bind(Equipement::getTypeEquipementNavigation, Equipement::setTypeEquipementNavigation);
 
 		binder.forField(hauteur)
 			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La hauter doit être un nombre"))
+			.withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
 			.bind(Equipement::getHauteur, Equipement::setHauteur);
 		
 		binder.forField(largeur)
@@ -120,20 +140,20 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 			.withNullRepresentation("") 
 			.withConverter(new StringToDoubleConverter("La position Y doit être un nombre"))
 			.bind(Equipement::getPosition_y, Equipement::setPosition_y);
-		
 
-		// Configure and style components
+		// Configuration et style des composants
 		setSpacing(true);
-
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		addKeyPressListener(Key.ENTER, e -> save());
 
-		// wire action buttons to save, delete and reset
+		// Configuration des actions des boutons
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editEquipement(equipement));
+		cancel.addClickListener(e -> cancel());
+
+		// L'éditeur est caché par défaut
 		setVisible(false);
 	}
 
@@ -143,14 +163,39 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 	}
 
 	void save() {
-        if (equipement.getId() == null) {
-            // If the livre is new, we save it
-            equipementService.saveEquipement(equipement);
-        } else {
-            // If the livre already exists, we update it
-            equipementService.updateEquipement(equipement);
-        }
-        changeHandler.onChange();
+		// Validation avant sauvegarde
+		if (!binder.validate().isOk()) {
+			return;
+		}
+
+		if (equipement.getId() == null) {
+			equipementService.saveEquipement(equipement);
+		} else {
+			equipementService.updateEquipement(equipement);
+		}
+		changeHandler.onChange();
+	}
+
+	void cancel() {
+		// Dans tous les cas, on ferme l'éditeur et on nettoie le formulaire
+		setVisible(false);
+		clearForm();
+		// Notifier le changement pour actualiser la vue principale
+		if (changeHandler != null) {
+			changeHandler.onChange();
+		}
+	}
+
+	private void clearForm() {
+		binder.setBean(null);
+		libelleEquipement.clear();
+		hauteur.clear();
+		largeur.clear();
+		position_x.clear();
+		position_y.clear();
+		MurComboBox.clear();
+		SalleComboBox.clear();
+		TypeEquipementComboBox.clear();
 	}
 
 	public interface ChangeHandler {
@@ -160,40 +205,39 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 	public final void editEquipement(Equipement a) {
 		if (a == null) {
 			setVisible(false);
+			clearForm();
 			return;
 		}
 
+		// Chargement des données pour les ComboBox
 		MurComboBox.setItems(murService.getAllMurs());
 		SalleComboBox.setItems(salleService.getAllSalles());
 		TypeEquipementComboBox.setItems(typeEquipementService.getAllTypeEquipements());
 
 		final boolean persisted = a.getId() != null;
+		
 		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
+			// Equipement existant : on charge depuis la BD
+			originalEquipement = equipementService.getEquipementById(a.getId());
 			equipement = equipementService.getEquipementById(a.getId());
-		}
-		else {
+		} else {
+			// Nouvel équipement
+			originalEquipement = null;
 			equipement = a;
 		}
-		cancel.setVisible(persisted);
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
+		// Configuration de la visibilité des boutons
+		cancel.setVisible(true); // Le bouton annuler est toujours visible
+		delete.setVisible(persisted); // Le bouton supprimer n'est visible que pour les équipements existants
+
+		// Binding des données
 		binder.setBean(equipement);
 
 		setVisible(true);
-
-		// Focus first name initially
 		libelleEquipement.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
 		changeHandler = h;
 	}
-
 }

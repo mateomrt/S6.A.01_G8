@@ -39,7 +39,16 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 	public TypeCapteurEditor(TypeCapteurService typeCapteurService) {
 		this.typeCapteurService = typeCapteurService;
 
-		add(libelleTypeCapteur, modeTypeCapteur, actions);
+		// Organisation des champs en ligne horizontale
+		HorizontalLayout fieldsRow = new HorizontalLayout(libelleTypeCapteur, modeTypeCapteur);
+		fieldsRow.setWidthFull();
+		fieldsRow.setSpacing(true);
+
+		// Configuration de la largeur des champs pour une répartition équitable
+		libelleTypeCapteur.setWidthFull();
+		modeTypeCapteur.setWidthFull();
+
+		add(fieldsRow, actions);
 
 		// Configuration du binder
 		binder.bindInstanceFields(this);

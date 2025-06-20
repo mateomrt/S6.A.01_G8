@@ -71,7 +71,25 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 		typeCapteurComboBox.setClearButtonVisible(true);
 		typeCapteurComboBox.setItemLabelGenerator(TypeCapteur::getDesc);
 
-		add(libelleCapteur, murComboBox, salleComboBox, typeCapteurComboBox, positionXCapteur, positionYCapteur, actions);
+		// Disposition horizontale pour les champs principaux
+		HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleCapteur, positionXCapteur, positionYCapteur);
+		fieldsRow1.setWidthFull();
+		fieldsRow1.setSpacing(true);
+		
+		// Disposition horizontale pour les ComboBox
+		HorizontalLayout fieldsRow2 = new HorizontalLayout(murComboBox, salleComboBox, typeCapteurComboBox);
+		fieldsRow2.setWidthFull();
+		fieldsRow2.setSpacing(true);
+
+		// Configuration de la largeur des champs pour une meilleure répartition
+		libelleCapteur.setWidthFull();
+		positionXCapteur.setWidthFull();
+		positionYCapteur.setWidthFull();
+		murComboBox.setWidthFull();
+		salleComboBox.setWidthFull();
+		typeCapteurComboBox.setWidthFull();
+
+		add(fieldsRow1, fieldsRow2, actions);
 
 		// Configuration du binder
 		binder.bindInstanceFields(this);

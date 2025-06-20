@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.vaadin.flow.component.Key;
@@ -30,15 +29,13 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 	private final DonneeService donneeService;
 
 	/**
-	 * The currently edited auteur
+	 * The currently edited donnee
 	 */
 	private Donnee donnee;
 
-	/* Fields to edit properties in Auteur entity */
+	/* Fields to edit properties in Donnee entity */
 	TextField libelleDonnee = new TextField("Libellé donnée");
 	TextField unite = new TextField("Unité");
-    
-	HorizontalLayout fields = new HorizontalLayout(libelleDonnee, unite);
 
 	/* Action buttons */
 	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
@@ -52,8 +49,19 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 	public DonneeEditor(DonneeService donneeService) {
 		this.donneeService = donneeService;
 
-		add(libelleDonnee, unite, actions);
+		// Organisation des champs en ligne horizontale
+		HorizontalLayout fieldsRow = new HorizontalLayout(libelleDonnee, unite);
+		fieldsRow.setWidthFull();
+		fieldsRow.setSpacing(true);
+
+		// Configuration de la largeur des champs pour une répartition équitable
+		libelleDonnee.setWidthFull();
+		unite.setWidthFull();
+
+		add(fieldsRow, actions);
+		
 		binder.bindInstanceFields(this);
+		
 		// Configure and style components
 		setSpacing(true);
 
@@ -76,10 +84,10 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 
 	void save() {
         if (donnee.getId() == null) {
-            // If the livre is new, we save it
+            // If the donnee is new, we save it
             donneeService.saveDonnee(donnee);
         } else {
-            // If the livre already exists, we update it
+            // If the donnee already exists, we update it
             donneeService.updateDonnee(donnee);
         }
         changeHandler.onChange();
@@ -95,7 +103,6 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 			return;
 		}
 
-
 		final boolean persisted = a.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
@@ -108,7 +115,7 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 		}
 		cancel.setVisible(persisted);
 
-		// Bind auteur properties to similarly named fields
+		// Bind donnee properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
 		binder.setBean(donnee);
@@ -124,5 +131,4 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 		// is clicked
 		changeHandler = h;
 	}
-
 }

@@ -1,7 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-
-
 import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;

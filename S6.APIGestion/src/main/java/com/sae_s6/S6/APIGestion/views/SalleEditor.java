@@ -56,7 +56,24 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         typeSalleComboBox.setClearButtonVisible(true);
         typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
 
-        add(libelleSalle, superficie, batimentComboBox, typeSalleComboBox, actions);
+        // Disposition horizontale pour les 3 premiers champs
+        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleSalle, superficie, batimentComboBox);
+        fieldsRow1.setWidthFull();
+        fieldsRow1.setSpacing(true);
+        
+        // Disposition horizontale pour le champ restant avec largeur fixe
+        HorizontalLayout fieldsRow2 = new HorizontalLayout(typeSalleComboBox);
+        fieldsRow2.setSpacing(true);
+        fieldsRow2.setWidthFull();
+
+        // Configuration de la largeur des champs pour une répartition équitable
+        libelleSalle.setWidthFull();
+        superficie.setWidthFull();
+        batimentComboBox.setWidthFull();
+        // typeSalleComboBox ajusté pour compenser l'espacement de la ligne du dessus
+        typeSalleComboBox.setWidth("calc(33.33% - 10px)");
+
+        add(fieldsRow1, fieldsRow2, actions);
 
         binder.bindInstanceFields(this);
         binder.forField(batimentComboBox)
