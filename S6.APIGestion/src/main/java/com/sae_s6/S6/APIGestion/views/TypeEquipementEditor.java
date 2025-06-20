@@ -17,108 +17,84 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @SpringComponent
 @UIScope
 public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier {
-    	private final TypeEquipementService typeEquipementService;
 
-	/**
-	 * The currently edited TypeEquipement
-	 */
-	private TypeEquipement typeEquipement;
+    private final TypeEquipementService typeEquipementService;
 
-	/* Fields to edit properties in TypeEquipement entity */
-	TextField libelleTypeEquipement = new TextField("Libellé type équipement");
-    
-	
+    private TypeEquipement typeEquipement;
 
-	HorizontalLayout fields = new HorizontalLayout(libelleTypeEquipement);
+    public TextField libelleTypeEquipement = new TextField("Libellé type équipement");
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<TypeEquipement> binder = new Binder<>(TypeEquipement.class);
-	private ChangeHandler changeHandler;
+    Binder<TypeEquipement> binder = new Binder<>(TypeEquipement.class);
+    private ChangeHandler changeHandler;
 
-	public TypeEquipementEditor(TypeEquipementService typeEquipementService) {
-		this.typeEquipementService = typeEquipementService;
+    public TypeEquipementEditor(TypeEquipementService typeEquipementService) {
+        this.typeEquipementService = typeEquipementService;
 
-		
+        add(libelleTypeEquipement, actions);
 
-		add(libelleTypeEquipement, actions);
+        binder.bindInstanceFields(this);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
-		
+        setSpacing(true);
 
-		// Configure and style components
-		setSpacing(true);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        addKeyPressListener(Key.ENTER, e -> save());
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
 
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editTypeEquipement(typeEquipement));
-		setVisible(false);
-	}
-
-	void delete() {
-		typeEquipementService.deleteTypeEquipementById(typeEquipement.getId());
-		changeHandler.onChange();
-	}
-
-	void save() {
-        if (typeEquipement.getId() == null) {
-            // If the typeEquipement is new, we save it
-            typeEquipementService.saveTypeEquipement(typeEquipement);
-        } else {
-            // If the typeEquipement already exists, we update it
-            typeEquipementService.updateTypeEquipement(typeEquipement);
-        }
+    void delete() {
+        typeEquipementService.deleteTypeEquipementById(typeEquipement.getId());
         changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void save() {
+        typeEquipementService.saveTypeEquipement(typeEquipement);
+        changeHandler.onChange();
+    }
 
-	public final void editTypeEquipement(TypeEquipement a) {
-		if (a == null) {
-			setVisible(false);
-			return;
-		}
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		final boolean persisted = a.getId() != null;
-		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
-			typeEquipement = typeEquipementService.getTypeEquipementById(a.getId());
-		}
-		else {
-			typeEquipement = a;
-		}
-		cancel.setVisible(persisted);
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
-		binder.setBean(typeEquipement);
+    public final void editTypeEquipement(TypeEquipement t) {
+        if (t == null) {
+            setVisible(false);
+            return;
+        }
 
-		setVisible(true);
+        final boolean isNewTypeEquipement = (t.getId() == null);
 
-		// Focus first name initially
-		libelleTypeEquipement.focus();
-	}
+        if (isNewTypeEquipement) {
+            typeEquipement = t;
+            delete.setVisible(false); // Pas de bouton supprimer pour un nouveau type d'équipement
+        } else {
+            typeEquipement = typeEquipementService.getTypeEquipementById(t.getId());
+            delete.setVisible(true); // Afficher le bouton supprimer pour un type d'équipement existant
+        }
 
-	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
-		changeHandler = h;
-	}
+        binder.setBean(typeEquipement);
+        setVisible(true);
+        libelleTypeEquipement.focus();
+    }
 
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }
