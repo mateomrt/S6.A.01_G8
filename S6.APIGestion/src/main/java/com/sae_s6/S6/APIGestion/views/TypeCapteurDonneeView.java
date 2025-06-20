@@ -1,97 +1,102 @@
-// package com.sae_s6.S6.APIGestion.views;
+package com.sae_s6.S6.APIGestion.views;
 
-// import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
+import com.sae_s6.S6.APIGestion.entity.Donnee;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
+import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.Menu;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import org.springframework.util.StringUtils;
 
-// import com.vaadin.flow.component.button.Button;
-// import com.vaadin.flow.component.grid.Grid;
-// import com.vaadin.flow.component.icon.VaadinIcon;
-// import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-// import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-// import com.vaadin.flow.component.textfield.TextField;
-// import com.vaadin.flow.data.value.ValueChangeMode;
-// import com.vaadin.flow.router.Menu;
-// import com.vaadin.flow.router.PageTitle;
-// import com.vaadin.flow.router.Route;
-// import org.springframework.util.StringUtils;
+@Route(value = "typeCapteurDonnee")
+@PageTitle("Les types capteur donnée")
+@Menu(title = "Les types capteur donnée", order = 5, icon = "vaadin:clipboard-check")
+public class TypeCapteurDonneeView extends VerticalLayout {
 
-// @Route (value="typeCapteurDonnee") 
-// @PageTitle("Les types capteur donnée")
-// @Menu(title = "Les types capteur donnée", order = 5, icon = "vaadin:clipboard-check")
+    private final TypeCapteurDonneeService typeCapteurDonneeService;
 
-// public class TypeCapteurDonneeView extends VerticalLayout {
+    public final Grid<TypeCapteurDonnee> grid;
+    public final TextField filter;
+    private final Button addNewBtn;
+    public final TypeCapteurDonneeEditor editor;
 
-// 	//private final AuteurRepo repo;
-// 	private final TypeCapteurDonneeService typeCapteurDonneeService;
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 
-// 	final Grid<TypeCapteurDonnee> grid;
+    public TypeCapteurDonneeView(TypeCapteurDonneeService typeCapteurDonneeService, TypeCapteurDonneeEditor editor) {
+        this.typeCapteurDonneeService = typeCapteurDonneeService;
+        this.editor = editor;
+        this.grid = new Grid<>(TypeCapteurDonnee.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter un type capteur donnée", VaadinIcon.PLUS.create());
 
-// 	final TextField filter;
+        // Build layout
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-// 	private final Button addNewBtn;
+        grid.setHeight("300px");
 
-// 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-// 	public SalleView(SalleService salleService, SalleEditor editor) {
-// 		//this.repo = repo;
-// 		this.salleService = salleService;
-// 		//this.editor = editor;
-// 		this.grid = new Grid<>(Salle.class);
-// 		this.filter = new TextField();
-// 		this.addNewBtn = new Button("Ajouter une salle", VaadinIcon.PLUS.create());
+        // Désactiver l'affichage automatique des colonnes
+        grid.setColumns(); // Supprime toutes les colonnes par défaut
 
-// 		// build layout
-// 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-// 		add(actions, grid, editor);
+        // Ajout des colonnes personnalisées pour afficher les libellés
+        grid.addColumn(typeCapteurDonnee -> {
+            Donnee donnee = typeCapteurDonnee.getDonneeNavigation();
+            return donnee != null ? donnee.getLibelleDonnee() : "";
+        }).setHeader("Libellé Donnée");
 
-// 		grid.setHeight("300px");
-// 		grid.setColumns("id", "libelleSalle", "superficie");
-		
-// 		grid.addColumn(salle -> {
-//             Batiment batiment = salle.getBatimentNavigation();
-//             return batiment != null ? batiment.getDesc() : "";
-//         }).setHeader("Batiment").setKey("BatimentDescription");
+        grid.addColumn(typeCapteurDonnee -> {
+            TypeCapteur typeCapteur = typeCapteurDonnee.getTypeCapteurNavigation();
+            return typeCapteur != null ? typeCapteur.getLibelleTypeCapteur() : "";
+        }).setHeader("Libellé Type Capteur");
 
-// 		grid.addColumn(salle -> {
-//             TypeSalle typeSalle = salle.getTypeSalleNavigation();
-//             return typeSalle != null ? typeSalle.getDesc() : "";
-//         }).setHeader("Type salle").setKey("typeSalleDescription");
-		
-		
-// 		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+        filter.setPlaceholder("Filtrer par donnée ou type capteur");
 
-// 		filter.setPlaceholder("Filtrer par nom");
+        // Hook logic to components
 
-// 		// Hook logic to components
+        // Replace listing with filtered content when user changes filter
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listTypeCapteurDonnees(e.getValue()));
 
-// 		// Replace listing with filtered content when user changes filter
-// 		filter.setValueChangeMode(ValueChangeMode.LAZY);
-// 		filter.addValueChangeListener(e -> listSalles(e.getValue()));
+        // Connect selected TypeCapteurDonnee to editor or hide if none is selected
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editTypeCapteurDonnee(e.getValue());
+        });
 
-// 		// Connect selected Customer to editor or hide if none is selected
-// 		grid.asSingleSelect().addValueChangeListener(e -> {
-// 			editor.editSalle(e.getValue());
-// 		});
+        // Instantiate and edit new TypeCapteurDonnee when the new button is clicked
+        addNewBtn.addClickListener(e -> editor.editTypeCapteurDonnee(new TypeCapteurDonnee()));
 
-// 		// Instantiate and edit new Customer the new button is clicked
-// 		addNewBtn.addClickListener(e -> editor.editSalle(new Salle()));
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listTypeCapteurDonnees(filter.getValue());
+        });
 
-// 		// Listen changes made by the editor, refresh data from backend
-// 		editor.setChangeHandler(() -> {
-// 			editor.setVisible(false);
-// 			listSalles(filter.getValue());
-// 		});
+        // Initialize listing
+        listTypeCapteurDonnees(null);
+    }
 
-// 		// Initialize listing
-// 		listSalles(null);
-// 	}
-
-// 	// tag::listSalles[]
-// 	void listSalles(String filterText) {
-// 		if (StringUtils.hasText(filterText)) {
-// 			grid.setItems(salleService.getByLibelleSalleContainingIgnoreCase(filterText));
-// 		} else {
-// 			grid.setItems(salleService.getAllSalles());
-// 		}
-// 	}
-// 	// end::listCustomers[]
-
-// }
+    void listTypeCapteurDonnees(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(typeCapteurDonneeService.getAllTypeCapteurDonnee().stream()
+                    .filter(typeCapteurDonnee -> {
+                        Donnee donnee = typeCapteurDonnee.getDonneeNavigation();
+                        TypeCapteur typeCapteur = typeCapteurDonnee.getTypeCapteurNavigation();
+                        return (donnee != null && donnee.getLibelleDonnee().toLowerCase().contains(filterText.toLowerCase())) ||
+                               (typeCapteur != null && typeCapteur.getLibelleTypeCapteur().toLowerCase().contains(filterText.toLowerCase()));
+                    })
+                    .toList()); // Convert Stream to List
+        } else {
+            grid.setItems(typeCapteurDonneeService.getAllTypeCapteurDonnee());
+        }
+    }
+}
