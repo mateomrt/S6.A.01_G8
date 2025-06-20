@@ -1,4 +1,4 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.unit;
 
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 
@@ -43,6 +43,7 @@ public class DonneeControllerTest {
      * @return Donnee créé
      */
     private Donnee createDonnee(Integer id, String libelle, String unite) {
+        // Crée une donnee fictive
         Donnee donnee = new Donnee();
         donnee.setId(id);
         donnee.setLibelleDonnee(libelle);

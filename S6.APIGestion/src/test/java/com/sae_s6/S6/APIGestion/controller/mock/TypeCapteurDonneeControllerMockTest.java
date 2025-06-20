@@ -1,5 +1,6 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.mock;
 
+import com.sae_s6.S6.APIGestion.controller.TypeCapteurDonneeController;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;

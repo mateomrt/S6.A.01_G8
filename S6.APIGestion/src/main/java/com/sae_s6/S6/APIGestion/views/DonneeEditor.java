@@ -14,19 +14,11 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 
-	private final DonneeService donneeService;
+    private final DonneeService donneeService;
 
 	/**
 	 * The currently edited donnee
@@ -43,11 +35,11 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Donnee> binder = new Binder<>(Donnee.class);
-	private ChangeHandler changeHandler;
+    Binder<Donnee> binder = new Binder<>(Donnee.class);
+    private ChangeHandler changeHandler;
 
-	public DonneeEditor(DonneeService donneeService) {
-		this.donneeService = donneeService;
+    public DonneeEditor(DonneeService donneeService) {
+        this.donneeService = donneeService;
 
 		// Organisation des champs en ligne horizontale
 		HorizontalLayout fieldsRow = new HorizontalLayout(libelleDonnee, unite);
@@ -65,22 +57,21 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 		// Configure and style components
 		setSpacing(true);
 
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        addKeyPressListener(Key.ENTER, e -> save());
 
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editDonnee(donnee));
-		setVisible(false);
-	}
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
 
-	void delete() {
-		donneeService.deleteDonneeById(donnee.getId());
-		changeHandler.onChange();
-	}
+    void delete() {
+        donneeService.deleteDonneeById(donnee.getId());
+        changeHandler.onChange();
+    }
 
 	void save() {
         if (donnee.getId() == null) {
@@ -91,11 +82,18 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
             donneeService.updateDonnee(donnee);
         }
         changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
+
+    public interface ChangeHandler {
+        void onChange();
+    }
 
 	public final void editDonnee(Donnee a) {
 		if (a == null) {

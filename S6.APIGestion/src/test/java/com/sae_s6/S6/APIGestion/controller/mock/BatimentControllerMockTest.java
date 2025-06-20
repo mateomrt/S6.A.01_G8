@@ -1,4 +1,4 @@
-package com.sae_s6.S6.APIGestion.controller;
+package com.sae_s6.S6.APIGestion.controller.mock;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
