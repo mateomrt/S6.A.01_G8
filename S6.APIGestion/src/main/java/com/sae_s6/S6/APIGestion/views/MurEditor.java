@@ -1,171 +1,132 @@
 package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.Mur;
-import com.sae_s6.S6.APIGestion.entity.Salle;
-import com.sae_s6.S6.APIGestion.entity.Mur.Orientation;
 import com.sae_s6.S6.APIGestion.service.MurService;
-import com.sae_s6.S6.APIGestion.service.SalleService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
+ * Un simple éditeur de murs.
+ * Basé sur l'exemple BatimentEditor.
  */
 @SpringComponent
 @UIScope
 public class MurEditor extends VerticalLayout implements KeyNotifier {
 
-	private final MurService murService;
-	private final SalleService salleService;
+    private final MurService murService;
 
-	/**
-	 * The currently edited auteur
-	 */
-	private Mur mur;
+    /**
+     * Le mur actuellement édité
+     */
+    private Mur mur;
 
-	/* Fields to edit properties in Auteur entity */
-	TextField libelleMur = new TextField("Libellé mur");
-	TextField hauteur = new TextField("Hauteur");
-	TextField longueur = new TextField("longueur");
-    
-	ComboBox<Orientation> OrientationComboBox = new ComboBox<>("Orientation");
-	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
-	
+    /* Champs publics pour les tests */
+    public TextField nom = new TextField("Nom du mur");
 
-	HorizontalLayout fields = new HorizontalLayout(libelleMur, hauteur, longueur);
+    /* Boutons d'action */
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    Binder<Mur> binder = new Binder<>(Mur.class);
+    private ChangeHandler changeHandler;
 
-	Binder<Mur> binder = new Binder<>(Mur.class);
-	private ChangeHandler changeHandler;
+    @Autowired
+    public MurEditor(MurService murService) {
+        this.murService = murService;
 
-	public MurEditor(MurService murService, SalleService salleService) {
-		this.murService = murService;
-		this.salleService = salleService;
+        add(nom, actions);
 
-		SalleComboBox.setPlaceholder("Sélectionner une salle");
-		SalleComboBox.setClearButtonVisible(true);
-		// do it after :
-		//auteurComboBox.setItems(auteurService.getAllAuteurs());
-		SalleComboBox.setItemLabelGenerator(Salle::getDesc);
+        // bind using naming convention
+        binder.bindInstanceFields(this);
 
+        // Configure and style components
+        setSpacing(true);
 
-		add(libelleMur, SalleComboBox, hauteur, longueur, OrientationComboBox, actions);
+        save.getElement().getThemeList().add("primary");
+        delete.getElement().getThemeList().add("error");
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
-		binder.forField(SalleComboBox)
-            .asRequired("Salle est obligatoire")
-            .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
+        addKeyPressListener(Key.ENTER, e -> save());
 
-		binder.forField(OrientationComboBox)
-            .asRequired("L'orientation est obligatoire")
-            .bind(Mur::getOrientation, Mur::setOrientation);
-			
-		
-        binder.forField(hauteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
-			.bind(Mur::getHauteur, Mur::setHauteur);
-            
-        binder.forField(longueur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La longueur doit être un nombre"))
-			.bind(Mur::getLongueur, Mur::setLongueur);
+        // wire action buttons to save, delete and reset
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
+        setVisible(false);
+    }
 
-		
-		// Configure and style components
-		setSpacing(true);
-
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-		addKeyPressListener(Key.ENTER, e -> save());
-
-		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editMur(mur));
-		setVisible(false);
-	}
-
-	void delete() {
-		murService.deleteMurById(mur.getId());
-		changeHandler.onChange();
-	}
-
-	void save() {
-        if (mur.getId() == null) {
-            // If the livre is new, we save it
-            murService.saveMur(mur);
-        } else {
-            // If the livre already exists, we update it
-            murService.updateMur(mur);
+    void delete() {
+        if (mur != null && mur.getId() != null) {
+            murService.deleteMurById(mur.getId());
+            changeHandler.onChange();
         }
-        changeHandler.onChange();
-	}
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void save() {
+        if (mur != null) {
+            murService.saveMur(mur);
+            changeHandler.onChange();
+        }
+    }
 
-	public final void editMur(Mur a) {
-		if (a == null) {
-			setVisible(false);
-			return;
-		}
+    void cancel() {
+        // Cache l'éditeur et désélectionne dans la grille
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		SalleComboBox.setItems(salleService.getAllSalles());
-        OrientationComboBox.setItems(Mur.Orientation.values());
-        
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		final boolean persisted = a.getId() != null;
-		if (persisted) {
-			// Find fresh entity for editing
-			// In a more complex app, you might want to load
-			// the entity/DTO with lazy loaded relations for editing
-			mur = murService.getMurById(a.getId());
-		}
-		else {
-			mur = a;
-		}
-		cancel.setVisible(persisted);
+    public final void editMur(Mur m) {
+        if (m == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Bind auteur properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
-		binder.setBean(mur);
+        final boolean isNewMur = (m.getId() == null);
 
-		setVisible(true);
+        if (isNewMur) {
+            // Nouveau mur
+            mur = m;
+            delete.setVisible(false); // Pas de bouton supprimer pour un nouveau mur
+        } else {
+            // Mur existant - récupération depuis la base de données
+            try {
+                Mur freshMur = murService.getMurById(m.getId());
+                mur = (freshMur != null) ? freshMur : m;
+                delete.setVisible(true); // Afficher le bouton supprimer pour un mur existant
+            } catch (Exception e) {
+                // En cas d'erreur, utiliser l'objet fourni
+                mur = m;
+                delete.setVisible(true);
+            }
+        }
 
-		// Focus first name initially
-		libelleMur.focus();
-	}
+        // Bind mur properties to similarly named fields
+        binder.setBean(mur);
 
-	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
-		changeHandler = h;
-	}
+        setVisible(true);
 
+        // Focus first component
+        nom.focus();
+    }
+
+    public void setChangeHandler(ChangeHandler h) {
+        // ChangeHandler is notified when save, delete or cancel is clicked
+        changeHandler = h;
+    }
 }
