@@ -32,7 +32,6 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 	private final TypeEquipementService typeEquipementService;
 
 	private Equipement equipement;
-	private Equipement originalEquipement; // Pour stocker l'état original
 
 	/* Fields to edit properties in Equipement entity */
 	TextField libelleEquipement = new TextField("Libellé équipement");
@@ -217,12 +216,8 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 		final boolean persisted = a.getId() != null;
 		
 		if (persisted) {
-			// Equipement existant : on charge depuis la BD
-			originalEquipement = equipementService.getEquipementById(a.getId());
 			equipement = equipementService.getEquipementById(a.getId());
 		} else {
-			// Nouvel équipement
-			originalEquipement = null;
 			equipement = a;
 		}
 
