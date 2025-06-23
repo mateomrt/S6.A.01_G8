@@ -32,7 +32,6 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 	private final TypeCapteurService typeCapteurService;
 
 	private Capteur capteur;
-	private Capteur originalCapteur; // Pour stocker l'état original
 
 	/* Fields to edit properties in Capteur entity */
 	TextField libelleCapteur = new TextField("Libellé capteur");
@@ -190,12 +189,8 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 		final boolean persisted = a.getId() != null;
 		
 		if (persisted) {
-			// Capteur existant : on charge depuis la BD
-			originalCapteur = capteurService.getCapteurById(a.getId());
 			capteur = capteurService.getCapteurById(a.getId());
 		} else {
-			// Nouveau capteur
-			originalCapteur = null;
 			capteur = a;
 		}
 
