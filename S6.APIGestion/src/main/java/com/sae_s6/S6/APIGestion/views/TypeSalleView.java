@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 @Scope("prototype")
 @Route(value = "typeSalle")
 @PageTitle("Les Types de salle")
-@Menu(title = "Les Types de salles", order = 1, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Types de salles", order = 1, icon = "vaadin:cubes")
 public class TypeSalleView extends VerticalLayout {
 
     private final TypeSalleService typeSalleService;

@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 @Scope("prototype")
 @Route (value="batiment") 
 @PageTitle("Les Batiments")
-@Menu(title = "Les Batiments", order = 4, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Batiments", order = 4, icon = "vaadin:building")
 public class BatimentView extends VerticalLayout {
 
 	private final BatimentService batimentService;

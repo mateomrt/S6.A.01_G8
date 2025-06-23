@@ -12,11 +12,15 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.util.StringUtils;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+@Component
+@Scope("prototype")
 @Route(value = "donnee")
 @PageTitle("Les Données")
-@Menu(title = "Les Données", order = 4, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Données", order = 4, icon = "vaadin:pie-bar-chart")
 public class DonneeView extends VerticalLayout {
 
     private final DonneeService donneeService;
