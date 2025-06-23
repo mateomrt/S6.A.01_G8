@@ -7,10 +7,12 @@ import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -37,7 +39,14 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
 
         add(libelleTypeEquipement, actions);
 
-        binder.bindInstanceFields(this);
+        // Configuration du binder
+        binder.forField(libelleTypeEquipement)
+              .asRequired("Le libellé du type équipement est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleTypeEquipement.setErrorMessage(status.getMessage().orElse(""));
+                  libelleTypeEquipement.setInvalid(status.isError());
+              })
+              .bind(TypeEquipement::getLibelleTypeEquipement, TypeEquipement::setLibelleTypeEquipement);
 
         setSpacing(true);
 
@@ -58,8 +67,17 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
     }
 
     void save() {
-        typeEquipementService.saveTypeEquipement(typeEquipement);
-        changeHandler.onChange();
+        try {
+            binder.writeBean(typeEquipement); // Valide et écrit les données dans l'objet typeEquipement
+            if (typeEquipement.getId() == null) {
+                typeEquipementService.saveTypeEquipement(typeEquipement);
+            } else {
+                typeEquipementService.updateTypeEquipement(typeEquipement);
+            }
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
     }
 
     void cancel() {

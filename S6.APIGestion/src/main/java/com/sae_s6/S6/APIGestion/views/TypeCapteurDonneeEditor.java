@@ -14,9 +14,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -60,10 +62,21 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
 
         add(donneeComboBox, typeCapteurComboBox, actions);
 
+        // Configuration du binder
         binder.forField(donneeComboBox)
+              .asRequired("La donnée est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  donneeComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  donneeComboBox.setInvalid(status.isError());
+              })
               .bind(TypeCapteurDonnee::getDonneeNavigation, TypeCapteurDonnee::setDonneeNavigation);
 
         binder.forField(typeCapteurComboBox)
+              .asRequired("Le type capteur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  typeCapteurComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  typeCapteurComboBox.setInvalid(status.isError());
+              })
               .bind(TypeCapteurDonnee::getTypeCapteurNavigation, TypeCapteurDonnee::setTypeCapteurNavigation);
 
         setSpacing(true);
@@ -87,27 +100,28 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     }
 
     void save() {
-        if (typeCapteurDonnee == null) {
-            log.error("Impossible de sauvegarder : typeCapteurDonnee est null");
-            return;
+        try {
+            binder.writeBean(typeCapteurDonnee); // Valide et écrit les données dans l'objet typeCapteurDonnee
+
+            TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(
+                donneeComboBox.getValue().getId(),
+                typeCapteurComboBox.getValue().getId()
+            );
+
+            typeCapteurDonnee.setId(newId);
+
+            if (originalId != null) {
+                // Cas modification : delete + save
+                typeCapteurDonneeService.updateTypeCapteurDonnee(originalId, typeCapteurDonnee);
+            } else {
+                // Cas création
+                typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
+            }
+
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
         }
-
-        TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(
-            donneeComboBox.getValue().getId(),
-            typeCapteurComboBox.getValue().getId()
-        );
-
-        typeCapteurDonnee.setId(newId);
-
-        if (originalId != null) {
-            // Cas modification : delete + save
-            typeCapteurDonneeService.updateTypeCapteurDonnee(originalId, typeCapteurDonnee);
-        } else {
-            // Cas création
-            typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
-        }
-
-        changeHandler.onChange();
     }
 
     void cancel() {
