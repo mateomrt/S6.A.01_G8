@@ -126,7 +126,13 @@ public class TypeCapteurDonneeService {
      * @param id La clé composite (TypeCapteurDonneeEmbedId).
      */
     public void deleteTypeCapteurDonneeById(TypeCapteurDonneeEmbedId id) {
+        log.info("Tentative de suppression de l'association avec l'id composite : {}", id);
+        Optional<TypeCapteurDonnee> optionalDonnee = typeCapteurDonneeRepo.findById(id);
+        if (optionalDonnee.isEmpty()) {
+            log.warn("Aucune association trouvée avec l'id composite : {}", id);
+            return;
+        }
         typeCapteurDonneeRepo.deleteById(id);
-        log.info("Association TypeCapteurDonnee supprimée avec succès pour l'id composite: {}", id);
+        log.info("Association supprimée avec succès pour l'id composite : {}", id);
     }
 }
