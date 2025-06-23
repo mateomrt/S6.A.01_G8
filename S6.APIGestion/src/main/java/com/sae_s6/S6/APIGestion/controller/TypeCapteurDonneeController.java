@@ -38,7 +38,7 @@ public class TypeCapteurDonneeController {
         List<TypeCapteurDonnee> typeCapteurDonnees = typeCapteurDonneeService.getAllTypeCapteurDonnee();
         if (typeCapteurDonnees == null || typeCapteurDonnees.isEmpty()) {
             log.warn("Aucune association TypeCapteurDonnee trouvée.");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Associations TypeCapteurDonnee récupérées avec succès.");
         return ResponseEntity.ok(typeCapteurDonnees);
@@ -104,32 +104,6 @@ public class TypeCapteurDonneeController {
         TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(id, updateTypeCapteurDonnee);
         return ResponseEntity.ok(updatedTypeCapteurDonnee);
         
-    }
-
-    /**
-     * Classe interne pour représenter le corps JSON de la requête.
-     * Contient les nouveaux identifiants pour la mise à jour.
-     */
-    public static class UpdateRequest {
-        private Integer newIdTypeCapteur; // Nouvel identifiant du type de capteur
-        private Integer newIdDonnee; // Nouvel identifiant de la donnée
-
-        // Getters et setters
-        public Integer getNewIdTypeCapteur() {
-            return newIdTypeCapteur;
-        }
-
-        public void setNewIdTypeCapteur(Integer newIdTypeCapteur) {
-            this.newIdTypeCapteur = newIdTypeCapteur;
-        }
-
-        public Integer getNewIdDonnee() {
-            return newIdDonnee;
-        }
-
-        public void setNewIdDonnee(Integer newIdDonnee) {
-            this.newIdDonnee = newIdDonnee;
-        }
     }
 
     /**
