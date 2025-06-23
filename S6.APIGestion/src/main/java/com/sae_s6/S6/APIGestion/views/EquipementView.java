@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.sae_s6.S6.APIGestion.entity.Equipement;
@@ -17,7 +19,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
+@Component
+@Scope("prototype")
 @Route(value = "equipement") 
 @PageTitle("Les Equipements")
 @Menu(title = "Les equipements", order = 2, icon = "vaadin:tools")
