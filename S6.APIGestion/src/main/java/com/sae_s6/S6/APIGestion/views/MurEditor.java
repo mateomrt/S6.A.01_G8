@@ -39,6 +39,7 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+
     Binder<Mur> binder = new Binder<>(Mur.class);
     private ChangeHandler changeHandler;
 
@@ -53,7 +54,23 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         orientationComboBox.setItems(Orientation.values());
         orientationComboBox.setItemLabelGenerator(Orientation::name);
 
-        add(libelleMur, salleComboBox, hauteur, longueur, orientationComboBox, actions);
+        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleMur,salleComboBox , hauteur);
+		fieldsRow1.setSpacing(true);
+        fieldsRow1.setWidthFull();
+
+		HorizontalLayout fieldsRow2 = new HorizontalLayout(longueur,orientationComboBox);
+		fieldsRow2.setSpacing(true);
+		fieldsRow2.setWidthFull();
+
+
+		libelleMur.setWidthFull();
+		hauteur.setWidthFull();
+		salleComboBox.setWidthFull();
+
+		longueur.setWidth("calc(33.33% - 10px)");
+		orientationComboBox.setWidth("calc(33.33% - 10px)");
+
+		add(fieldsRow1, fieldsRow2, actions);
 
         binder.bindInstanceFields(this);
         binder.forField(salleComboBox)

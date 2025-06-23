@@ -15,11 +15,16 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+@Component
+@Scope("prototype")
 @Route (value="capteur") 
 @PageTitle("Les Capteurs")
-@Menu(title = "Les Capteurs", order = 3, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Capteurs", order = 3, icon = "vaadin:line-bar-chart")
 
 public class CapteurView extends VerticalLayout {
 

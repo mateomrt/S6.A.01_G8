@@ -14,11 +14,15 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.util.StringUtils;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+@Component
+@Scope("prototype")
 @Route (value="typeCapteur") 
 @PageTitle("Les types de capteur")
-@Menu(title = "Les types de capteur", order = 4, icon = "vaadin:clipboard-check")
+@Menu(title = "Les types de capteur", order = 4, icon = "vaadin:info")
 
 public class TypeCapteurView extends VerticalLayout {
 
