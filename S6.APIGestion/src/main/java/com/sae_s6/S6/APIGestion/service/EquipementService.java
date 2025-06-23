@@ -132,6 +132,12 @@ public class EquipementService {
         log.debug("Equipement avec id: {} supprimé avec succès", id);
     }
 
+    /**
+     * Recherche les équipements dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleEquipement La chaîne de caractères à rechercher.
+     * @return Une liste d'équipements correspondant à la recherche.
+     */
     public List<Equipement> getByLibelleEquipementContainingIgnoreCase(String libelleEquipement) {
         return equipementRepo.findByLibelleEquipementContainingIgnoreCase(libelleEquipement);
     }

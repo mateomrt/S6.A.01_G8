@@ -68,10 +68,9 @@ public class BatimentService {
      * @param updated Les nouvelles données du bâtiment.
      * @return Le bâtiment mis à jour.
      */
-	// Mettre à jour un bâtiment existant
-	public Batiment updateBatiment(Batiment updated) {		
+    public Batiment updateBatiment(Batiment updated) {		
         // Sauvegarde directement les nouvelles données du bâtiment.
-		Batiment updatedBatiment = batimentRepo.save(updated);
+        Batiment updatedBatiment = batimentRepo.save(updated);
         log.info("Bâtiment mis à jour avec succès avec l'id: {}", updatedBatiment.getId());
         log.debug("Détails du bâtiment après mise à jour: {}", updatedBatiment);
         return updatedBatiment;
@@ -89,9 +88,14 @@ public class BatimentService {
         }
         batimentRepo.deleteById(id);
         log.debug("Bâtiment avec id: {} supprimé avec succès", id);
-
     }
 
+    /**
+     * Recherche les bâtiments dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleBatiment La chaîne de caractères à rechercher dans le libellé des bâtiments.
+     * @return Une liste de bâtiments correspondant à la recherche.
+     */
     public List<Batiment> getByLibelleBatimentContainingIgnoreCase(String libelleBatiment) {
         return batimentRepo.findByLibelleBatimentContainingIgnoreCase(libelleBatiment);
     }

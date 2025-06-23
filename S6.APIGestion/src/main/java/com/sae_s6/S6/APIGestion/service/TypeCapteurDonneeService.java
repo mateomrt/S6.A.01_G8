@@ -85,9 +85,8 @@ public class TypeCapteurDonneeService {
      * Met à jour une association TypeCapteurDonnee existante.
      * Permet de mettre à jour le type de capteur, la donnée, ou les deux.
      *
-     * @param id L'identifiant composite existant (TypeCapteurDonneeEmbedId).
-     * @param newIdTypeCapteur L'identifiant du nouveau type de capteur (peut être null si non modifié).
-     * @param newIdDonnee L'identifiant de la nouvelle donnée (peut être null si non modifié).
+     * @param oldId L'identifiant composite existant (TypeCapteurDonneeEmbedId).
+     * @param newEntity La nouvelle entité TypeCapteurDonnee à sauvegarder.
      * @return La nouvelle association TypeCapteurDonnee créée.
      */
     public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonneeEmbedId oldId, TypeCapteurDonnee newEntity) {
@@ -96,10 +95,9 @@ public class TypeCapteurDonneeService {
             typeCapteurDonneeRepo.deleteById(oldId);
         }
         // Puis on sauvegarde la nouvelle
-        TypeCapteurDonnee updatedTypeCapteurDonnee =  saveTypeCapteurDonnee(newEntity);
+        TypeCapteurDonnee updatedTypeCapteurDonnee = saveTypeCapteurDonnee(newEntity);
         return updatedTypeCapteurDonnee;
     }
-
 
     /**
      * Supprime une association TypeCapteurDonnee par sa clé composite.

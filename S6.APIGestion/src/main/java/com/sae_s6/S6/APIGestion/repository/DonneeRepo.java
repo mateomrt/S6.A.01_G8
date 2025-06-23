@@ -11,5 +11,12 @@ import com.sae_s6.S6.APIGestion.entity.Donnee;
  */
 public interface DonneeRepo extends JpaRepository<Donnee, Integer> {
 
+    /**
+     * Recherche les données dont le libellé contient une chaîne de caractères donnée,
+     * en ignorant la casse.
+     *
+     * @param libelleDonnee Le libellé (ou partie de libellé) à rechercher.
+     * @return Une liste de données correspondant au critère de recherche.
+     */
     List<Donnee> findByLibelleDonneeContainingIgnoreCase(String libelleDonnee);
 }

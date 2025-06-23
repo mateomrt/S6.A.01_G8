@@ -70,7 +70,6 @@ public class MurService {
         mur.setSalleNavigation(salle);
         return murRepo.save(mur);
     }
-    
 
     /**
      * Met à jour un mur existant.

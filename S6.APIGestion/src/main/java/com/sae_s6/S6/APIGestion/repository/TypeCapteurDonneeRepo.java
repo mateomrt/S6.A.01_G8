@@ -13,5 +13,5 @@ import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 public interface TypeCapteurDonneeRepo extends JpaRepository<TypeCapteurDonnee, TypeCapteurDonneeEmbedId> {
 
     // Des méthodes de requête supplémentaires peuvent être définies ici si nécessaire
-    
+
 }

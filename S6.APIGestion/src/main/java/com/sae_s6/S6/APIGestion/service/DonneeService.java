@@ -85,6 +85,12 @@ public class DonneeService {
         log.debug("Donnée avec id: {} supprimée avec succès", id);
     }
 
+    /**
+     * Recherche les données dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleDonnee La chaîne de caractères à rechercher.
+     * @return Une liste de données correspondant à la recherche.
+     */
     public List<Donnee> getByLibelleDonneeContainingIgnoreCase(String libelleDonnee) {
         return donneeRepo.findByLibelleDonneeContainingIgnoreCase(libelleDonnee);
     }

@@ -132,7 +132,13 @@ public class CapteurService {
         log.debug("Capteur avec id: {} supprimé avec succès", id);
     }
 
+    /**
+     * Recherche les capteurs dont le libellé contient une chaîne de caractères donnée, sans tenir compte de la casse.
+     *
+     * @param libelleCapteur La chaîne de caractères à rechercher.
+     * @return Une liste de capteurs correspondant à la recherche.
+     */
     public List<Capteur> getByLibelleCapteurContainingIgnoreCase(String libelleCapteur) {
         return capteurRepo.findByLibelleCapteurContainingIgnoreCase(libelleCapteur);
-    }  
+    }
 }
