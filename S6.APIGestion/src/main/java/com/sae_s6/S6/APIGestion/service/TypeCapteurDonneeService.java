@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.sae_s6.S6.APIGestion.entity.Donnee;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.repository.TypeCapteurDonneeRepo;
@@ -57,6 +59,22 @@ public class TypeCapteurDonneeService {
      * @return L'association TypeCapteurDonnee sauvegardée.
      */
     public TypeCapteurDonnee saveTypeCapteurDonnee(TypeCapteurDonnee donnee) {
+        // Crée une donnee fictive
+        // Donnee donnee = new Donnee();
+        //donnee.setId(donnee_id);
+
+        
+
+        
+
+        //TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donnee.getId().getIdDonnee(), donnee.getId().getIdTypeCapteur());
+
+        // Crée un type capteur donnee fictif
+        // TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
+        // typeCapteurDonnee.setDonneeNavigation(donnee);
+        // typeCapteurDonnee.setTypeCapteurNavigation(typeCapteur);
+        //donnee.setId(id);
+        
         TypeCapteurDonnee savedDonnee = typeCapteurDonneeRepo.save(donnee);
         log.info("Association TypeCapteurDonnee sauvegardée avec succès avec l'id composite: {}", savedDonnee.getId());
         log.debug("Détails de l'association TypeCapteurDonnee sauvegardée: {}", savedDonnee);
