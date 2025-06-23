@@ -16,6 +16,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 @Component
 @Scope("prototype")
 @Route(value = "donnee")

@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import org.springframework.context.annotation.Scope;
+
 import com.sae_s6.S6.APIGestion.entity.Equipement;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -22,6 +24,7 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class EquipementEditor extends VerticalLayout implements KeyNotifier {
@@ -34,7 +37,7 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 	private Equipement equipement;
 
 	/* Fields to edit properties in Equipement entity */
-	TextField libelleEquipement = new TextField("Libellé équipement");
+	public TextField libelleEquipement = new TextField("Libellé équipement");
 	TextField hauteur = new TextField("Hauteur");
 	TextField largeur = new TextField("Largeur");
 	TextField position_x = new TextField("Position X");

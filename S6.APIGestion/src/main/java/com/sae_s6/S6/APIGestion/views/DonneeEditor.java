@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import org.springframework.context.annotation.Scope;
+
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.vaadin.flow.component.Key;
@@ -14,6 +16,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class DonneeEditor extends VerticalLayout implements KeyNotifier {
@@ -26,11 +29,11 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
 	private Donnee donnee;
 
 	/* Fields to edit properties in Donnee entity */
-	TextField libelleDonnee = new TextField("Libellé donnée");
+	public TextField libelleDonnee = new TextField("Libellé donnée");
 	TextField unite = new TextField("Unité");
 
 	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+	public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
 	Button cancel = new Button("Annuler");
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
