@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TypeCapteurDonneeController {
 
+    // Service pour gérer les opérations liées aux associations TypeCapteurDonnee.
     private final TypeCapteurDonneeService typeCapteurDonneeService;
 
     /**
@@ -38,7 +39,7 @@ public class TypeCapteurDonneeController {
         List<TypeCapteurDonnee> typeCapteurDonnees = typeCapteurDonneeService.getAllTypeCapteurDonnee();
         if (typeCapteurDonnees == null || typeCapteurDonnees.isEmpty()) {
             log.warn("Aucune association TypeCapteurDonnee trouvée.");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Associations TypeCapteurDonnee récupérées avec succès.");
         return ResponseEntity.ok(typeCapteurDonnees);
@@ -61,7 +62,7 @@ public class TypeCapteurDonneeController {
         TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
         if (typeCapteurDonnee == null) {
             log.warn("Aucune association TypeCapteurDonnee trouvée pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Association TypeCapteurDonnee récupérée avec succès pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
         return ResponseEntity.ok(typeCapteurDonnee);
@@ -88,48 +89,27 @@ public class TypeCapteurDonneeController {
 
     /**
      * Endpoint pour mettre à jour une association TypeCapteurDonnee existante.
-     * Permet de mettre à jour le type de capteur, la donnée, ou les deux.
      * URL: localhost:8080/api/type_capteur_donnee/{typeCapteurId}/{donneeId}
      *
      * @param typeCapteurId L'identifiant du type de capteur existant.
      * @param donneeId L'identifiant de la donnée existante.
-     * @param updates Un objet JSON contenant les nouveaux identifiants (newIdTypeCapteur et/ou newIdDonnee).
+     * @param updateTypeCapteurDonnee L'entité TypeCapteurDonnee contenant les nouvelles valeurs.
      * @return Une réponse contenant l'association TypeCapteurDonnee mise à jour ou une réponse 400 si elle n'est pas trouvée.
      */
     @PutMapping("/{donneeId}/{typeCapteurId}")
-    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(@PathVariable("donneeId") Integer donneeId, @PathVariable("typeCapteurId") Integer typeCapteurId, @RequestBody TypeCapteurDonnee updateTypeCapteurDonnee) {
-        
-                
+    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(
+            @PathVariable("donneeId") Integer donneeId,
+            @PathVariable("typeCapteurId") Integer typeCapteurId,
+            @RequestBody TypeCapteurDonnee updateTypeCapteurDonnee) {
+        log.debug("Requête reçue pour mettre à jour l'association avec donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
         TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(id, updateTypeCapteurDonnee);
+        if (updatedTypeCapteurDonnee == null) {
+            log.warn("Échec de la mise à jour de l'association TypeCapteurDonnee.");
+            return ResponseEntity.badRequest().build();
+        }
+        log.info("Association TypeCapteurDonnee mise à jour avec succès : {}", updatedTypeCapteurDonnee);
         return ResponseEntity.ok(updatedTypeCapteurDonnee);
-        
-    }
-
-    /**
-     * Classe interne pour représenter le corps JSON de la requête.
-     * Contient les nouveaux identifiants pour la mise à jour.
-     */
-    public static class UpdateRequest {
-        private Integer newIdTypeCapteur; // Nouvel identifiant du type de capteur
-        private Integer newIdDonnee; // Nouvel identifiant de la donnée
-
-        // Getters et setters
-        public Integer getNewIdTypeCapteur() {
-            return newIdTypeCapteur;
-        }
-
-        public void setNewIdTypeCapteur(Integer newIdTypeCapteur) {
-            this.newIdTypeCapteur = newIdTypeCapteur;
-        }
-
-        public Integer getNewIdDonnee() {
-            return newIdDonnee;
-        }
-
-        public void setNewIdDonnee(Integer newIdDonnee) {
-            this.newIdDonnee = newIdDonnee;
-        }
     }
 
     /**
@@ -149,7 +129,7 @@ public class TypeCapteurDonneeController {
         TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
         if (typeCapteurDonnee == null) {
             log.warn("Aucune association TypeCapteurDonnee trouvée pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
         log.info("Association TypeCapteurDonnee supprimée avec succès pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);

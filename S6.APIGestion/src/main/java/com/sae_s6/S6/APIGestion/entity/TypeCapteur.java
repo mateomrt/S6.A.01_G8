@@ -71,6 +71,13 @@ public class TypeCapteur {
     public int hashCode() {
         return Objects.hash(id, libelleTypeCapteur, modeTypeCapteur);
     }
+
+    /**
+     * Retourne la description du type de capteur.
+     * Actuellement, cela correspond au libellé du type de capteur.
+     *
+     * @return Le libellé du type de capteur.
+     */
     public String getDesc() {
         return libelleTypeCapteur;
     }

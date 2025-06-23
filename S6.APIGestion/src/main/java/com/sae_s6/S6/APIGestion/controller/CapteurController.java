@@ -21,6 +21,7 @@ import java.util.List;
 @Validated
 public class CapteurController {
 
+    // Service pour gérer les opérations liées aux capteurs.
     private final CapteurService capteurService;
 
     /**
@@ -31,7 +32,9 @@ public class CapteurController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Capteur>> getAllCapteurs() {
+        // Récupère tous les capteurs via le service.
         List<Capteur> capteurs = capteurService.getAllCapteurs();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (capteurs == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -47,7 +50,9 @@ public class CapteurController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Capteur> getCapteurById(@PathVariable("id") Integer id) {
+        // Récupère le capteur par son ID via le service.
         Capteur capteur = capteurService.getCapteurById(id);
+        // Vérifie si le capteur existe et retourne une réponse appropriée.
         if (capteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,7 +68,9 @@ public class CapteurController {
      */
     @PostMapping("/")
     public ResponseEntity<Capteur> saveCapteur(@RequestBody Capteur capteur) {
+        // Sauvegarde le capteur via le service.
         Capteur savedCapteur = capteurService.saveCapteur(capteur);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +86,9 @@ public class CapteurController {
      */
     @PutMapping("/")
     public ResponseEntity<Capteur> updateCapteur(@RequestBody Capteur capteur) {
+        // Met à jour le capteur via le service.
         Capteur updatedCapteur = capteurService.updateCapteur(capteur);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,10 +104,13 @@ public class CapteurController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCapteurById(@PathVariable("id") Integer id) {
+        // Récupère le capteur par son ID via le service.
         Capteur capteur = capteurService.getCapteurById(id);
+        // Vérifie si le capteur existe avant de le supprimer.
         if (capteur == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime le capteur via le service.
         capteurService.deleteCapteurById(id);
         return ResponseEntity.ok("Capteur supprimé avec succès");
     }

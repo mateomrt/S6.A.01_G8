@@ -2,6 +2,7 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -58,7 +59,7 @@ public class Capteur {
      * Référence au mur associé au capteur.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Mur.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = false)
     private Mur murNavigation;
 
@@ -66,7 +67,7 @@ public class Capteur {
      * Référence à la salle associée au capteur.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Salle.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 
@@ -74,7 +75,7 @@ public class Capteur {
      * Référence au type de capteur.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité TypeCapteur.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "typecapteur_id", referencedColumnName = "id", nullable = false)
     private TypeCapteur typeCapteurNavigation;
 
@@ -114,6 +115,4 @@ public class Capteur {
             salleNavigation
         );
     }
-
-    
 }

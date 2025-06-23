@@ -48,9 +48,9 @@ public class TypeEquipement {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TypeEquipement type_equipement)) return false;
-        return Objects.equals(id, type_equipement.id)
-                && Objects.equals(libelleTypeEquipement, type_equipement.libelleTypeEquipement);
+        if (!(o instanceof TypeEquipement typeEquipement)) return false;
+        return Objects.equals(id, typeEquipement.id) &&
+               Objects.equals(libelleTypeEquipement, typeEquipement.libelleTypeEquipement);
     }
 
     /**
@@ -64,6 +64,12 @@ public class TypeEquipement {
         return Objects.hash(id, libelleTypeEquipement);
     }
 
+    /**
+     * Retourne la description du type d'équipement.
+     * Actuellement, cela correspond au libellé du type d'équipement.
+     *
+     * @return Le libellé du type d'équipement.
+     */
     public String getDesc() {
         return libelleTypeEquipement;
     }

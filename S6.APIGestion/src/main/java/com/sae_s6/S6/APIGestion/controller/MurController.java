@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.service.MurService;
@@ -30,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MurController {
 
+    // Service pour gérer les opérations liées aux murs.
     private final MurService murService;
 
     /**
@@ -40,7 +34,9 @@ public class MurController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Mur>> getAllMurs() {
+        // Récupère tous les murs via le service.
         List<Mur> murs = murService.getAllMurs();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (murs == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -56,7 +52,9 @@ public class MurController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Mur> getMurById(@PathVariable("id") Integer id) {
+        // Récupère le mur par son ID via le service.
         Mur mur = murService.getMurById(id);
+        // Vérifie si le mur existe et retourne une réponse appropriée.
         if (mur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -72,8 +70,11 @@ public class MurController {
      */
     @PostMapping("/")
     public ResponseEntity<Mur> saveMur(@RequestBody Mur mur) {
+        // Log de la requête reçue.
         log.info("Requête POST reçue pour sauvegarder un mur: {}", mur);
+        // Sauvegarde le mur via le service.
         Mur savedMur = murService.saveMur(mur);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedMur == null) {
             log.warn("Échec de la sauvegarde du mur: {}", mur);
             return ResponseEntity.badRequest().build();
@@ -91,7 +92,9 @@ public class MurController {
      */
     @PutMapping("/")
     public ResponseEntity<Mur> updateMur(@RequestBody Mur mur) {
+        // Met à jour le mur via le service.
         Mur updatedMur = murService.updateMur(mur);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedMur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -107,10 +110,13 @@ public class MurController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMurById(@PathVariable("id") Integer id) {
+        // Récupère le mur par son ID via le service.
         Mur mur = murService.getMurById(id);
+        // Vérifie si le mur existe avant de le supprimer.
         if (mur == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime le mur via le service.
         murService.deleteMurById(id);
         return ResponseEntity.ok("Mur supprimé avec succès");
     }

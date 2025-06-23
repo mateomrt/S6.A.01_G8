@@ -7,10 +7,12 @@ import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.context.annotation.Scope;
@@ -20,123 +22,132 @@ import org.springframework.context.annotation.Scope;
 @UIScope
 public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 
-	private final TypeCapteurService typeCapteurService;
+    private final TypeCapteurService typeCapteurService;
 
-	private TypeCapteur typeCapteur;
+    private TypeCapteur typeCapteur;
 
-	/* Fields to edit properties in TypeCapteur entity */
-	public TextField libelleTypeCapteur = new TextField("Libellé type capteur");
-	public TextField modeTypeCapteur = new TextField("Mode du type capteur");
+    /* Fields to edit properties in TypeCapteur entity */
+    public TextField libelleTypeCapteur = new TextField("Libellé type capteur");
+    public TextField modeTypeCapteur = new TextField("Mode du type capteur");
 
-	/* Action buttons */
-	public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	public Button cancel = new Button("Annuler");
-	public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	public HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    /* Action buttons */
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button cancel = new Button("Annuler");
+    public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    public HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	public Binder<TypeCapteur> binder = new Binder<>(TypeCapteur.class);
-	private ChangeHandler changeHandler;
+    public Binder<TypeCapteur> binder = new Binder<>(TypeCapteur.class);
+    private ChangeHandler changeHandler;
 
-	public TypeCapteurEditor(TypeCapteurService typeCapteurService) {
-		this.typeCapteurService = typeCapteurService;
+    public TypeCapteurEditor(TypeCapteurService typeCapteurService) {
+        this.typeCapteurService = typeCapteurService;
 
-		// Organisation des champs en ligne horizontale
-		HorizontalLayout fieldsRow = new HorizontalLayout(libelleTypeCapteur, modeTypeCapteur);
-		fieldsRow.setWidthFull();
-		fieldsRow.setSpacing(true);
+        // Organisation des champs en ligne horizontale
+        HorizontalLayout fieldsRow = new HorizontalLayout(libelleTypeCapteur, modeTypeCapteur);
+        fieldsRow.setWidthFull();
+        fieldsRow.setSpacing(true);
 
-		// Configuration de la largeur des champs pour une répartition équitable
-		libelleTypeCapteur.setWidthFull();
-		modeTypeCapteur.setWidthFull();
+        // Configuration de la largeur des champs pour une répartition équitable
+        libelleTypeCapteur.setWidthFull();
+        modeTypeCapteur.setWidthFull();
 
-		add(fieldsRow, actions);
+        add(fieldsRow, actions);
 
-		// Configuration du binder
-		binder.bindInstanceFields(this);
+        // Configuration du binder
+        binder.forField(libelleTypeCapteur)
+              .asRequired("Le libellé du type capteur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleTypeCapteur.setErrorMessage(status.getMessage().orElse(""));
+                  libelleTypeCapteur.setInvalid(status.isError());
+              })
+              .bind(TypeCapteur::getLibelleTypeCapteur, TypeCapteur::setLibelleTypeCapteur);
 
-		// Configuration et style des composants
-		setSpacing(true);
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        binder.forField(modeTypeCapteur)
+              .asRequired("Le mode du type capteur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  modeTypeCapteur.setErrorMessage(status.getMessage().orElse(""));
+                  modeTypeCapteur.setInvalid(status.isError());
+              })
+              .bind(TypeCapteur::getModeTypeCapteur, TypeCapteur::setModeTypeCapteur);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        // Configuration et style des composants
+        setSpacing(true);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		// Configuration des actions des boutons
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> cancel());
-		
-		// L'éditeur est caché par défaut
-		setVisible(false);
-	}
+        addKeyPressListener(Key.ENTER, e -> save());
 
-	void delete() {
-		typeCapteurService.deleteTypeCapteurById(typeCapteur.getId());
-		changeHandler.onChange();
-	}
+        // Configuration des actions des boutons
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
 
-	void save() {
-		// Validation avant sauvegarde
-		if (!binder.validate().isOk()) {
-			return;
-		}
+        // L'éditeur est caché par défaut
+        setVisible(false);
+    }
 
-		if (typeCapteur.getId() == null) {
-			typeCapteurService.saveTypeCapteur(typeCapteur);
-		} else {
-			typeCapteurService.updateTypeCapteur(typeCapteur);
-		}
-		changeHandler.onChange();
-	}
+    void delete() {
+        typeCapteurService.deleteTypeCapteurById(typeCapteur.getId());
+        changeHandler.onChange();
+    }
 
-	void cancel() {
-		// Dans tous les cas, on ferme l'éditeur et on nettoie le formulaire
-		setVisible(false);
-		clearForm();
-		// Notifier le changement pour actualiser la vue principale
-		if (changeHandler != null) {
-			changeHandler.onChange();
-		}
-	}
+    void save() {
+        try {
+            binder.writeBean(typeCapteur); // Valide et écrit les données dans l'objet typeCapteur
+            if (typeCapteur.getId() == null) {
+                typeCapteurService.saveTypeCapteur(typeCapteur);
+            } else {
+                typeCapteurService.updateTypeCapteur(typeCapteur);
+            }
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
+    }
 
-	private void clearForm() {
-		binder.setBean(null);
-		libelleTypeCapteur.clear();
-		modeTypeCapteur.clear();
-	}
+    void cancel() {
+        setVisible(false);
+        clearForm();
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    private void clearForm() {
+        binder.setBean(null);
+        libelleTypeCapteur.clear();
+        modeTypeCapteur.clear();
+    }
 
-	public final void editTypeCapteur(TypeCapteur a) {
-		if (a == null) {
-			setVisible(false);
-			clearForm();
-			return;
-		}
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		final boolean persisted = a.getId() != null;
-		
-		if (persisted) {
-			// TypeCapteur existant : on charge depuis la BD
-			typeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
-		} else {
-			typeCapteur = a;
-		}
+    public final void editTypeCapteur(TypeCapteur a) {
+        if (a == null) {
+            setVisible(false);
+            clearForm();
+            return;
+        }
 
-		// Configuration de la visibilité des boutons
-		cancel.setVisible(true); // Le bouton annuler est toujours visible
-		delete.setVisible(persisted); // Le bouton supprimer n'est visible que pour les types existants
+        final boolean persisted = a.getId() != null;
 
-		// Binding des données
-		binder.setBean(typeCapteur);
+        if (persisted) {
+            typeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
+        } else {
+            typeCapteur = a;
+        }
 
-		setVisible(true);
-		libelleTypeCapteur.focus();
-	}
+        cancel.setVisible(true);
+        delete.setVisible(persisted);
 
-	public void setChangeHandler(ChangeHandler h) {
-		changeHandler = h;
-	}
+        binder.setBean(typeCapteur);
+
+        setVisible(true);
+        libelleTypeCapteur.focus();
+    }
+
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }

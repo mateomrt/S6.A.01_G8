@@ -1,5 +1,6 @@
 package com.sae_s6.S6.APIGestion.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -32,7 +33,7 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité Donnee.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "donnee_id", insertable = false, updatable = false)
     private Donnee donneeNavigation;
 
@@ -41,7 +42,32 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité TypeCapteur.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "typecapteur_id", insertable = false, updatable = false)
     private TypeCapteur typeCapteurNavigation;
+
+    /**
+     * Vérifie si deux objets TypeCapteurDonnee sont égaux.
+     * Deux associations sont considérées égales si elles ont le même identifiant composite.
+     *
+     * @param o L'objet à comparer.
+     * @return true si les objets sont égaux, false sinon.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TypeCapteurDonnee that)) return false;
+        return id != null && id.equals(that.id);
+    }
+
+    /**
+     * Calcule le hash code de l'objet TypeCapteurDonnee.
+     * Utilise l'identifiant composite pour le calcul.
+     *
+     * @return Le hash code de l'objet.
+     */
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

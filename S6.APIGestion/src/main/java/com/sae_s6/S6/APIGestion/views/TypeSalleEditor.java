@@ -9,10 +9,12 @@ import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -40,7 +42,14 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 
         add(libelleTypeSalle, actions);
 
-        binder.bindInstanceFields(this);
+        // Configuration du binder
+        binder.forField(libelleTypeSalle)
+              .asRequired("Le libellé du type salle est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleTypeSalle.setErrorMessage(status.getMessage().orElse(""));
+                  libelleTypeSalle.setInvalid(status.isError());
+              })
+              .bind(TypeSalle::getLibelleTypeSalle, TypeSalle::setLibelleTypeSalle);
 
         setSpacing(true);
 
@@ -61,8 +70,17 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void save() {
-        typeSalleService.saveTypeSalle(typeSalle);
-        changeHandler.onChange();
+        try {
+            binder.writeBean(typeSalle); // Valide et écrit les données dans l'objet typeSalle
+            if (typeSalle.getId() == null) {
+                typeSalleService.saveTypeSalle(typeSalle);
+            } else {
+                typeSalleService.updateTypeSalle(typeSalle);
+            }
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
     }
 
     void cancel() {

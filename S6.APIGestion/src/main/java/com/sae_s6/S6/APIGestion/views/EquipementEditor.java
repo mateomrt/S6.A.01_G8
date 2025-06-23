@@ -16,10 +16,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -29,213 +31,208 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class EquipementEditor extends VerticalLayout implements KeyNotifier {
 
-	private final EquipementService equipementService;
-	private final MurService murService;
-	private final SalleService salleService;
-	private final TypeEquipementService typeEquipementService;
+    private final EquipementService equipementService;
+    private final MurService murService;
+    private final SalleService salleService;
+    private final TypeEquipementService typeEquipementService;
 
-	private Equipement equipement;
+    private Equipement equipement;
 
-	/* Fields to edit properties in Equipement entity */
-	public TextField libelleEquipement = new TextField("Libellé équipement");
-	TextField hauteur = new TextField("Hauteur");
-	TextField largeur = new TextField("Largeur");
-	TextField position_x = new TextField("Position X");
-	TextField position_y = new TextField("Position Y");
-    
-	ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
-	ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
-	ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
+    /* Fields to edit properties in Equipement entity */
+    public TextField libelleEquipement = new TextField("Libellé équipement");
+    TextField hauteur = new TextField("Hauteur");
+    TextField largeur = new TextField("Largeur");
+    TextField position_x = new TextField("Position X");
+    TextField position_y = new TextField("Position Y");
 
-	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
+    ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
+    ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
 
-	Binder<Equipement> binder = new Binder<>(Equipement.class);
-	private ChangeHandler changeHandler;
+    /* Action buttons */
+    Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    Button cancel = new Button("Annuler");
+    Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	public EquipementEditor(EquipementService equipementService, MurService murService, SalleService salleService, TypeEquipementService typeEquipementService) {
-		this.equipementService = equipementService;
-		this.murService = murService;
-		this.salleService = salleService;
-		this.typeEquipementService = typeEquipementService;
+    Binder<Equipement> binder = new Binder<>(Equipement.class);
+    private ChangeHandler changeHandler;
 
-		// Configuration des ComboBox
-		MurComboBox.setPlaceholder("Sélectionner un mur");
-		MurComboBox.setClearButtonVisible(true);
-		MurComboBox.setItemLabelGenerator(Mur::getDesc);
+    public EquipementEditor(EquipementService equipementService, MurService murService, SalleService salleService, TypeEquipementService typeEquipementService) {
+        this.equipementService = equipementService;
+        this.murService = murService;
+        this.salleService = salleService;
+        this.typeEquipementService = typeEquipementService;
 
-		SalleComboBox.setPlaceholder("Sélectionner une salle");
-		SalleComboBox.setClearButtonVisible(true);
-		SalleComboBox.setItemLabelGenerator(Salle::getDesc);
+        // Configuration des ComboBox
+        MurComboBox.setPlaceholder("Sélectionner un mur");
+        MurComboBox.setClearButtonVisible(true);
+        MurComboBox.setItemLabelGenerator(Mur::getDesc);
 
-		TypeEquipementComboBox.setPlaceholder("Sélectionner un type d'équipement");
-		TypeEquipementComboBox.setClearButtonVisible(true);
-		TypeEquipementComboBox.setItemLabelGenerator(TypeEquipement::getDesc);
+        SalleComboBox.setPlaceholder("Sélectionner une salle");
+        SalleComboBox.setClearButtonVisible(true);
+        SalleComboBox.setItemLabelGenerator(Salle::getDesc);
 
-		// Organisation des champs en lignes horizontales
-		// Ligne 1 : Libellé, Mur, Salle
-		HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleEquipement, MurComboBox, SalleComboBox);
-		fieldsRow1.setWidthFull();
-		fieldsRow1.setSpacing(true);
+        TypeEquipementComboBox.setPlaceholder("Sélectionner un type d'équipement");
+        TypeEquipementComboBox.setClearButtonVisible(true);
+        TypeEquipementComboBox.setItemLabelGenerator(TypeEquipement::getDesc);
 
-		// Ligne 2 : Type équipement, Hauteur, Largeur
-		HorizontalLayout fieldsRow2 = new HorizontalLayout(TypeEquipementComboBox, hauteur, largeur);
-		fieldsRow2.setWidthFull();
-		fieldsRow2.setSpacing(true);
+        // Organisation des champs en lignes horizontales
+        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleEquipement, MurComboBox, SalleComboBox);
+        fieldsRow1.setWidthFull();
+        fieldsRow1.setSpacing(true);
 
-		// Ligne 3 : Position X, Position Y (avec un champ vide pour l'alignement)
-		HorizontalLayout fieldsRow3 = new HorizontalLayout(position_x, position_y);
-		fieldsRow3.setSpacing(true);
-		fieldsRow3.setWidthFull();
+        HorizontalLayout fieldsRow2 = new HorizontalLayout(TypeEquipementComboBox, hauteur, largeur);
+        fieldsRow2.setWidthFull();
+        fieldsRow2.setSpacing(true);
 
-		// Configuration de la largeur des champs pour une répartition équitable
-		// Ligne 1 - 3 champs
-		libelleEquipement.setWidthFull();
-		MurComboBox.setWidthFull();
-		SalleComboBox.setWidthFull();
+        HorizontalLayout fieldsRow3 = new HorizontalLayout(position_x, position_y);
+        fieldsRow3.setSpacing(true);
+        fieldsRow3.setWidthFull();
 
-		// Ligne 2 - 3 champs
-		TypeEquipementComboBox.setWidthFull();
-		hauteur.setWidthFull();
-		largeur.setWidthFull();
+        libelleEquipement.setWidthFull();
+        MurComboBox.setWidthFull();
+        SalleComboBox.setWidthFull();
+        TypeEquipementComboBox.setWidthFull();
+        hauteur.setWidthFull();
+        largeur.setWidthFull();
+        position_x.setWidth("calc(33.33% - 5px)");
+        position_y.setWidth("calc(33.33% - 5px)");
 
-		// Ligne 3 - 2 champs (chaque champ prend 33.33% pour s'aligner avec les lignes du dessus)
-		position_x.setWidth("calc(33.33% - 5px)");
-		position_y.setWidth("calc(33.33% - 5px)");
+        add(fieldsRow1, fieldsRow2, fieldsRow3, actions);
 
-		add(fieldsRow1, fieldsRow2, fieldsRow3, actions);
+        // Configuration du binder
+        binder.forField(libelleEquipement)
+              .asRequired("Le libellé de l'équipement est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleEquipement.setErrorMessage(status.getMessage().orElse(""));
+                  libelleEquipement.setInvalid(status.isError());
+              })
+              .bind(Equipement::getLibelleEquipement, Equipement::setLibelleEquipement);
 
-		// Configuration du binder
-		binder.bindInstanceFields(this);
-		
-		binder.forField(MurComboBox)
-            .asRequired("Mur est obligatoire")
-            .bind(Equipement::getMurNavigation, Equipement::setMurNavigation);
-			
-		binder.forField(SalleComboBox)
-            .asRequired("Salle est obligatoire")
-            .bind(Equipement::getSalleNavigation, Equipement::setSalleNavigation);
-			
-		binder.forField(TypeEquipementComboBox)
-            .asRequired("Type équipement est obligatoire")
-            .bind(Equipement::getTypeEquipementNavigation, Equipement::setTypeEquipementNavigation);
+        binder.forField(hauteur)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  hauteur.setErrorMessage(status.getMessage().orElse(""));
+                  hauteur.setInvalid(status.isError());
+              })
+              .bind(Equipement::getHauteur, Equipement::setHauteur);
 
-		binder.forField(hauteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
-			.bind(Equipement::getHauteur, Equipement::setHauteur);
-		
-		binder.forField(largeur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La largeur doit être un nombre"))
-			.bind(Equipement::getLargeur, Equipement::setLargeur);
-			
-		binder.forField(position_x)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La position X doit être un nombre"))
-			.bind(Equipement::getPosition_x, Equipement::setPosition_x);
-			
-		binder.forField(position_y)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La position Y doit être un nombre"))
-			.bind(Equipement::getPosition_y, Equipement::setPosition_y);
+        binder.forField(largeur)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La largeur doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  largeur.setErrorMessage(status.getMessage().orElse(""));
+                  largeur.setInvalid(status.isError());
+              })
+              .bind(Equipement::getLargeur, Equipement::setLargeur);
 
-		// Configuration et style des composants
-		setSpacing(true);
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        binder.forField(position_x)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La position X doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  position_x.setErrorMessage(status.getMessage().orElse(""));
+                  position_x.setInvalid(status.isError());
+              })
+              .bind(Equipement::getPosition_x, Equipement::setPosition_x);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        binder.forField(position_y)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La position Y doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  position_y.setErrorMessage(status.getMessage().orElse(""));
+                  position_y.setInvalid(status.isError());
+              })
+              .bind(Equipement::getPosition_y, Equipement::setPosition_y);
 
-		// Configuration des actions des boutons
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> cancel());
+        binder.forField(MurComboBox)
+              .asRequired("Mur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  MurComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  MurComboBox.setInvalid(status.isError());
+              })
+              .bind(Equipement::getMurNavigation, Equipement::setMurNavigation);
 
-		// L'éditeur est caché par défaut
-		setVisible(false);
-	}
+        binder.forField(SalleComboBox)
+              .asRequired("Salle est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  SalleComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  SalleComboBox.setInvalid(status.isError());
+              })
+              .bind(Equipement::getSalleNavigation, Equipement::setSalleNavigation);
 
-	void delete() {
-		equipementService.deleteEquipementById(equipement.getId());
-		changeHandler.onChange();
-	}
+        binder.forField(TypeEquipementComboBox)
+              .asRequired("Type équipement est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  TypeEquipementComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  TypeEquipementComboBox.setInvalid(status.isError());
+              })
+              .bind(Equipement::getTypeEquipementNavigation, Equipement::setTypeEquipementNavigation);
 
-	void save() {
-		// Validation avant sauvegarde
-		if (!binder.validate().isOk()) {
-			return;
-		}
+        setSpacing(true);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		if (equipement.getId() == null) {
-			equipementService.saveEquipement(equipement);
-		} else {
-			equipementService.updateEquipement(equipement);
-		}
-		changeHandler.onChange();
-	}
+        addKeyPressListener(Key.ENTER, e -> save());
 
-	void cancel() {
-		// Dans tous les cas, on ferme l'éditeur et on nettoie le formulaire
-		setVisible(false);
-		clearForm();
-		// Notifier le changement pour actualiser la vue principale
-		if (changeHandler != null) {
-			changeHandler.onChange();
-		}
-	}
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
 
-	private void clearForm() {
-		binder.setBean(null);
-		libelleEquipement.clear();
-		hauteur.clear();
-		largeur.clear();
-		position_x.clear();
-		position_y.clear();
-		MurComboBox.clear();
-		SalleComboBox.clear();
-		TypeEquipementComboBox.clear();
-	}
+        setVisible(false);
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void delete() {
+        equipementService.deleteEquipementById(equipement.getId());
+        changeHandler.onChange();
+    }
 
-	public final void editEquipement(Equipement a) {
-		if (a == null) {
-			setVisible(false);
-			clearForm();
-			return;
-		}
+    void save() {
+        try {
+            binder.writeBean(equipement); // Valide et écrit les données dans l'objet equipement
+            equipementService.saveEquipement(equipement);
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
+    }
 
-		// Chargement des données pour les ComboBox
-		MurComboBox.setItems(murService.getAllMurs());
-		SalleComboBox.setItems(salleService.getAllSalles());
-		TypeEquipementComboBox.setItems(typeEquipementService.getAllTypeEquipements());
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		final boolean persisted = a.getId() != null;
-		
-		if (persisted) {
-			equipement = equipementService.getEquipementById(a.getId());
-		} else {
-			equipement = a;
-		}
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		// Configuration de la visibilité des boutons
-		cancel.setVisible(true); // Le bouton annuler est toujours visible
-		delete.setVisible(persisted); // Le bouton supprimer n'est visible que pour les équipements existants
+    public final void editEquipement(Equipement a) {
+        if (a == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Binding des données
-		binder.setBean(equipement);
+        MurComboBox.setItems(murService.getAllMurs());
+        SalleComboBox.setItems(salleService.getAllSalles());
+        TypeEquipementComboBox.setItems(typeEquipementService.getAllTypeEquipements());
 
-		setVisible(true);
-		libelleEquipement.focus();
-	}
+        final boolean persisted = a.getId() != null;
 
-	public void setChangeHandler(ChangeHandler h) {
-		changeHandler = h;
-	}
+        if (persisted) {
+            equipement = equipementService.getEquipementById(a.getId());
+        } else {
+            equipement = a;
+        }
+
+        binder.setBean(equipement);
+        setVisible(true);
+        libelleEquipement.focus();
+    }
+
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }

@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class BatimentController {
 
+    // Service pour gérer les opérations liées aux bâtiments.
     private final BatimentService batimentService;
 
     /**
@@ -38,7 +39,9 @@ public class BatimentController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Batiment>> getAllBatiments() {
+        // Récupère tous les bâtiments via le service.
         List<Batiment> batiments = batimentService.getAllBatiments();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (batiments == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -54,7 +57,9 @@ public class BatimentController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Batiment> getBatimentById(@PathVariable("id") Integer id) {
+        // Récupère le bâtiment par son ID via le service.
         Batiment batiment = batimentService.getBatimentById(id);
+        // Vérifie si le bâtiment existe et retourne une réponse appropriée.
         if (batiment == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,7 +75,9 @@ public class BatimentController {
      */
     @PostMapping("/")
     public ResponseEntity<Batiment> saveBatiment(@RequestBody Batiment batiment) {
+        // Sauvegarde le bâtiment via le service.
         Batiment savedBatiment = batimentService.saveBatiment(batiment);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedBatiment == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -81,12 +88,14 @@ public class BatimentController {
      * Endpoint pour mettre à jour un bâtiment existant.
      * URL: localhost:8080/api/batiment/
      *
-     * @param updated Les nouvelles données du bâtiment.
+     * @param batiment Les nouvelles données du bâtiment.
      * @return Une réponse contenant le bâtiment mis à jour ou une réponse 404 s'il n'est pas trouvé.
      */
     @PutMapping("/")
     public ResponseEntity<Batiment> updateBatiment(@RequestBody Batiment batiment) {
+        // Met à jour le bâtiment via le service.
         Batiment updatedBatiment = batimentService.updateBatiment(batiment);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedBatiment == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -102,11 +111,13 @@ public class BatimentController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBatiment(@PathVariable("id") Integer id) {
+        // Récupère le bâtiment par son ID via le service.
         Batiment batiment = batimentService.getBatimentById(id);
+        // Vérifie si le bâtiment existe avant de le supprimer.
         if (batiment == null) {
             return ResponseEntity.badRequest().build();
         }
-        
+        // Supprime le bâtiment via le service.
         batimentService.deleteBatimentById(id);
         return ResponseEntity.ok("Bâtiment supprimé avec succès");
     }

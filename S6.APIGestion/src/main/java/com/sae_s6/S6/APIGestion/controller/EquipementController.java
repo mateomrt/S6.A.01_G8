@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class EquipementController {
 
+    // Service pour gérer les opérations liées aux équipements.
     private final EquipementService equipementService;
 
     /**
@@ -31,7 +32,9 @@ public class EquipementController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Equipement>> getAllEquipements() {
+        // Récupère tous les équipements via le service.
         List<Equipement> equipements = equipementService.getAllEquipements();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (equipements == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -47,7 +50,9 @@ public class EquipementController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Equipement> getEquipementById(@PathVariable("id") Integer id) {
+        // Récupère l'équipement par son ID via le service.
         Equipement equipement = equipementService.getEquipementById(id);
+        // Vérifie si l'équipement existe et retourne une réponse appropriée.
         if (equipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,7 +68,9 @@ public class EquipementController {
      */
     @PostMapping("/")
     public ResponseEntity<Equipement> saveEquipement(@RequestBody Equipement equipement) {
+        // Sauvegarde l'équipement via le service.
         Equipement savedEquipement = equipementService.saveEquipement(equipement);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +86,9 @@ public class EquipementController {
      */
     @PutMapping("/")
     public ResponseEntity<Equipement> updateEquipement(@RequestBody Equipement equipement) {
+        // Met à jour l'équipement via le service.
         Equipement updatedEquipement = equipementService.updateEquipement(equipement);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,10 +104,13 @@ public class EquipementController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEquipementById(@PathVariable("id") Integer id) {
+        // Récupère l'équipement par son ID via le service.
         Equipement equipement = equipementService.getEquipementById(id);
+        // Vérifie si l'équipement existe avant de le supprimer.
         if (equipement == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime l'équipement via le service.
         equipementService.deleteEquipementById(id);
         return ResponseEntity.ok("Equipement supprimé avec succès");
     }

@@ -2,6 +2,7 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -72,7 +73,7 @@ public class Equipement {
      * Référence au mur associé à l'équipement.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité Mur.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = true)
     private Mur murNavigation;
 
@@ -80,7 +81,7 @@ public class Equipement {
      * Référence à la salle associée à l'équipement.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Salle.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 
@@ -88,7 +89,7 @@ public class Equipement {
      * Référence au type d'équipement.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité TypeEquipement.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "typeequipement_id", referencedColumnName = "id", nullable = false)
     private TypeEquipement typeEquipementNavigation;
 
@@ -108,7 +109,7 @@ public class Equipement {
                 && Objects.equals(hauteur, equipement.hauteur)
                 && Objects.equals(largeur, equipement.largeur)
                 && Objects.equals(position_x, equipement.position_x)
-                && Objects.equals(position_x, equipement.position_y)
+                && Objects.equals(position_y, equipement.position_y)
                 && Objects.equals(murNavigation, equipement.murNavigation)
                 && Objects.equals(salleNavigation, equipement.salleNavigation)
                 && Objects.equals(typeEquipementNavigation, equipement.typeEquipementNavigation);

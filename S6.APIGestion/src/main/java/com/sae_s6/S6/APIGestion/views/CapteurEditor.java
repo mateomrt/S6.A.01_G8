@@ -16,10 +16,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -29,12 +31,12 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 
-	private final CapteurService capteurService;
-	private final MurService murService;
-	private final SalleService salleService;
-	private final TypeCapteurService typeCapteurService;
+    private final CapteurService capteurService;
+    private final MurService murService;
+    private final SalleService salleService;
+    private final TypeCapteurService typeCapteurService;
 
-	private Capteur capteur;
+    private Capteur capteur;
 
 	/* Fields to edit properties in Capteur entity */
 	public TextField libelleCapteur = new TextField("Libellé capteur");
@@ -51,164 +53,165 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<Capteur> binder = new Binder<>(Capteur.class);
-	private ChangeHandler changeHandler;
+    Binder<Capteur> binder = new Binder<>(Capteur.class);
+    private ChangeHandler changeHandler;
 
-	public CapteurEditor(CapteurService capteurService, MurService murService, SalleService salleService, TypeCapteurService typeCapteurService) {
-		this.capteurService = capteurService;
-		this.salleService = salleService;
-		this.murService = murService;
-		this.typeCapteurService = typeCapteurService;
+    public CapteurEditor(CapteurService capteurService, MurService murService, SalleService salleService, TypeCapteurService typeCapteurService) {
+        this.capteurService = capteurService;
+        this.salleService = salleService;
+        this.murService = murService;
+        this.typeCapteurService = typeCapteurService;
 
-		// Configuration des ComboBox
-		murComboBox.setPlaceholder("Sélectionner un mur");
-		murComboBox.setClearButtonVisible(true);
-		murComboBox.setItemLabelGenerator(Mur::getDesc);
+        // Configuration des ComboBox
+        murComboBox.setPlaceholder("Sélectionner un mur");
+        murComboBox.setClearButtonVisible(true);
+        murComboBox.setItemLabelGenerator(Mur::getDesc);
 
-		salleComboBox.setPlaceholder("Sélectionner une salle");
-		salleComboBox.setClearButtonVisible(true);
-		salleComboBox.setItemLabelGenerator(Salle::getDesc);
+        salleComboBox.setPlaceholder("Sélectionner une salle");
+        salleComboBox.setClearButtonVisible(true);
+        salleComboBox.setItemLabelGenerator(Salle::getDesc);
 
-		typeCapteurComboBox.setPlaceholder("Sélectionner un type de capteur");
-		typeCapteurComboBox.setClearButtonVisible(true);
-		typeCapteurComboBox.setItemLabelGenerator(TypeCapteur::getDesc);
+        typeCapteurComboBox.setPlaceholder("Sélectionner un type de capteur");
+        typeCapteurComboBox.setClearButtonVisible(true);
+        typeCapteurComboBox.setItemLabelGenerator(TypeCapteur::getDesc);
 
-		// Disposition horizontale pour les champs principaux
-		HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleCapteur, positionXCapteur, positionYCapteur);
-		fieldsRow1.setWidthFull();
-		fieldsRow1.setSpacing(true);
-		
-		// Disposition horizontale pour les ComboBox
-		HorizontalLayout fieldsRow2 = new HorizontalLayout(murComboBox, salleComboBox, typeCapteurComboBox);
-		fieldsRow2.setWidthFull();
-		fieldsRow2.setSpacing(true);
+        // Disposition horizontale pour les champs principaux
+        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleCapteur, positionXCapteur, positionYCapteur);
+        fieldsRow1.setWidthFull();
+        fieldsRow1.setSpacing(true);
 
-		// Configuration de la largeur des champs pour une meilleure répartition
-		libelleCapteur.setWidthFull();
-		positionXCapteur.setWidthFull();
-		positionYCapteur.setWidthFull();
-		murComboBox.setWidthFull();
-		salleComboBox.setWidthFull();
-		typeCapteurComboBox.setWidthFull();
+        // Disposition horizontale pour les ComboBox
+        HorizontalLayout fieldsRow2 = new HorizontalLayout(murComboBox, salleComboBox, typeCapteurComboBox);
+        fieldsRow2.setWidthFull();
+        fieldsRow2.setSpacing(true);
 
-		add(fieldsRow1, fieldsRow2, actions);
+        // Configuration de la largeur des champs pour une meilleure répartition
+        libelleCapteur.setWidthFull();
+        positionXCapteur.setWidthFull();
+        positionYCapteur.setWidthFull();
+        murComboBox.setWidthFull();
+        salleComboBox.setWidthFull();
+        typeCapteurComboBox.setWidthFull();
 
-		// Configuration du binder
-		binder.bindInstanceFields(this);
-		
-		binder.forField(murComboBox)
-            .asRequired("Mur est obligatoire")
-            .bind(Capteur::getMurNavigation, Capteur::setMurNavigation);
-			
-		binder.forField(salleComboBox)
-            .asRequired("Salle est obligatoire")
-            .bind(Capteur::getSalleNavigation, Capteur::setSalleNavigation);
-		
-		binder.forField(typeCapteurComboBox)
-            .asRequired("Type capteur est obligatoire")
-            .bind(Capteur::getTypeCapteurNavigation, Capteur::setTypeCapteurNavigation);
+        add(fieldsRow1, fieldsRow2, actions);
 
-		binder.forField(positionXCapteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La position X doit être un nombre"))
-			.bind(Capteur::getPositionXCapteur, Capteur::setPositionXCapteur);
+        // Configuration du binder
+        binder.forField(libelleCapteur)
+              .asRequired("Le libellé du capteur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleCapteur.setErrorMessage(status.getMessage().orElse(""));
+                  libelleCapteur.setInvalid(status.isError());
+              })
+              .bind(Capteur::getLibelleCapteur, Capteur::setLibelleCapteur);
 
-		binder.forField(positionYCapteur)
-			.withNullRepresentation("") 
-			.withConverter(new StringToDoubleConverter("La position Y doit être un nombre"))
-			.bind(Capteur::getPositionYCapteur, Capteur::setPositionYCapteur);
+        binder.forField(positionXCapteur)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La position X doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  positionXCapteur.setErrorMessage(status.getMessage().orElse(""));
+                  positionXCapteur.setInvalid(status.isError());
+              })
+              .bind(Capteur::getPositionXCapteur, Capteur::setPositionXCapteur);
 
-		// Configuration et style des composants
-		setSpacing(true);
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        binder.forField(positionYCapteur)
+              .withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter("La position Y doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  positionYCapteur.setErrorMessage(status.getMessage().orElse(""));
+                  positionYCapteur.setInvalid(status.isError());
+              })
+              .bind(Capteur::getPositionYCapteur, Capteur::setPositionYCapteur);
 
-		addKeyPressListener(Key.ENTER, e -> save());
+        binder.forField(murComboBox)
+              .asRequired("Mur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  murComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  murComboBox.setInvalid(status.isError());
+              })
+              .bind(Capteur::getMurNavigation, Capteur::setMurNavigation);
 
-		// Configuration des actions des boutons
-		save.addClickListener(e -> save());
-		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> cancel());
-		
-		// L'éditeur est caché par défaut
-		setVisible(false);
-	}
+        binder.forField(salleComboBox)
+              .asRequired("Salle est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  salleComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  salleComboBox.setInvalid(status.isError());
+              })
+              .bind(Capteur::getSalleNavigation, Capteur::setSalleNavigation);
 
-	void delete() {
-		capteurService.deleteCapteurById(capteur.getId());
-		changeHandler.onChange();
-	}
+        binder.forField(typeCapteurComboBox)
+              .asRequired("Type capteur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  typeCapteurComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  typeCapteurComboBox.setInvalid(status.isError());
+              })
+              .bind(Capteur::getTypeCapteurNavigation, Capteur::setTypeCapteurNavigation);
 
-	void save() {
-		// Validation avant sauvegarde
-		if (!binder.validate().isOk()) {
-			return;
-		}
+        // Configuration et style des composants
+        setSpacing(true);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-		if (capteur.getId() == null) {
-			capteurService.saveCapteur(capteur);
-		} else {
-			capteurService.updateCapteur(capteur);
-		}
-		changeHandler.onChange();
-	}
+        addKeyPressListener(Key.ENTER, e -> save());
 
-	void cancel() {
-		// Dans tous les cas, on ferme l'éditeur et on nettoie le formulaire
-		setVisible(false);
-		clearForm();
-		// Notifier le changement pour actualiser la vue principale
-		if (changeHandler != null) {
-			changeHandler.onChange();
-		}
-	}
+        // Configuration des actions des boutons
+        save.addClickListener(e -> save());
+        delete.addClickListener(e -> delete());
+        cancel.addClickListener(e -> cancel());
 
-	private void clearForm() {
-		binder.setBean(null);
-		libelleCapteur.clear();
-		positionXCapteur.clear();
-		positionYCapteur.clear();
-		murComboBox.clear();
-		salleComboBox.clear();
-		typeCapteurComboBox.clear();
-	}
+        // L'éditeur est caché par défaut
+        setVisible(false);
+    }
 
-	public interface ChangeHandler {
-		void onChange();
-	}
+    void delete() {
+        capteurService.deleteCapteurById(capteur.getId());
+        changeHandler.onChange();
+    }
 
-	public final void editCapteur(Capteur a) {
-		if (a == null) {
-			setVisible(false);
-			clearForm();
-			return;
-		}
+    void save() {
+        try {
+            binder.writeBean(capteur); // Valide et écrit les données dans l'objet capteur
+            capteurService.saveCapteur(capteur);
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
+    }
 
-		// Chargement des données pour les ComboBox
-		murComboBox.setItems(murService.getAllMurs());
-		salleComboBox.setItems(salleService.getAllSalles());
-		typeCapteurComboBox.setItems(typeCapteurService.getAllTypeCapteurs());
+    void cancel() {
+        setVisible(false);
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
+    }
 
-		final boolean persisted = a.getId() != null;
-		
-		if (persisted) {
-			capteur = capteurService.getCapteurById(a.getId());
-		} else {
-			capteur = a;
-		}
+    public interface ChangeHandler {
+        void onChange();
+    }
 
-		// Configuration de la visibilité des boutons
-		cancel.setVisible(true); // Le bouton annuler est toujours visible
-		delete.setVisible(persisted); // Le bouton supprimer n'est visible que pour les capteurs existants
+    public final void editCapteur(Capteur a) {
+        if (a == null) {
+            setVisible(false);
+            return;
+        }
 
-		// Binding des données
-		binder.setBean(capteur);
+        murComboBox.setItems(murService.getAllMurs());
+        salleComboBox.setItems(salleService.getAllSalles());
+        typeCapteurComboBox.setItems(typeCapteurService.getAllTypeCapteurs());
 
-		setVisible(true);
-		libelleCapteur.focus();
-	}
+        final boolean persisted = a.getId() != null;
 
-	public void setChangeHandler(ChangeHandler h) {
-		changeHandler = h;
-	}
+        if (persisted) {
+            capteur = capteurService.getCapteurById(a.getId());
+        } else {
+            capteur = a;
+        }
+
+        binder.setBean(capteur);
+        setVisible(true);
+        libelleCapteur.focus();
+    }
+
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
 }
