@@ -52,7 +52,7 @@ public class Salle {
      * Référence au bâtiment associé à la salle.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité Batiment.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "batiment_id", referencedColumnName = "id", nullable = true)
     private Batiment batimentNavigation;
 
@@ -60,7 +60,7 @@ public class Salle {
      * Référence au type de salle.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité TypeSalle.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = true)
     private TypeSalle typeSalleNavigation;
 

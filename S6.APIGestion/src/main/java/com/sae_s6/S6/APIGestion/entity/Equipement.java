@@ -73,7 +73,7 @@ public class Equipement {
      * Référence au mur associé à l'équipement.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité Mur.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "mur_id", referencedColumnName = "id", nullable = true)
     private Mur murNavigation;
 
@@ -81,7 +81,7 @@ public class Equipement {
      * Référence à la salle associée à l'équipement.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Salle.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 
@@ -89,7 +89,7 @@ public class Equipement {
      * Référence au type d'équipement.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité TypeEquipement.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "typeequipement_id", referencedColumnName = "id", nullable = false)
     private TypeEquipement typeEquipementNavigation;
 

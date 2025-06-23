@@ -112,14 +112,14 @@ public class TypeCapteurDonneeControllerTest {
     @Test
     void testSaveTypeCapteurDonnee() {
         // Crée un nouveau type capteur donnee
-        TypeCapteurDonnee typeCapteurDonnee = createTypeCapteurDonnee(1, 3);
-        id = new TypeCapteurDonneeEmbedId(1, 3);
+        TypeCapteurDonnee typeCapteurDonnee = createTypeCapteurDonnee(1, 2);
+        id = new TypeCapteurDonneeEmbedId(1, 2);
 
         
         assertThat(typeCapteurDonnee.getId()).isNotNull(); // Vérifie que l'ID a été généré
         assertThat(typeCapteurDonnee.getId()).isEqualTo(id);
         assertThat(typeCapteurDonnee.getDonneeNavigation().getId()).isEqualTo(1); // Vérifie que l'ID donnee est bien le bon
-        assertThat(typeCapteurDonnee.getTypeCapteurNavigation().getId()).isEqualTo(3); // Vérifie que l'ID type capteur est bien le bon
+        assertThat(typeCapteurDonnee.getTypeCapteurNavigation().getId()).isEqualTo(2); // Vérifie que l'ID type capteur est bien le bon
   
         // Nettoyage : suppression du type d'équipement créé
         restTemplate.delete(getBaseUrl() + "/" + id.getIdDonnee() + "/" + id.getIdTypeCapteur());
@@ -172,8 +172,8 @@ public class TypeCapteurDonneeControllerTest {
     @Test
     void testDeleteTypeCapteurDonneeById() {
         // Crée un type capteur donnee à supprimer
-        createTypeCapteurDonnee(1, 3);
-        id = new TypeCapteurDonneeEmbedId(1, 3);
+        createTypeCapteurDonnee(1, 2);
+        id = new TypeCapteurDonneeEmbedId(1, 2);
 
         // Appel DELETE pour supprimer le type capteur donnee
         restTemplate.delete(getBaseUrl() + "/" + id.getIdDonnee() + "/" + id.getIdTypeCapteur());

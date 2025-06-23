@@ -25,8 +25,8 @@ CREATE TABLE salle (
     superficie DOUBLE PRECISION NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_salle_batiment FOREIGN KEY (batiment_id) REFERENCES batiment(id) ON DELETE CASCADE,
-    CONSTRAINT fk_salle_typesalle FOREIGN KEY (typesalle_id) REFERENCES typesalle(id) ON DELETE CASCADE
+    CONSTRAINT fk_salle_batiment FOREIGN KEY (batiment_id) REFERENCES batiment(id),
+    CONSTRAINT fk_salle_typesalle FOREIGN KEY (typesalle_id) REFERENCES typesalle(id)
 );
 
 -- Table mur
@@ -39,7 +39,7 @@ CREATE TABLE mur (
     orientation VARCHAR(10) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_mur_salle FOREIGN KEY (salle_id) REFERENCES salle(id) ON DELETE CASCADE
+    CONSTRAINT fk_mur_salle FOREIGN KEY (salle_id) REFERENCES salle(id)
 );
 
 -- Table typecapteur
@@ -92,9 +92,9 @@ CREATE TABLE equipement (
     position_y DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_equipement_mur FOREIGN KEY (mur_id) REFERENCES mur(id) ON DELETE CASCADE,
-    CONSTRAINT fk_equipement_salle FOREIGN KEY (salle_id) REFERENCES salle(id) ON DELETE CASCADE,
-    CONSTRAINT fk_equipement_typeequipement FOREIGN KEY (typeequipement_id) REFERENCES typeequipement(id) ON DELETE CASCADE
+    CONSTRAINT fk_equipement_mur FOREIGN KEY (mur_id) REFERENCES mur(id),
+    CONSTRAINT fk_equipement_salle FOREIGN KEY (salle_id) REFERENCES salle(id),
+    CONSTRAINT fk_equipement_typeequipement FOREIGN KEY (typeequipement_id) REFERENCES typeequipement(id)
 );
 
 -- Table capteur
@@ -108,7 +108,9 @@ CREATE TABLE capteur (
     position_y DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_capteur_mur FOREIGN KEY (mur_id) REFERENCES mur(id) ON DELETE CASCADE,
-    CONSTRAINT fk_capteur_salle FOREIGN KEY (salle_id) REFERENCES salle(id) ON DELETE CASCADE,
-    CONSTRAINT fk_capteur_typecapteur FOREIGN KEY (typecapteur_id) REFERENCES typecapteur(id) ON DELETE CASCADE
+    CONSTRAINT fk_capteur_mur FOREIGN KEY (mur_id) REFERENCES mur(id),
+    CONSTRAINT fk_capteur_salle FOREIGN KEY (salle_id) REFERENCES salle(id),
+    CONSTRAINT fk_capteur_typecapteur FOREIGN KEY (typecapteur_id) REFERENCES typecapteur(id)
 );
+
+

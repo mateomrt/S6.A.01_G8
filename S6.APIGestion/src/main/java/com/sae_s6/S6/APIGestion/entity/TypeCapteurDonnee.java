@@ -33,7 +33,7 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité Donnee.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "donnee_id", insertable = false, updatable = false)
     private Donnee donneeNavigation;
 
@@ -42,7 +42,7 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité TypeCapteur.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "typecapteur_id", insertable = false, updatable = false)
     private TypeCapteur typeCapteurNavigation;
 

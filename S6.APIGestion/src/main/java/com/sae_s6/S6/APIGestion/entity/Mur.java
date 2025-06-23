@@ -70,7 +70,7 @@ public class Mur {
      * Référence à la salle associée au mur.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Salle.
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 
