@@ -13,11 +13,13 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 /**
  * Un simple éditeur de bâtiments.
  * Basé sur l'exemple AuteurEditor du professeur.
  */
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class BatimentEditor extends VerticalLayout implements KeyNotifier {
