@@ -90,34 +90,13 @@ public class TypeCapteurDonneeService {
      * @param newIdDonnee L'identifiant de la nouvelle donnée (peut être null si non modifié).
      * @return La nouvelle association TypeCapteurDonnee créée.
      */
-    public TypeCapteurDonnee updateTypeCapteurOrDonnee(
-            TypeCapteurDonneeEmbedId id,
-            Integer newIdDonnee,
-            Integer newIdTypeCapteur) {
-        // Étape 1 : Récupérer l'association existante
-        Optional<TypeCapteurDonnee> optionalDonnee = typeCapteurDonneeRepo.findById(id);
+    public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonneeEmbedId id, TypeCapteurDonnee typeCapteurDonnee) {
+        deleteTypeCapteurDonneeById(id);
+        TypeCapteurDonnee updatedTypeCapteurDonnee =  saveTypeCapteurDonnee(typeCapteurDonnee);
 
-        if (!optionalDonnee.isPresent()) {
-            log.warn("Aucune association TypeCapteurDonnee trouvée avec l'id composite: {}", id);
-            throw new IllegalArgumentException("Association non trouvée pour l'id composite spécifié.");
-        }
+        return updatedTypeCapteurDonnee;
 
-        // Étape 2 : Supprimer l'association existante
-        log.debug("Suppression de l'association existante avec l'id composite: {}", id);
-        typeCapteurDonneeRepo.deleteById(id);
-        log.info("Association TypeCapteurDonnee avec l'id composite: {} supprimée avec succès", id);
 
-        // Étape 3 : Créer une nouvelle association avec les nouveaux identifiants
-        TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(
-                newIdTypeCapteur != null ? newIdTypeCapteur : id.getIdTypeCapteur(),
-                newIdDonnee != null ? newIdDonnee : id.getIdDonnee()
-        );
-
-        TypeCapteurDonnee newDonnee = new TypeCapteurDonnee();
-        newDonnee.setId(newId);
-
-        // Réutilisation de la logique d'hydratation depuis la méthode saveTypeCapteurDonnee
-        return saveTypeCapteurDonnee(newDonnee);
     }
 
     /**

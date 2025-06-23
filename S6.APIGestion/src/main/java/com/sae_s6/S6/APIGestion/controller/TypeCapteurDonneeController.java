@@ -97,22 +97,13 @@ public class TypeCapteurDonneeController {
      * @return Une réponse contenant l'association TypeCapteurDonnee mise à jour ou une réponse 400 si elle n'est pas trouvée.
      */
     @PutMapping("/{donneeId}/{typeCapteurId}")
-    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(
-            @PathVariable("typeCapteurId") Integer typeCapteurId,
-            @PathVariable("donneeId") Integer donneeId,
-            @RequestBody UpdateRequest updates) {
-        log.debug("Requête reçue pour mettre à jour l'association avec typeCapteurId = {}, donneeId = {}, newIdTypeCapteur = {}, newIdDonnee = {}",
-                typeCapteurId, donneeId, updates.getNewIdTypeCapteur(), updates.getNewIdDonnee());
-        try {
-            TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
-            TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurOrDonnee(
-                    id, updates.getNewIdTypeCapteur(), updates.getNewIdDonnee());
-            log.info("Association TypeCapteurDonnee mise à jour avec succès : {}", updatedTypeCapteurDonnee);
-            return ResponseEntity.ok(updatedTypeCapteurDonnee);
-        } catch (IllegalArgumentException e) {
-            log.warn("Échec de la mise à jour de l'association TypeCapteurDonnee : {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(@PathVariable("donneeId") Integer donneeId, @PathVariable("typeCapteurId") Integer typeCapteurId, @RequestBody TypeCapteurDonnee updateTypeCapteurDonnee) {
+        
+                
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
+        TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(id, updateTypeCapteurDonnee);
+        return ResponseEntity.ok(updatedTypeCapteurDonnee);
+        
     }
 
     /**
