@@ -17,6 +17,10 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.context.annotation.Scope;
 
+/**
+ * Éditeur pour l'entité TypeCapteur.
+ * Permet de créer, modifier ou supprimer un type de capteur via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -24,21 +28,40 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 
     private final TypeCapteurService typeCapteurService;
 
+    /**
+     * Le type de capteur actuellement édité.
+     */
     private TypeCapteur typeCapteur;
 
-    /* Fields to edit properties in TypeCapteur entity */
+    /**
+     * Champs de texte pour les propriétés du type de capteur.
+     */
     public TextField libelleTypeCapteur = new TextField("Libellé type capteur");
     public TextField modeTypeCapteur = new TextField("Mode du type capteur");
 
-    /* Action buttons */
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     public HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité TypeCapteur.
+     */
     public Binder<TypeCapteur> binder = new Binder<>(TypeCapteur.class);
+
+    /**
+     * Gestionnaire de changement pour notifier les modifications.
+     */
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de type de capteur.
+     *
+     * @param typeCapteurService Service pour gérer les opérations sur les types de capteurs.
+     */
     public TypeCapteurEditor(TypeCapteurService typeCapteurService) {
         this.typeCapteurService = typeCapteurService;
 
@@ -86,11 +109,17 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime le type de capteur actuellement édité.
+     */
     void delete() {
         typeCapteurService.deleteTypeCapteurById(typeCapteur.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde le type de capteur actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(typeCapteur); // Valide et écrit les données dans l'objet typeCapteur
@@ -105,6 +134,9 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         clearForm();
@@ -113,16 +145,27 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Efface les champs du formulaire.
+     */
     private void clearForm() {
         binder.setBean(null);
         libelleTypeCapteur.clear();
         modeTypeCapteur.clear();
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un type de capteur donné.
+     *
+     * @param a Le type de capteur à éditer.
+     */
     public final void editTypeCapteur(TypeCapteur a) {
         if (a == null) {
             setVisible(false);
@@ -147,6 +190,11 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
         libelleTypeCapteur.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

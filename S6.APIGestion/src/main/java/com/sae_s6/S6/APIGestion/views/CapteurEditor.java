@@ -1,7 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-import org.springframework.context.annotation.Scope;
-
 import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -25,7 +23,12 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.context.annotation.Scope;
 
+/**
+ * Éditeur pour l'entité Capteur.
+ * Permet de créer, modifier ou supprimer un capteur via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -38,24 +41,42 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 
     private Capteur capteur;
 
-	/* Fields to edit properties in Capteur entity */
-	public TextField libelleCapteur = new TextField("Libellé capteur");
-	public TextField positionXCapteur = new TextField("Position X");
-	public TextField positionYCapteur = new TextField("Position Y");
-    
-	public ComboBox<Mur> murComboBox = new ComboBox<>("Mur");
-	public ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
-	public ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type capteur");
+    /**
+     * Champs de texte pour les propriétés du capteur.
+     */
+    public TextField libelleCapteur = new TextField("Libellé capteur");
+    public TextField positionXCapteur = new TextField("Position X");
+    public TextField positionYCapteur = new TextField("Position Y");
 
-	/* Action buttons */
-	public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    /**
+     * ComboBox pour sélectionner les relations associées au capteur.
+     */
+    public ComboBox<Mur> murComboBox = new ComboBox<>("Mur");
+    public ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
+    public ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type capteur");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    Button cancel = new Button("Annuler");
+    Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+    HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité Capteur.
+     */
     Binder<Capteur> binder = new Binder<>(Capteur.class);
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de capteur.
+     *
+     * @param capteurService Service pour gérer les opérations sur les capteurs.
+     * @param murService Service pour gérer les murs.
+     * @param salleService Service pour gérer les salles.
+     * @param typeCapteurService Service pour gérer les types de capteurs.
+     */
     public CapteurEditor(CapteurService capteurService, MurService murService, SalleService salleService, TypeCapteurService typeCapteurService) {
         this.capteurService = capteurService;
         this.salleService = salleService;
@@ -162,11 +183,17 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime le capteur actuellement édité.
+     */
     void delete() {
         capteurService.deleteCapteurById(capteur.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde le capteur actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(capteur); // Valide et écrit les données dans l'objet capteur
@@ -177,6 +204,9 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -184,10 +214,18 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un capteur donné.
+     *
+     * @param a Le capteur à éditer.
+     */
     public final void editCapteur(Capteur a) {
         if (a == null) {
             setVisible(false);
@@ -211,6 +249,11 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
         libelleCapteur.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

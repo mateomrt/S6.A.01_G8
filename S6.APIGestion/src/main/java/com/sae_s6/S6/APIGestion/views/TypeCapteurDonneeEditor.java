@@ -24,6 +24,10 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Éditeur pour l'entité TypeCapteurDonnee.
+ * Permet de créer, modifier ou supprimer une association entre un type de capteur et une donnée via une interface utilisateur.
+ */
 @SpringComponent
 @UIScope
 @Slf4j
@@ -33,25 +37,57 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     private final DonneeService donneeService;
     private final TypeCapteurService typeCapteurService;
 
+    /**
+     * L'association actuellement éditée.
+     */
     private TypeCapteurDonnee typeCapteurDonnee;
+
+    /**
+     * ID d'origine de l'association (utilisé pour les modifications).
+     */
     private TypeCapteurDonneeEmbedId originalId = null;
 
+    /**
+     * ComboBox pour sélectionner une donnée.
+     */
     public ComboBox<Donnee> donneeComboBox = new ComboBox<>("Donnée");
+
+    /**
+     * ComboBox pour sélectionner un type de capteur.
+     */
     public ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type Capteur");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité TypeCapteurDonnee.
+     */
     Binder<TypeCapteurDonnee> binder = new Binder<>(TypeCapteurDonnee.class);
+
+    /**
+     * Gestionnaire de changement pour notifier les modifications.
+     */
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur.
+     *
+     * @param typeCapteurDonneeService Service pour gérer les associations entre types de capteurs et données.
+     * @param donneeService Service pour gérer les données.
+     * @param typeCapteurService Service pour gérer les types de capteurs.
+     */
     public TypeCapteurDonneeEditor(TypeCapteurDonneeService typeCapteurDonneeService, DonneeService donneeService, TypeCapteurService typeCapteurService) {
         this.typeCapteurDonneeService = typeCapteurDonneeService;
         this.donneeService = donneeService;
         this.typeCapteurService = typeCapteurService;
 
+        // Configuration des ComboBox
         donneeComboBox.setItems(donneeService.getAllDonnees());
         donneeComboBox.setItemLabelGenerator(Donnee::getLibelleDonnee);
         donneeComboBox.setPlaceholder("Sélectionner une donnée");
@@ -92,6 +128,9 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         setVisible(false);
     }
 
+    /**
+     * Supprime l'association actuellement éditée.
+     */
     void delete() {
         if (typeCapteurDonnee != null && typeCapteurDonnee.getId() != null) {
             typeCapteurDonneeService.deleteTypeCapteurDonneeById(typeCapteurDonnee.getId());
@@ -99,6 +138,9 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         }
     }
 
+    /**
+     * Sauvegarde l'association actuellement éditée.
+     */
     void save() {
         try {
             binder.writeBean(typeCapteurDonnee); // Valide et écrit les données dans l'objet typeCapteurDonnee
@@ -124,6 +166,9 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -131,10 +176,18 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour une association donnée.
+     *
+     * @param t L'association à éditer.
+     */
     public final void editTypeCapteurDonnee(TypeCapteurDonnee t) {
         if (t == null) {
             setVisible(false);
@@ -166,6 +219,11 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         donneeComboBox.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         this.changeHandler = h;
     }

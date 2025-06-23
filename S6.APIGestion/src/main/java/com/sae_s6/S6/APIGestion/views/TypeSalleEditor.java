@@ -18,28 +18,57 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+/**
+ * Éditeur pour l'entité TypeSalle.
+ * Permet de créer, modifier ou supprimer un type de salle via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
 public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
 
+    /**
+     * Service pour gérer les opérations sur les types de salles.
+     */
     private final TypeSalleService typeSalleService;
 
+    /**
+     * Le type de salle actuellement édité.
+     */
     private TypeSalle typeSalle;
 
+    /**
+     * Champ de texte pour le libellé du type de salle.
+     */
     public TextField libelleTypeSalle = new TextField("Libellé type salle");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité TypeSalle.
+     */
     Binder<TypeSalle> binder = new Binder<>(TypeSalle.class);
+
+    /**
+     * Gestionnaire de changement pour notifier les modifications.
+     */
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de type de salle.
+     *
+     * @param typeSalleService Service pour gérer les opérations sur les types de salles.
+     */
     public TypeSalleEditor(TypeSalleService typeSalleService) {
         this.typeSalleService = typeSalleService;
 
+        // Ajout des composants à la vue
         add(libelleTypeSalle, actions);
 
         // Configuration du binder
@@ -51,24 +80,32 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
               })
               .bind(TypeSalle::getLibelleTypeSalle, TypeSalle::setLibelleTypeSalle);
 
+        // Configuration des composants
         setSpacing(true);
-
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
+        // Configuration des actions des boutons
         addKeyPressListener(Key.ENTER, e -> save());
-
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
         cancel.addClickListener(e -> cancel());
+
+        // L'éditeur est caché par défaut
         setVisible(false);
     }
 
+    /**
+     * Supprime le type de salle actuellement édité.
+     */
     void delete() {
         typeSalleService.deleteTypeSalleById(typeSalle.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde le type de salle actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(typeSalle); // Valide et écrit les données dans l'objet typeSalle
@@ -83,6 +120,9 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -90,10 +130,18 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un type de salle donné.
+     *
+     * @param t Le type de salle à éditer.
+     */
     public final void editTypeSalle(TypeSalle t) {
         if (t == null) {
             setVisible(false);
@@ -115,6 +163,11 @@ public class TypeSalleEditor extends VerticalLayout implements KeyNotifier {
         libelleTypeSalle.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

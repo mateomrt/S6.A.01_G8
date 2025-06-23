@@ -1,7 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-import org.springframework.context.annotation.Scope;
-
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.vaadin.flow.component.Key;
@@ -17,7 +15,12 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.context.annotation.Scope;
 
+/**
+ * Éditeur pour l'entité Donnee.
+ * Permet de créer, modifier ou supprimer une donnée via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -26,23 +29,35 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
     private final DonneeService donneeService;
 
     /**
-     * The currently edited donnee
+     * La donnée actuellement éditée.
      */
     private Donnee donnee;
 
-    /* Fields to edit properties in Donnee entity */
+    /**
+     * Champs de texte pour les propriétés de la donnée.
+     */
     public TextField libelleDonnee = new TextField("Libellé donnée");
     TextField unite = new TextField("Unité");
 
-    /* Action buttons */
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     Button cancel = new Button("Annuler");
     Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité Donnee.
+     */
     Binder<Donnee> binder = new Binder<>(Donnee.class);
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de donnée.
+     *
+     * @param donneeService Service pour gérer les opérations sur les données.
+     */
     public DonneeEditor(DonneeService donneeService) {
         this.donneeService = donneeService;
 
@@ -74,7 +89,7 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
               })
               .bind(Donnee::getUnite, Donnee::setUnite);
 
-        // Configure and style components
+        // Configure et style les composants
         setSpacing(true);
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -88,11 +103,17 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime la donnée actuellement éditée.
+     */
     void delete() {
         donneeService.deleteDonneeById(donnee.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde la donnée actuellement éditée.
+     */
     void save() {
         try {
             binder.writeBean(donnee); // Valide et écrit les données dans l'objet donnee
@@ -107,6 +128,9 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -114,10 +138,18 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour une donnée donnée.
+     *
+     * @param a La donnée à éditer.
+     */
     public final void editDonnee(Donnee a) {
         if (a == null) {
             setVisible(false);
@@ -139,6 +171,11 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
         libelleDonnee.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

@@ -1,9 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import com.sae_s6.S6.APIGestion.entity.Equipement;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -19,47 +15,74 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+/**
+ * Vue pour la gestion des équipements.
+ * Fournit une interface utilisateur pour afficher, filtrer, ajouter, modifier et supprimer des équipements.
+ */
 @Component
 @Scope("prototype")
-@Route(value = "equipement") 
+@Route(value = "equipement")
 @PageTitle("Les Equipements")
 @Menu(title = "Les equipements", order = 2, icon = "vaadin:tools")
-
 public class EquipementView extends VerticalLayout {
 
-	//private final AuteurRepo repo;
-	private final EquipementService equipementService;
+    /**
+     * Service pour gérer les opérations sur les équipements.
+     */
+    private final EquipementService equipementService;
 
-	public final Grid<Equipement> grid;
+    /**
+     * Grille pour afficher la liste des équipements.
+     */
+    public final Grid<Equipement> grid;
 
-	final TextField filter;
+    /**
+     * Champ de texte pour filtrer les équipements par libellé.
+     */
+    public final TextField filter;
 
-	private final Button addNewBtn;
+    /**
+     * Bouton pour ajouter un nouvel équipement.
+     */
+    private final Button addNewBtn;
 
-	public Button getAddNewBtn() {
-        return addNewBtn;
-    }
+    /**
+     * Éditeur pour gérer les opérations sur les équipements.
+     */
+    public final EquipementEditor editor;
 
-	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
-	public EquipementView(EquipementService equipementService, EquipementEditor editor) {
-		this.equipementService = equipementService;
-		this.grid = new Grid<>(Equipement.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un équipement", VaadinIcon.PLUS.create());
+    /**
+     * Constructeur de la vue des équipements.
+     *
+     * @param equipementService Service pour gérer les opérations sur les équipements.
+     * @param editor Éditeur pour gérer les équipements.
+     */
+    public EquipementView(EquipementService equipementService, EquipementEditor editor) {
+        this.equipementService = equipementService;
+        this.grid = new Grid<>(Equipement.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter un équipement", VaadinIcon.PLUS.create());
+        this.editor = editor;
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+        // Construction de la mise en page
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "libelleEquipement", "hauteur", "largeur", "position_x", "position_y" );
-		
-		grid.addColumn(equipement -> {
+        // Configuration de la grille
+        grid.setHeight("300px");
+        grid.setColumns("id", "libelleEquipement", "hauteur", "largeur", "position_x", "position_y");
+
+        grid.addColumn(equipement -> {
             Mur mur = equipement.getMurNavigation();
             return mur != null ? mur.getDesc() : "";
         }).setHeader("Mur").setKey("MurDescription");
 
-		grid.addColumn(equipement -> {
+        grid.addColumn(equipement -> {
             Salle salle = equipement.getSalleNavigation();
             return salle != null ? salle.getDesc() : "";
         }).setHeader("Salle").setKey("SalleDescription");
@@ -68,43 +91,49 @@ public class EquipementView extends VerticalLayout {
             TypeEquipement typeEquipement = equipement.getTypeEquipementNavigation();
             return typeEquipement != null ? typeEquipement.getDesc() : "";
         }).setHeader("Type équipement").setKey("typeEquipementDescription");
-		
-		
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		filter.setPlaceholder("Filtrer par nom");
+        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		// Hook logic to components
+        // Configuration du champ de filtre
+        filter.setPlaceholder("Filtrer par nom");
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listEquipements(e.getValue()));
 
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listEquipements(e.getValue()));
+        // Connecte la sélection dans la grille à l'éditeur
+        grid.asSingleSelect().addValueChangeListener(e -> editor.editEquipement(e.getValue()));
 
-		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editEquipement(e.getValue());
-		});
+        // Configure le bouton pour ajouter un nouvel équipement
+        addNewBtn.addClickListener(e -> editor.editEquipement(new Equipement()));
 
-		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editEquipement(new Equipement()));
+        // Configure le gestionnaire de changement pour l'éditeur
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listEquipements(filter.getValue());
+        });
 
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listEquipements(filter.getValue());
-		});
+        // Initialise la liste des équipements
+        listEquipements(null);
+    }
 
-		// Initialize listing
-		listEquipements(null);
-	}
+    /**
+     * Liste les équipements en fonction du texte de filtre.
+     *
+     * @param filterText Texte de filtre pour rechercher les équipements par libellé.
+     */
+    void listEquipements(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(equipementService.getByLibelleEquipementContainingIgnoreCase(filterText));
+        } else {
+            grid.setItems(equipementService.getAllEquipements());
+        }
+    }
 
-	// tag::listSalles[]
-	void listEquipements(String filterText) {
-		if (StringUtils.hasText(filterText)) {
-			grid.setItems(equipementService.getByLibelleEquipementContainingIgnoreCase(filterText));
-		} else {
-			grid.setItems(equipementService.getAllEquipements());
-		}
-	}
-	// end::listCustomers[]
+    /**
+     * Getter pour le bouton d'ajout d'équipement.
+     *
+     * @return Le bouton d'ajout d'équipement.
+     */
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 }

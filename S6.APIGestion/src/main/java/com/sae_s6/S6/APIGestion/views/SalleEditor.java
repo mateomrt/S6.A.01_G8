@@ -24,6 +24,10 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+/**
+ * Éditeur pour l'entité Salle.
+ * Permet de créer, modifier ou supprimer une salle via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -33,26 +37,50 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
     private final BatimentService batimentService;
     private final TypeSalleService typeSalleService;
 
+    /**
+     * La salle actuellement éditée.
+     */
     private Salle salle;
 
+    /**
+     * Champs de texte pour les propriétés de la salle.
+     */
     public TextField libelleSalle = new TextField("Libellé salle");
     public TextField superficie = new TextField("Superficie");
+
+    /**
+     * ComboBox pour sélectionner les relations associées à la salle.
+     */
     public ComboBox<Batiment> batimentComboBox = new ComboBox<>("Batiment");
     public ComboBox<TypeSalle> typeSalleComboBox = new ComboBox<>("Type salle");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité Salle.
+     */
     Binder<Salle> binder = new Binder<>(Salle.class);
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de salle.
+     *
+     * @param salleService Service pour gérer les opérations sur les salles.
+     * @param batimentService Service pour gérer les bâtiments.
+     * @param typeSalleService Service pour gérer les types de salles.
+     */
     public SalleEditor(SalleService salleService, BatimentService batimentService, TypeSalleService typeSalleService) {
         this.salleService = salleService;
         this.batimentService = batimentService;
         this.typeSalleService = typeSalleService;
 
+        // Configuration des ComboBox
         batimentComboBox.setPlaceholder("Sélectionner un batiment");
         batimentComboBox.setClearButtonVisible(true);
         batimentComboBox.setItemLabelGenerator(Batiment::getDesc);
@@ -61,6 +89,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         typeSalleComboBox.setClearButtonVisible(true);
         typeSalleComboBox.setItemLabelGenerator(TypeSalle::getDesc);
 
+        // Organisation des champs en lignes horizontales
         HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleSalle, superficie, batimentComboBox);
         fieldsRow1.setWidthFull();
         fieldsRow1.setSpacing(true);
@@ -76,6 +105,7 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
 
         add(fieldsRow1, fieldsRow2, actions);
 
+        // Configuration du binder
         binder.bindInstanceFields(this);
 
         binder.forField(batimentComboBox)
@@ -116,11 +146,17 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime la salle actuellement éditée.
+     */
     void delete() {
         salleService.deleteSalleById(salle.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde la salle actuellement éditée.
+     */
     void save() {
         try {
             binder.writeBean(salle); // Valide et écrit les données dans l'objet salle
@@ -131,6 +167,9 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -138,10 +177,18 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour une salle donnée.
+     *
+     * @param s La salle à éditer.
+     */
     public final void editSalle(Salle s) {
         if (s == null) {
             setVisible(false);
@@ -166,6 +213,11 @@ public class SalleEditor extends VerticalLayout implements KeyNotifier {
         libelleSalle.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

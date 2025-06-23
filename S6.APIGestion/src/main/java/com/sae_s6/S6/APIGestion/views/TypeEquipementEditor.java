@@ -16,27 +16,53 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+/**
+ * Éditeur pour l'entité TypeEquipement.
+ * Permet de créer, modifier ou supprimer un type d'équipement via une interface utilisateur.
+ */
 @SpringComponent
 @UIScope
 public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier {
 
     private final TypeEquipementService typeEquipementService;
 
+    /**
+     * Le type d'équipement actuellement édité.
+     */
     private TypeEquipement typeEquipement;
 
+    /**
+     * Champ de texte pour le libellé du type d'équipement.
+     */
     public TextField libelleTypeEquipement = new TextField("Libellé type équipement");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité TypeEquipement.
+     */
     Binder<TypeEquipement> binder = new Binder<>(TypeEquipement.class);
+
+    /**
+     * Gestionnaire de changement pour notifier les modifications.
+     */
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de type d'équipement.
+     *
+     * @param typeEquipementService Service pour gérer les opérations sur les types d'équipements.
+     */
     public TypeEquipementEditor(TypeEquipementService typeEquipementService) {
         this.typeEquipementService = typeEquipementService;
 
+        // Ajout des composants à la vue
         add(libelleTypeEquipement, actions);
 
         // Configuration du binder
@@ -48,24 +74,32 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
               })
               .bind(TypeEquipement::getLibelleTypeEquipement, TypeEquipement::setLibelleTypeEquipement);
 
+        // Configuration des composants
         setSpacing(true);
-
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
+        // Configuration des actions des boutons
         addKeyPressListener(Key.ENTER, e -> save());
-
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
         cancel.addClickListener(e -> cancel());
+
+        // L'éditeur est caché par défaut
         setVisible(false);
     }
 
+    /**
+     * Supprime le type d'équipement actuellement édité.
+     */
     void delete() {
         typeEquipementService.deleteTypeEquipementById(typeEquipement.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde le type d'équipement actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(typeEquipement); // Valide et écrit les données dans l'objet typeEquipement
@@ -80,6 +114,9 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -87,10 +124,18 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un type d'équipement donné.
+     *
+     * @param t Le type d'équipement à éditer.
+     */
     public final void editTypeEquipement(TypeEquipement t) {
         if (t == null) {
             setVisible(false);
@@ -112,6 +157,11 @@ public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier 
         libelleTypeEquipement.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

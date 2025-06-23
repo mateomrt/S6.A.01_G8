@@ -7,22 +7,29 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
- * This view shows up when a user navigates to the root ('/') of the application.
+ * Vue principale de l'application.
+ * Cette vue s'affiche lorsque l'utilisateur navigue vers la racine ('/') de l'application.
  */
 @Route
 public final class MainView extends Main {
 
+    /**
+     * Constructeur de la vue principale.
+     * Configure le style et ajoute un message d'accueil.
+     */
     MainView() {
+        // Ajoute une classe CSS pour le padding
         addClassName(LumoUtility.Padding.MEDIUM);
-        //add(new ViewToolbar("Main"));
+
+        // Ajoute un message d'accueil
         add(new Div("Choisissez une option dans le menu à gauche."));
     }
 
     /**
-     * Navigates to the main view.
+     * Navigue vers la vue principale.
+     * Cette méthode peut être utilisée pour rediriger l'utilisateur vers la vue principale.
      */
     public static void showMainView() {
         UI.getCurrent().navigate(MainView.class);
     }
 }
-

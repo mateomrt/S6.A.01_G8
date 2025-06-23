@@ -16,75 +16,101 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-// Ajout des annotations nécessaires pour les tests
+/**
+ * Vue pour la gestion des bâtiments.
+ * Fournit une interface utilisateur pour afficher, filtrer, ajouter, modifier et supprimer des bâtiments.
+ */
 @Component
 @Scope("prototype")
-@Route (value="batiment") 
+@Route(value = "batiment")
 @PageTitle("Les Batiments")
 @Menu(title = "Les Batiments", order = 4, icon = "vaadin:building")
 public class BatimentView extends VerticalLayout {
 
-	private final BatimentService batimentService;
+    private final BatimentService batimentService;
 
-	// Rendre les champs publics pour les tests (comme dans l'exemple du prof)
-	public final Grid<Batiment> grid;
-	public final TextField filter;
-	private final Button addNewBtn;
-	public final BatimentEditor editor;
+    /**
+     * Grille pour afficher la liste des bâtiments.
+     */
+    public final Grid<Batiment> grid;
 
-	// Getter pour le bouton (comme dans l'exemple du prof)
-	public Button getAddNewBtn() {
-		return addNewBtn;
-	}
+    /**
+     * Champ de texte pour filtrer les bâtiments par libellé.
+     */
+    public final TextField filter;
 
-	public BatimentView(BatimentService batimentService, BatimentEditor editor) {
-		this.batimentService = batimentService;
-		this.editor = editor;
-		this.grid = new Grid<>(Batiment.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un batiment", VaadinIcon.PLUS.create());
+    /**
+     * Bouton pour ajouter un nouveau bâtiment.
+     */
+    private final Button addNewBtn;
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+    /**
+     * Éditeur pour gérer les opérations sur les bâtiments.
+     */
+    public final BatimentEditor editor;
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "libelleBatiment");
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+    /**
+     * Constructeur de la vue des bâtiments.
+     *
+     * @param batimentService Service pour gérer les opérations sur les bâtiments.
+     * @param editor Éditeur pour gérer les bâtiments.
+     */
+    public BatimentView(BatimentService batimentService, BatimentEditor editor) {
+        this.batimentService = batimentService;
+        this.editor = editor;
+        this.grid = new Grid<>(Batiment.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter un batiment", VaadinIcon.PLUS.create());
 
-		filter.setPlaceholder("Filtrer par nom");
+        // Construction de la mise en page
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-		// Hook logic to components
+        // Configuration de la grille
+        grid.setHeight("300px");
+        grid.setColumns("id", "libelleBatiment");
+        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listBatiments(e.getValue()));
+        // Configuration du champ de filtre
+        filter.setPlaceholder("Filtrer par nom");
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listBatiments(e.getValue()));
 
-		// Connect selected Batiment to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editBatiment(e.getValue());
-		});
+        // Connecte la sélection dans la grille à l'éditeur
+        grid.asSingleSelect().addValueChangeListener(e -> editor.editBatiment(e.getValue()));
 
-		// Instantiate and edit new Batiment when the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editBatiment(new Batiment()));
+        // Configure le bouton pour ajouter un nouveau bâtiment
+        addNewBtn.addClickListener(e -> editor.editBatiment(new Batiment()));
 
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listBatiments(filter.getValue());
-		});
+        // Configure le gestionnaire de changement pour l'éditeur
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listBatiments(filter.getValue());
+        });
 
-		// Initialize listing
-		listBatiments(null);
-	}
+        // Initialise la liste des bâtiments
+        listBatiments(null);
+    }
 
-	// tag::listBatiments[]
-	void listBatiments(String filterText) {
-		if (StringUtils.hasText(filterText)) {
-			grid.setItems(batimentService.getByLibelleBatimentContainingIgnoreCase(filterText));
-		} else {
-			grid.setItems(batimentService.getAllBatiments());
-		}
-	}
-	// end::listBatiments[]
+    /**
+     * Liste les bâtiments en fonction du texte de filtre.
+     *
+     * @param filterText Texte de filtre pour rechercher les bâtiments par libellé.
+     */
+    void listBatiments(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(batimentService.getByLibelleBatimentContainingIgnoreCase(filterText));
+        } else {
+            grid.setItems(batimentService.getAllBatiments());
+        }
+    }
+
+    /**
+     * Getter pour le bouton d'ajout de bâtiment.
+     *
+     * @return Le bouton d'ajout de bâtiment.
+     */
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 }

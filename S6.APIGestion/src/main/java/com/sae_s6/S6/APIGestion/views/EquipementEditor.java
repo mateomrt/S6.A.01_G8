@@ -1,7 +1,5 @@
 package com.sae_s6.S6.APIGestion.views;
 
-import org.springframework.context.annotation.Scope;
-
 import com.sae_s6.S6.APIGestion.entity.Equipement;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -25,7 +23,12 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.context.annotation.Scope;
 
+/**
+ * Éditeur pour l'entité Equipement.
+ * Permet de créer, modifier ou supprimer un équipement via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -36,28 +39,49 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
     private final SalleService salleService;
     private final TypeEquipementService typeEquipementService;
 
+    /**
+     * L'équipement actuellement édité.
+     */
     private Equipement equipement;
 
-    /* Fields to edit properties in Equipement entity */
+    /**
+     * Champs de texte pour les propriétés de l'équipement.
+     */
     public TextField libelleEquipement = new TextField("Libellé équipement");
     TextField hauteur = new TextField("Hauteur");
     TextField largeur = new TextField("Largeur");
     TextField position_x = new TextField("Position X");
     TextField position_y = new TextField("Position Y");
 
+    /**
+     * ComboBox pour sélectionner les relations associées à l'équipement.
+     */
     ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
     ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
     ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
 
-    /* Action buttons */
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     Button cancel = new Button("Annuler");
     Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité Equipement.
+     */
     Binder<Equipement> binder = new Binder<>(Equipement.class);
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur d'équipement.
+     *
+     * @param equipementService Service pour gérer les opérations sur les équipements.
+     * @param murService Service pour gérer les murs.
+     * @param salleService Service pour gérer les salles.
+     * @param typeEquipementService Service pour gérer les types d'équipements.
+     */
     public EquipementEditor(EquipementService equipementService, MurService murService, SalleService salleService, TypeEquipementService typeEquipementService) {
         this.equipementService = equipementService;
         this.murService = murService;
@@ -183,11 +207,17 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime l'équipement actuellement édité.
+     */
     void delete() {
         equipementService.deleteEquipementById(equipement.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde l'équipement actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(equipement); // Valide et écrit les données dans l'objet equipement
@@ -198,6 +228,9 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -205,10 +238,18 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un équipement donné.
+     *
+     * @param a L'équipement à éditer.
+     */
     public final void editEquipement(Equipement a) {
         if (a == null) {
             setVisible(false);
@@ -232,6 +273,11 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
         libelleEquipement.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

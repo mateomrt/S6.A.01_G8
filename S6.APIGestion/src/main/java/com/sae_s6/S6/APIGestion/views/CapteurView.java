@@ -20,94 +20,120 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+/**
+ * Vue pour la gestion des capteurs.
+ * Fournit une interface utilisateur pour afficher, filtrer, ajouter, modifier et supprimer des capteurs.
+ */
 @Component
 @Scope("prototype")
-@Route (value="capteur") 
+@Route(value = "capteur")
 @PageTitle("Les Capteurs")
 @Menu(title = "Les Capteurs", order = 3, icon = "vaadin:line-bar-chart")
-
 public class CapteurView extends VerticalLayout {
 
-	//private final AuteurRepo repo;
-	public final CapteurService capteurService;
+    /**
+     * Service pour gérer les opérations sur les capteurs.
+     */
+    public final CapteurService capteurService;
 
-	public final Grid<Capteur> grid;
+    /**
+     * Grille pour afficher la liste des capteurs.
+     */
+    public final Grid<Capteur> grid;
 
-	public final TextField filter;
+    /**
+     * Champ de texte pour filtrer les capteurs par libellé.
+     */
+    public final TextField filter;
 
-	public final Button addNewBtn;
+    /**
+     * Bouton pour ajouter un nouveau capteur.
+     */
+    public final Button addNewBtn;
 
-	public final CapteurEditor editor;
+    /**
+     * Éditeur pour gérer les opérations sur les capteurs.
+     */
+    public final CapteurEditor editor;
 
-	// Getter pour le bouton (comme dans l'exemple du prof)
-	public Button getAddNewBtn() {
-		return addNewBtn;
-	}
-	
-	public CapteurView(CapteurService capteurService, CapteurEditor editor) {
-		this.capteurService = capteurService;
-		this.grid = new Grid<>(Capteur.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Ajouter un capteur", VaadinIcon.PLUS.create());
-		this.editor = editor;
+    /**
+     * Constructeur de la vue des capteurs.
+     *
+     * @param capteurService Service pour gérer les opérations sur les capteurs.
+     * @param editor Éditeur pour gérer les capteurs.
+     */
+    public CapteurView(CapteurService capteurService, CapteurEditor editor) {
+        this.capteurService = capteurService;
+        this.grid = new Grid<>(Capteur.class);
+        this.filter = new TextField();
+        this.addNewBtn = new Button("Ajouter un capteur", VaadinIcon.PLUS.create());
+        this.editor = editor;
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+        // Construction de la mise en page
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        add(actions, grid, editor);
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "libelleCapteur", "positionXCapteur", "positionYCapteur");
-		
-		grid.addColumn(capteur -> {
+        // Configuration de la grille
+        grid.setHeight("300px");
+        grid.setColumns("id", "libelleCapteur", "positionXCapteur", "positionYCapteur");
+
+        grid.addColumn(capteur -> {
             Mur mur = capteur.getMurNavigation();
             return mur != null ? mur.getDesc() : "";
         }).setHeader("Mur").setKey("MurDescription");
 
-		grid.addColumn(capteur -> {
+        grid.addColumn(capteur -> {
             Salle salle = capteur.getSalleNavigation();
             return salle != null ? salle.getDesc() : "";
         }).setHeader("Salle").setKey("SalleDescription");
 
-		grid.addColumn(capteur -> {
+        grid.addColumn(capteur -> {
             TypeCapteur typeCapteur = capteur.getTypeCapteurNavigation();
             return typeCapteur != null ? typeCapteur.getDesc() : "";
         }).setHeader("Type capteur").setKey("typeCapteurDescription");
-		
-		
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		filter.setPlaceholder("Filtrer par nom");
+        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
-		// Hook logic to components
+        // Configuration du champ de filtre
+        filter.setPlaceholder("Filtrer par nom");
+        filter.setValueChangeMode(ValueChangeMode.LAZY);
+        filter.addValueChangeListener(e -> listCapteurs(e.getValue()));
 
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.LAZY);
-		filter.addValueChangeListener(e -> listCapteurs(e.getValue()));
+        // Connecte la sélection dans la grille à l'éditeur
+        grid.asSingleSelect().addValueChangeListener(e -> editor.editCapteur(e.getValue()));
 
-		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editCapteur(e.getValue());
-		});
+        // Configure le bouton pour ajouter un nouveau capteur
+        addNewBtn.addClickListener(e -> editor.editCapteur(new Capteur()));
 
-		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editCapteur(new Capteur()));
+        // Configure le gestionnaire de changement pour l'éditeur
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listCapteurs(filter.getValue());
+        });
 
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listCapteurs(filter.getValue());
-		});
+        // Initialise la liste des capteurs
+        listCapteurs(null);
+    }
 
-		// Initialize listing
-		listCapteurs(null);
-	}
+    /**
+     * Liste les capteurs en fonction du texte de filtre.
+     *
+     * @param filterText Texte de filtre pour rechercher les capteurs par libellé.
+     */
+    void listCapteurs(String filterText) {
+        if (StringUtils.hasText(filterText)) {
+            grid.setItems(capteurService.getByLibelleCapteurContainingIgnoreCase(filterText));
+        } else {
+            grid.setItems(capteurService.getAllCapteurs());
+        }
+    }
 
-	void listCapteurs(String filterText) {
-		if (StringUtils.hasText(filterText)) {
-			grid.setItems(capteurService.getByLibelleCapteurContainingIgnoreCase(filterText));
-		} else {
-			grid.setItems(capteurService.getAllCapteurs());
-		}
-	}
-
+    /**
+     * Getter pour le bouton d'ajout de capteur.
+     *
+     * @return Le bouton d'ajout de capteur.
+     */
+    public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 }

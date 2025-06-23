@@ -23,6 +23,10 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+/**
+ * Éditeur pour l'entité Mur.
+ * Permet de créer, modifier ou supprimer un mur via une interface utilisateur.
+ */
 @Scope("prototype")
 @SpringComponent
 @UIScope
@@ -31,26 +35,49 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
     private final MurService murService;
     private final SalleService salleService;
 
+    /**
+     * Le mur actuellement édité.
+     */
     private Mur mur;
 
+    /**
+     * Champs de texte pour les propriétés du mur.
+     */
     public TextField libelleMur = new TextField("Libellé du mur");
     public TextField hauteur = new TextField("Hauteur");
     public TextField longueur = new TextField("Longueur");
+
+    /**
+     * ComboBox pour sélectionner les relations associées au mur.
+     */
     public ComboBox<Orientation> orientationComboBox = new ComboBox<>("Orientation");
     public ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
 
+    /**
+     * Boutons pour les actions de sauvegarde, annulation et suppression.
+     */
     public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     public Button cancel = new Button("Annuler");
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
+    /**
+     * Binder pour lier les champs de l'interface utilisateur à l'entité Mur.
+     */
     Binder<Mur> binder = new Binder<>(Mur.class);
     private ChangeHandler changeHandler;
 
+    /**
+     * Constructeur de l'éditeur de mur.
+     *
+     * @param murService Service pour gérer les opérations sur les murs.
+     * @param salleService Service pour gérer les salles.
+     */
     public MurEditor(MurService murService, SalleService salleService) {
         this.murService = murService;
         this.salleService = salleService;
 
+        // Configuration des ComboBox
         salleComboBox.setPlaceholder("Sélectionner une salle");
         salleComboBox.setClearButtonVisible(true);
         salleComboBox.setItemLabelGenerator(Salle::getDesc);
@@ -58,6 +85,7 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         orientationComboBox.setItems(Orientation.values());
         orientationComboBox.setItemLabelGenerator(Orientation::name);
 
+        // Organisation des champs en lignes horizontales
         HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleMur, salleComboBox, hauteur);
         fieldsRow1.setSpacing(true);
         fieldsRow1.setWidthFull();
@@ -131,11 +159,17 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
+    /**
+     * Supprime le mur actuellement édité.
+     */
     void delete() {
         murService.deleteMurById(mur.getId());
         changeHandler.onChange();
     }
 
+    /**
+     * Sauvegarde le mur actuellement édité.
+     */
     void save() {
         try {
             binder.writeBean(mur); // Valide et écrit les données dans l'objet mur
@@ -146,6 +180,9 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Annule l'édition en cours.
+     */
     void cancel() {
         setVisible(false);
         if (changeHandler != null) {
@@ -153,10 +190,18 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         }
     }
 
+    /**
+     * Interface pour gérer les changements après une action.
+     */
     public interface ChangeHandler {
         void onChange();
     }
 
+    /**
+     * Prépare l'éditeur pour un mur donné.
+     *
+     * @param m Le mur à éditer.
+     */
     public final void editMur(Mur m) {
         if (m == null) {
             setVisible(false);
@@ -181,6 +226,11 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         libelleMur.focus();
     }
 
+    /**
+     * Définit le gestionnaire de changement.
+     *
+     * @param h Le gestionnaire de changement.
+     */
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

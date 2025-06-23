@@ -14,16 +14,30 @@ import com.vaadin.flow.server.menu.MenuEntry;
 
 import static com.vaadin.flow.theme.lumo.LumoUtility.*;
 
+/**
+ * Layout principal de l'application.
+ * Définit la structure globale de l'interface utilisateur, incluant un menu latéral et un en-tête.
+ */
 @Layout
 public final class MainLayout extends AppLayout {
 
+    /**
+     * Constructeur du layout principal.
+     * Configure la section principale et ajoute l'en-tête et le menu latéral au drawer.
+     */
     MainLayout() {
         setPrimarySection(Section.DRAWER);
         addToDrawer(createHeader(), new Scroller(createSideNav()));
     }
 
+    /**
+     * Crée l'en-tête de l'application.
+     * Inclut un logo et le nom de l'application.
+     *
+     * @return Un composant Div représentant l'en-tête.
+     */
     private Div createHeader() {
-        // TODO Replace with real application logo and name
+        // TODO Remplacer par le logo et le nom réel de l'application
         var appLogo = VaadinIcon.CUBES.create();
         appLogo.addClassNames(TextColor.PRIMARY, IconSize.LARGE);
 
@@ -35,6 +49,12 @@ public final class MainLayout extends AppLayout {
         return header;
     }
 
+    /**
+     * Crée le menu latéral de navigation.
+     * Récupère les entrées de menu configurées et les ajoute au menu latéral.
+     *
+     * @return Un composant SideNav représentant le menu latéral.
+     */
     private SideNav createSideNav() {
         var nav = new SideNav();
         nav.addClassNames(Margin.Horizontal.MEDIUM);
@@ -42,6 +62,13 @@ public final class MainLayout extends AppLayout {
         return nav;
     }
 
+    /**
+     * Crée un élément de navigation pour le menu latéral.
+     * Ajoute une icône si elle est définie dans l'entrée de menu.
+     *
+     * @param menuEntry Une entrée de menu contenant les informations nécessaires.
+     * @return Un composant SideNavItem représentant l'élément de navigation.
+     */
     private SideNavItem createSideNavItem(MenuEntry menuEntry) {
         if (menuEntry.icon() != null) {
             return new SideNavItem(menuEntry.title(), menuEntry.path(), new Icon(menuEntry.icon()));
@@ -50,9 +77,12 @@ public final class MainLayout extends AppLayout {
         }
     }
 
+    /*
+     * Méthode pour créer un menu utilisateur.
+     * TODO Remplacer par des informations et actions utilisateur réelles.
+     */
     /* 
     private Component createUserMenu() {
-        // TODO Replace with real user information and actions
         var avatar = new Avatar("John Smith");
         avatar.addThemeVariants(AvatarVariant.LUMO_XSMALL);
         avatar.addClassNames(Margin.Right.SMALL);
@@ -69,6 +99,6 @@ public final class MainLayout extends AppLayout {
         userMenuItem.getSubMenu().addItem("Logout").setEnabled(false);
 
         return userMenu;
-    }*/
-
+    }
+    */
 }

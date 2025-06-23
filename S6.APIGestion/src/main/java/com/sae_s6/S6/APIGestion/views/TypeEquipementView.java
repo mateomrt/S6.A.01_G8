@@ -17,6 +17,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+/**
+ * Vue pour la gestion des types d'équipements.
+ * Fournit une interface utilisateur pour afficher, filtrer, ajouter, modifier et supprimer les types d'équipements.
+ */
 @Component
 @Scope("prototype")
 @Route(value = "typeEquipement")
@@ -24,17 +28,46 @@ import org.springframework.util.StringUtils;
 @Menu(title = "Les Types d'équipement", order = 1, icon = "vaadin:wrench")
 public class TypeEquipementView extends VerticalLayout {
 
+    /**
+     * Service pour gérer les opérations sur les types d'équipements.
+     */
     private final TypeEquipementService typeEquipementService;
 
+    /**
+     * Grille pour afficher la liste des types d'équipements.
+     */
     public final Grid<TypeEquipement> grid;
+
+    /**
+     * Champ de texte pour filtrer les types d'équipements par libellé.
+     */
     public final TextField filter;
+
+    /**
+     * Bouton pour ajouter un nouveau type d'équipement.
+     */
     private final Button addNewBtn;
+
+    /**
+     * Éditeur pour gérer les opérations sur les types d'équipements.
+     */
     public final TypeEquipementEditor editor;
 
+    /**
+     * Getter pour le bouton d'ajout de type d'équipement.
+     *
+     * @return Le bouton d'ajout de type d'équipement.
+     */
     public Button getAddNewBtn() {
         return addNewBtn;
     }
 
+    /**
+     * Constructeur de la vue des types d'équipements.
+     *
+     * @param typeEquipementService Service pour gérer les types d'équipements.
+     * @param editor Éditeur pour gérer les types d'équipements.
+     */
     public TypeEquipementView(TypeEquipementService typeEquipementService, TypeEquipementEditor editor) {
         this.typeEquipementService = typeEquipementService;
         this.editor = editor;
@@ -42,40 +75,47 @@ public class TypeEquipementView extends VerticalLayout {
         this.filter = new TextField();
         this.addNewBtn = new Button("Ajouter un type d'équipement", VaadinIcon.PLUS.create());
 
-        // Build layout
+        // Construction de la mise en page
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
         add(actions, grid, editor);
 
+        // Configuration de la grille
         grid.setHeight("300px");
         grid.setColumns("id", "libelleTypeEquipement");
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
+        // Configuration du champ de filtre
         filter.setPlaceholder("Filtrer par nom");
 
-        // Hook logic to components
+        // Logique associée aux composants
 
-        // Replace listing with filtered content when user changes filter
+        // Remplace la liste par du contenu filtré lorsque l'utilisateur modifie le filtre
         filter.setValueChangeMode(ValueChangeMode.LAZY);
         filter.addValueChangeListener(e -> listTypeEquipement(e.getValue()));
 
-        // Connect selected TypeEquipement to editor or hide if none is selected
+        // Connecte la sélection dans la grille à l'éditeur ou masque l'éditeur si aucune sélection
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editTypeEquipement(e.getValue());
         });
 
-        // Instantiate and edit new TypeEquipement when the new button is clicked
+        // Instancie et édite un nouveau type d'équipement lorsque le bouton "Ajouter" est cliqué
         addNewBtn.addClickListener(e -> editor.editTypeEquipement(new TypeEquipement()));
 
-        // Listen changes made by the editor, refresh data from backend
+        // Écoute les changements effectués par l'éditeur et rafraîchit les données depuis le backend
         editor.setChangeHandler(() -> {
             editor.setVisible(false);
             listTypeEquipement(filter.getValue());
         });
 
-        // Initialize listing
+        // Initialise la liste des types d'équipements
         listTypeEquipement(null);
     }
 
+    /**
+     * Liste les types d'équipements en fonction du texte de filtre.
+     *
+     * @param filterText Texte de filtre pour rechercher les types d'équipements par libellé.
+     */
     void listTypeEquipement(String filterText) {
         if (StringUtils.hasText(filterText)) {
             grid.setItems(typeEquipementService.getByLibelleTypeEquipementContainingIgnoreCase(filterText));
