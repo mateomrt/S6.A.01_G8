@@ -30,11 +30,15 @@ public class EquipementView extends VerticalLayout {
 	//private final AuteurRepo repo;
 	private final EquipementService equipementService;
 
-	final Grid<Equipement> grid;
+	public final Grid<Equipement> grid;
 
 	final TextField filter;
 
 	private final Button addNewBtn;
+
+	public Button getAddNewBtn() {
+        return addNewBtn;
+    }
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
 	public EquipementView(EquipementService equipementService, EquipementEditor editor) {
