@@ -35,7 +35,7 @@ public class TypeCapteurDonneeControllerTest {
      * @return URL complète de l'API TypeCapteurDonnee
      */
     private String getBaseUrl() {
-        return "http://localhost:" + port + "/api/type_capteur_donnee";
+        return "http://localhost:" + port + "/api/typecapteurdonnee";
     }
 
     /**

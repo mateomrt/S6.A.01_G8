@@ -21,7 +21,6 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 	private final TypeCapteurService typeCapteurService;
 
 	private TypeCapteur typeCapteur;
-	private TypeCapteur originalTypeCapteur;
 
 	/* Fields to edit properties in TypeCapteur entity */
 	TextField libelleTypeCapteur = new TextField("Libellé type capteur");
@@ -119,11 +118,8 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 		
 		if (persisted) {
 			// TypeCapteur existant : on charge depuis la BD
-			originalTypeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
 			typeCapteur = typeCapteurService.getTypeCapteurById(a.getId());
 		} else {
-			// Nouveau TypeCapteur
-			originalTypeCapteur = null;
 			typeCapteur = a;
 		}
 

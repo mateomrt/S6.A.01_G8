@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * Fournit des endpoints pour effectuer des opérations CRUD sur les entités TypeCapteurDonnee.
  */
 @RestController
-@RequestMapping("/api/type_capteur_donnee")
+@RequestMapping("/api/typecapteurdonnee")
 @RequiredArgsConstructor
 @Validated
 @Slf4j

@@ -1,6 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
+import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
@@ -78,11 +79,17 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     }
 
     void delete() {
-        typeCapteurDonneeService.deleteTypeCapteurDonneeById(typeCapteurDonnee.getId());
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(typeCapteurDonnee.getDonneeNavigation().getId(), typeCapteurDonnee.getTypeCapteurNavigation().getId());
+        typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
         changeHandler.onChange();
     }
 
     void save() {
+        // Création manuelle de l'identifiant composite
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(typeCapteurDonnee.getDonneeNavigation().getId(),typeCapteurDonnee.getTypeCapteurNavigation().getId());
+        typeCapteurDonnee.setId(id);
+
+        // Sauvegarde
         typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
         changeHandler.onChange();
     }
@@ -110,7 +117,8 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
             typeCapteurDonnee = t;
             delete.setVisible(false); // Pas de bouton supprimer pour un nouveau type capteur donnée
         } else {
-            typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(t.getId());
+            TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(t.getId().getIdDonnee(), t.getId().getIdDonnee());
+            typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
             delete.setVisible(true); // Afficher le bouton supprimer pour un type capteur donnée existant
         }
 
