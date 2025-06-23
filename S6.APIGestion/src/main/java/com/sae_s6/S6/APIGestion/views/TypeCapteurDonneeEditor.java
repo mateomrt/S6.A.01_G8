@@ -2,6 +2,7 @@ package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
+import com.google.common.base.Optional;
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
@@ -19,8 +20,11 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+import lombok.extern.slf4j.Slf4j;
+
 @SpringComponent
 @UIScope
+@Slf4j
 public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifier {
 
     private final TypeCapteurDonneeService typeCapteurDonneeService;
@@ -85,13 +89,76 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     }
 
     void save() {
+        if (typeCapteurDonnee == null) {
+            log.error("Impossible de sauvegarder : typeCapteurDonnee est null");
+            return;
+        }
+
         // Création manuelle de l'identifiant composite
-        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(typeCapteurDonnee.getDonneeNavigation().getId(),typeCapteurDonnee.getTypeCapteurNavigation().getId());
+        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(
+                donneeComboBox.getValue().getId(),
+                typeCapteurComboBox.getValue().getId()
+        );
         typeCapteurDonnee.setId(id);
 
         // Sauvegarde
         typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
         changeHandler.onChange();
+    }
+
+    void update() {
+        if (typeCapteurDonnee == null) {
+            log.error("Impossible de mettre à jour : typeCapteurDonnee est null");
+            return;
+        }
+    
+        // Récupérer les anciens identifiants avant modification
+        TypeCapteurDonneeEmbedId oldId = typeCapteurDonnee.getId();
+        if (oldId == null) {
+            log.error("Impossible de récupérer l'ancien identifiant composite : oldId est null");
+            return;
+        }
+        log.info("Ancien identifiant composite : {}", oldId);
+    
+        // Création des nouveaux identifiants à partir des modifications
+        TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(
+                donneeComboBox.getValue().getId(),
+                typeCapteurComboBox.getValue().getId()
+        );
+        if (newId == null) {
+            log.error("Impossible de créer le nouvel identifiant composite : newId est null");
+            return;
+        }
+        log.info("Nouvel identifiant composite : {}", newId);
+    
+        // Vérifie si les identifiants ont changé
+        if (!oldId.equals(newId)) {
+            log.info("Les identifiants ont changé, suppression de l'ancien objet avec l'identifiant : {}", oldId);
+    
+            // Supprime l'ancien objet avant de sauvegarder le nouveau
+            try {
+                typeCapteurDonneeService.deleteTypeCapteurDonneeById(oldId);
+                log.info("Ancien objet supprimé avec succès : {}", oldId);
+            } catch (Exception e) {
+                log.error("Erreur lors de la suppression de l'ancien objet avec l'identifiant : {}", oldId, e);
+                return;
+            }
+        }
+    
+        // Met à jour l'identifiant et sauvegarde
+        typeCapteurDonnee.setId(newId);
+        try {
+            typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
+            log.info("Objet sauvegardé avec le nouvel identifiant : {}", newId);
+        } catch (Exception e) {
+            log.error("Erreur lors de la sauvegarde de l'objet avec le nouvel identifiant : {}", newId, e);
+            return;
+        }
+    
+        // Notifie le changement
+        if (changeHandler != null) {
+            changeHandler.onChange();
+        }
     }
 
     void cancel() {
@@ -110,19 +177,25 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
             setVisible(false);
             return;
         }
-
+    
         final boolean isNewTypeCapteurDonnee = (t.getId() == null);
-
+    
         if (isNewTypeCapteurDonnee) {
-            typeCapteurDonnee = t;
+            typeCapteurDonnee = new TypeCapteurDonnee(); // Crée un nouvel objet pour la création
             delete.setVisible(false); // Pas de bouton supprimer pour un nouveau type capteur donnée
         } else {
-            TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(t.getId().getIdDonnee(), t.getId().getIdDonnee());
-            typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
+            typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(t.getId());
+            if (typeCapteurDonnee == null) {
+                log.warn("Aucune association TypeCapteurDonnee trouvée avec l'id composite: {}", t.getId());
+                setVisible(false);
+                return;
+            }
             delete.setVisible(true); // Afficher le bouton supprimer pour un type capteur donnée existant
         }
-
-        binder.setBean(typeCapteurDonnee);
+    
+        binder.setBean(typeCapteurDonnee); // Lie l'objet au binder
+        donneeComboBox.setValue(typeCapteurDonnee.getDonneeNavigation()); // Remplit le champ Donnée
+        typeCapteurComboBox.setValue(typeCapteurDonnee.getTypeCapteurNavigation()); // Remplit le champ Type Capteur
         setVisible(true);
         donneeComboBox.focus();
     }
