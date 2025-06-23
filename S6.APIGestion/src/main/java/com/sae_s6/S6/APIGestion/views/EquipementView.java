@@ -20,7 +20,7 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = "equipement") 
 @PageTitle("Les Equipements")
-@Menu(title = "Les equipements", order = 2, icon = "vaadin:clipboard-check")
+@Menu(title = "Les equipements", order = 2, icon = "vaadin:tools")
 
 public class EquipementView extends VerticalLayout {
 
@@ -35,9 +35,7 @@ public class EquipementView extends VerticalLayout {
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
 	public EquipementView(EquipementService equipementService, EquipementEditor editor) {
-		//this.repo = repo;
 		this.equipementService = equipementService;
-		//this.editor = editor;
 		this.grid = new Grid<>(Equipement.class);
 		this.filter = new TextField();
 		this.addNewBtn = new Button("Ajouter un équipement", VaadinIcon.PLUS.create());

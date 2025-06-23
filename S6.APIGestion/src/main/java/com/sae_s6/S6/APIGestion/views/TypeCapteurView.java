@@ -18,7 +18,7 @@ import org.springframework.util.StringUtils;
 
 @Route (value="typeCapteur") 
 @PageTitle("Les types de capteur")
-@Menu(title = "Les types de capteur", order = 4, icon = "vaadin:clipboard-check")
+@Menu(title = "Les types de capteur", order = 4, icon = "vaadin:info")
 
 public class TypeCapteurView extends VerticalLayout {
 

@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 @Route(value = "typeEquipement")
 @PageTitle("Les Types d'équipement")
-@Menu(title = "Les Types d'équipement", order = 1, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Types d'équipement", order = 1, icon = "vaadin:wrench")
 public class TypeEquipementView extends VerticalLayout {
 
     private final TypeEquipementService typeEquipementService;

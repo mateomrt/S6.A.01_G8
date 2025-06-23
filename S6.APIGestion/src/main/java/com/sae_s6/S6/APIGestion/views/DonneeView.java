@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 @Route(value = "donnee")
 @PageTitle("Les Données")
-@Menu(title = "Les Données", order = 4, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Données", order = 4, icon = "vaadin:pie-bar-chart")
 public class DonneeView extends VerticalLayout {
 
     private final DonneeService donneeService;

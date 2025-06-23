@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 
 @Route (value="capteur") 
 @PageTitle("Les Capteurs")
-@Menu(title = "Les Capteurs", order = 3, icon = "vaadin:clipboard-check")
+@Menu(title = "Les Capteurs", order = 3, icon = "vaadin:line-bar-chart")
 
 public class CapteurView extends VerticalLayout {
 

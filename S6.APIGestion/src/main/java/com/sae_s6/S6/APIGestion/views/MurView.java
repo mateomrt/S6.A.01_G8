@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 @Scope("prototype")
 @Route(value = "mur")
 @PageTitle("Les Murs")
+@Menu(title = "Les Murs", order = 2, icon ="vaadin:stop")
 public class MurView extends VerticalLayout {
 
     private final MurService murService;
