@@ -65,15 +65,23 @@ public class TypeCapteurDonneeService {
 
     /**
      * Met à jour une association TypeCapteurDonnee existante.
+     * Supprime l'association existante et en crée une nouvelle avec les nouvelles données.
      *
      * @param donnee L'entité TypeCapteurDonnee avec les nouvelles données.
-     * @return L'association TypeCapteurDonnee mise à jour.
+     * @return La nouvelle association TypeCapteurDonnee créée.
      */
     public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonnee donnee) {
-        TypeCapteurDonnee updatedDonnee = typeCapteurDonneeRepo.save(donnee);
-        log.info("Association TypeCapteurDonnee mise à jour avec succès avec l'id composite: {}", updatedDonnee.getId());
-        log.debug("Détails de l'association TypeCapteurDonnee après mise à jour: {}", updatedDonnee);
-        return updatedDonnee;
+        // Supprimer l'association existante
+        TypeCapteurDonneeEmbedId id = donnee.getId();
+        typeCapteurDonneeRepo.deleteById(id);
+        log.info("Association TypeCapteurDonnee avec l'id composite: {} supprimée avec succès", id);
+
+        // Créer une nouvelle association
+        TypeCapteurDonnee newDonnee = typeCapteurDonneeRepo.save(donnee);
+        log.info("Nouvelle association TypeCapteurDonnee créée avec succès avec l'id composite: {}", newDonnee.getId());
+        log.debug("Détails de la nouvelle association TypeCapteurDonnee: {}", newDonnee);
+
+        return newDonnee;
     }
 
     /**

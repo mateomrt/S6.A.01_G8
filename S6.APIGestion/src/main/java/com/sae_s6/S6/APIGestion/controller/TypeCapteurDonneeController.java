@@ -11,6 +11,7 @@ import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Contrôleur REST pour la gestion des associations entre types de capteurs et données.
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/type_capteur_donnee")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class TypeCapteurDonneeController {
 
     private final TypeCapteurDonneeService typeCapteurDonneeService;
@@ -84,10 +86,18 @@ public class TypeCapteurDonneeController {
      */
     @PutMapping("/")
     public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurDonnee(@RequestBody TypeCapteurDonnee typeCapteurDonnee) {
-        TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(typeCapteurDonnee);
-        if (updatedTypeCapteurDonnee == null) {
+        if (typeCapteurDonnee.getId() == null) {
+            log.warn("La clé composite de l'association TypeCapteurDonnee est manquante");
             return ResponseEntity.badRequest().build();
         }
+
+        TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(typeCapteurDonnee);
+        if (updatedTypeCapteurDonnee == null) {
+            log.warn("Échec de la mise à jour de l'association TypeCapteurDonnee avec l'id composite: {}", typeCapteurDonnee.getId());
+            return ResponseEntity.badRequest().build();
+        }
+
+        log.info("Association TypeCapteurDonnee mise à jour avec succès avec l'id composite: {}", updatedTypeCapteurDonnee.getId());
         return ResponseEntity.ok(updatedTypeCapteurDonnee);
     }
 
