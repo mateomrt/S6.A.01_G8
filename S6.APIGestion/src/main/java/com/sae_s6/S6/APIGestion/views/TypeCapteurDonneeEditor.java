@@ -2,12 +2,12 @@ package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
-import com.google.common.base.Optional;
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
 import com.sae_s6.S6.APIGestion.service.DonneeService;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurService;
+
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -32,8 +32,8 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     private final TypeCapteurService typeCapteurService;
 
     private TypeCapteurDonnee typeCapteurDonnee;
+    private TypeCapteurDonneeEmbedId originalId = null;
 
-    // Champs pour les propriétés de navigation
     public ComboBox<Donnee> donneeComboBox = new ComboBox<>("Donnée");
     public ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type Capteur");
 
@@ -45,25 +45,21 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
     Binder<TypeCapteurDonnee> binder = new Binder<>(TypeCapteurDonnee.class);
     private ChangeHandler changeHandler;
 
-
     public TypeCapteurDonneeEditor(TypeCapteurDonneeService typeCapteurDonneeService, DonneeService donneeService, TypeCapteurService typeCapteurService) {
         this.typeCapteurDonneeService = typeCapteurDonneeService;
         this.donneeService = donneeService;
         this.typeCapteurService = typeCapteurService;
 
-        // Configure ComboBox for Donnee
         donneeComboBox.setItems(donneeService.getAllDonnees());
         donneeComboBox.setItemLabelGenerator(Donnee::getLibelleDonnee);
         donneeComboBox.setPlaceholder("Sélectionner une donnée");
 
-        // Configure ComboBox for TypeCapteur
         typeCapteurComboBox.setItems(typeCapteurService.getAllTypeCapteurs());
         typeCapteurComboBox.setItemLabelGenerator(TypeCapteur::getLibelleTypeCapteur);
         typeCapteurComboBox.setPlaceholder("Sélectionner un type capteur");
 
         add(donneeComboBox, typeCapteurComboBox, actions);
 
-        // Liaison des champs
         binder.forField(donneeComboBox)
               .bind(TypeCapteurDonnee::getDonneeNavigation, TypeCapteurDonnee::setDonneeNavigation);
 
@@ -76,19 +72,19 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         addKeyPressListener(Key.ENTER, e -> save());
-
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
         cancel.addClickListener(e -> cancel());
+
         setVisible(false);
     }
 
     void delete() {
-        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(typeCapteurDonnee.getDonneeNavigation().getId(), typeCapteurDonnee.getTypeCapteurNavigation().getId());
-        typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
-        changeHandler.onChange();
+        if (typeCapteurDonnee != null && typeCapteurDonnee.getId() != null) {
+            typeCapteurDonneeService.deleteTypeCapteurDonneeById(typeCapteurDonnee.getId());
+            changeHandler.onChange();
+        }
     }
-
 
     void save() {
         if (typeCapteurDonnee == null) {
@@ -96,28 +92,21 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
             return;
         }
 
-        // Création manuelle de l'identifiant composite
-        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(
+        TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(
             donneeComboBox.getValue().getId(),
             typeCapteurComboBox.getValue().getId()
         );
 
-        typeCapteurDonnee.setId(id);
+        typeCapteurDonnee.setId(newId);
 
-        // Sauvegarde
-        typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
-        changeHandler.onChange();
-    }
+        if (originalId != null) {
+            // Cas modification : delete + save
+            typeCapteurDonneeService.updateTypeCapteurDonnee(originalId, typeCapteurDonnee);
+        } else {
+            // Cas création
+            typeCapteurDonneeService.saveTypeCapteurDonnee(typeCapteurDonnee);
+        }
 
-    void update() {
-        // Création manuelle de l'identifiant composite
-        TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(
-            donneeComboBox.getValue().getId(),
-            typeCapteurComboBox.getValue().getId()
-        );
-
-        // Sauvegarde
-        // typeCapteurDonneeService.updateTypeCapteurDonnee(id, typeCapteurDonnee);
         changeHandler.onChange();
     }
 
@@ -137,30 +126,33 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
             setVisible(false);
             return;
         }
-    
-        final boolean isNewTypeCapteurDonnee = (t.getId() == null);
-    
-        if (isNewTypeCapteurDonnee) {
-            typeCapteurDonnee = new TypeCapteurDonnee(); // Crée un nouvel objet pour la création
-            delete.setVisible(false); // Pas de bouton supprimer pour un nouveau type capteur donnée
-        } else {
+
+        boolean isExisting = (t.getId() != null);
+
+        if (isExisting) {
             typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(t.getId());
             if (typeCapteurDonnee == null) {
-                log.warn("Aucune association TypeCapteurDonnee trouvée avec l'id composite: {}", t.getId());
+                log.warn("Aucune association trouvée pour l'id: {}", t.getId());
                 setVisible(false);
                 return;
             }
-            delete.setVisible(true); // Afficher le bouton supprimer pour un type capteur donnée existant
+            originalId = t.getId(); // Mémorise l'ID d'origine
+            delete.setVisible(true);
+        } else {
+            typeCapteurDonnee = new TypeCapteurDonnee();
+            originalId = null;
+            delete.setVisible(false);
         }
-    
-        binder.setBean(typeCapteurDonnee); // Lie l'objet au binder
-        donneeComboBox.setValue(typeCapteurDonnee.getDonneeNavigation()); // Remplit le champ Donnée
-        typeCapteurComboBox.setValue(typeCapteurDonnee.getTypeCapteurNavigation()); // Remplit le champ Type Capteur
+
+        binder.setBean(typeCapteurDonnee);
+        donneeComboBox.setValue(typeCapteurDonnee.getDonneeNavigation());
+        typeCapteurComboBox.setValue(typeCapteurDonnee.getTypeCapteurNavigation());
+
         setVisible(true);
         donneeComboBox.focus();
     }
 
     public void setChangeHandler(ChangeHandler h) {
-        changeHandler = h;
+        this.changeHandler = h;
     }
 }
