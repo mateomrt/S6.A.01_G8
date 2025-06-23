@@ -131,14 +131,21 @@ public class TypeCapteurDonneeControllerTest {
     @Test
     void testUpdateTypeCapteurDonnee() {
         // Crée un type capteur donnee à mettre à jour
-        TypeCapteurDonnee typeCapteurDonnee = createTypeCapteurDonnee(1, 3);
+        TypeCapteurDonnee typeCapteurDonnee = createTypeCapteurDonnee(1, 2);
+        Integer firstDonneeId = typeCapteurDonnee.getDonneeNavigation().getId();
+        Integer firstTypeCapteurId = typeCapteurDonnee.getTypeCapteurNavigation().getId();
         
+        Donnee donnee = new Donnee();
+        donnee.setId(2);
+        // Modifie l'id du type capteur
+        typeCapteurDonnee.setDonneeNavigation(donnee);
+
         TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setId(4);
+        typeCapteur.setId(1);
         // Modifie l'id du type capteur
         typeCapteurDonnee.setTypeCapteurNavigation(typeCapteur);
 
-        id = new TypeCapteurDonneeEmbedId(1, typeCapteur.getId());
+        id = new TypeCapteurDonneeEmbedId(donnee.getId(), typeCapteur.getId());
         typeCapteurDonnee.setId(id);
         
 
@@ -148,14 +155,15 @@ public class TypeCapteurDonneeControllerTest {
 
         // Appel PUT pour mettre à jour le type capteur donnee
         ResponseEntity<TypeCapteurDonnee> response = restTemplate.exchange(
-                getBaseUrl() + "/", HttpMethod.PUT, entity, TypeCapteurDonnee.class);
+                getBaseUrl() + "/" + firstDonneeId + "/" + firstTypeCapteurId, HttpMethod.PUT, entity, TypeCapteurDonnee.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getId()).isEqualTo(id);
-        assertThat(response.getBody().getTypeCapteurNavigation().getId()).isEqualTo(4);
+        assertThat(response.getBody().getDonneeNavigation().getId()).isEqualTo(2);
+        assertThat(response.getBody().getTypeCapteurNavigation().getId()).isEqualTo(1);
 
         // Nettoyage : suppression du type cpateur donnee créé
-        //restTemplate.delete(getBaseUrl() + "/" + id.getIdDonnee() + "/" + id.getIdTypeCapteur());
+        restTemplate.delete(getBaseUrl() + "/" + id.getIdDonnee() + "/" + id.getIdTypeCapteur());
     }
 
     /**

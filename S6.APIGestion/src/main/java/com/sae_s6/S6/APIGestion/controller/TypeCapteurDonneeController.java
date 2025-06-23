@@ -61,7 +61,7 @@ public class TypeCapteurDonneeController {
         TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
         if (typeCapteurDonnee == null) {
             log.warn("Aucune association TypeCapteurDonnee trouvée pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Association TypeCapteurDonnee récupérée avec succès pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
         return ResponseEntity.ok(typeCapteurDonnee);
@@ -149,7 +149,7 @@ public class TypeCapteurDonneeController {
         TypeCapteurDonnee typeCapteurDonnee = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
         if (typeCapteurDonnee == null) {
             log.warn("Aucune association TypeCapteurDonnee trouvée pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
         log.info("Association TypeCapteurDonnee supprimée avec succès pour donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);

@@ -96,7 +96,7 @@ public class TypeCapteurDonneeService {
             typeCapteurDonneeRepo.deleteById(oldId);
         }
         // Puis on sauvegarde la nouvelle
-        TypeCapteurDonnee updatedTypeCapteurDonnee =  saveTypeCapteurDonnee(newEntity);
+        TypeCapteurDonnee updatedTypeCapteurDonnee = saveTypeCapteurDonnee(newEntity);
         return updatedTypeCapteurDonnee;
     }
 
