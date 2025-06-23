@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class TypeEquipementController {
 
+    // Service pour gérer les opérations liées aux types d'équipements.
     private final TypeEquipementService typeEquipementService;
 
     /**
@@ -31,7 +32,9 @@ public class TypeEquipementController {
      */
     @GetMapping("/")
     public ResponseEntity<List<TypeEquipement>> getAllTypeEquipements() {
+        // Récupère tous les types d'équipements via le service.
         List<TypeEquipement> typeEquipements = typeEquipementService.getAllTypeEquipements();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (typeEquipements == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -47,7 +50,9 @@ public class TypeEquipementController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TypeEquipement> getTypeEquipementById(@PathVariable("id") Integer id) {
+        // Récupère le type d'équipement par son ID via le service.
         TypeEquipement typeEquipement = typeEquipementService.getTypeEquipementById(id);
+        // Vérifie si le type d'équipement existe et retourne une réponse appropriée.
         if (typeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,7 +68,9 @@ public class TypeEquipementController {
      */
     @PostMapping("/")
     public ResponseEntity<TypeEquipement> saveTypeEquipement(@RequestBody TypeEquipement typeEquipement) {
+        // Sauvegarde le type d'équipement via le service.
         TypeEquipement savedTypeEquipement = typeEquipementService.saveTypeEquipement(typeEquipement);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedTypeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +86,9 @@ public class TypeEquipementController {
      */
     @PutMapping("/")
     public ResponseEntity<TypeEquipement> updateTypeEquipement(@RequestBody TypeEquipement typeEquipement) {
+        // Met à jour le type d'équipement via le service.
         TypeEquipement updatedTypeEquipement = typeEquipementService.updateTypeEquipement(typeEquipement);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedTypeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,10 +104,13 @@ public class TypeEquipementController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTypeEquipementById(@PathVariable("id") Integer id) {
+        // Récupère le type d'équipement par son ID via le service.
         TypeEquipement typeEquipement = typeEquipementService.getTypeEquipementById(id);
+        // Vérifie si le type d'équipement existe avant de le supprimer.
         if (typeEquipement == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime le type d'équipement via le service.
         typeEquipementService.deleteTypeEquipementById(id);
         return ResponseEntity.ok("Type équipement supprimé avec succès");
     }

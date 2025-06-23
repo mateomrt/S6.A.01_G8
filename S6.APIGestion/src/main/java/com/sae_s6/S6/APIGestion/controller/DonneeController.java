@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class DonneeController {
 
+    // Service pour gérer les opérations liées aux données.
     private final DonneeService donneeService;
 
     /**
@@ -31,7 +32,9 @@ public class DonneeController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Donnee>> getAllDonnees() {
+        // Récupère toutes les données via le service.
         List<Donnee> donnees = donneeService.getAllDonnees();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (donnees == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -47,7 +50,9 @@ public class DonneeController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Donnee> getDonneeById(@PathVariable("id") Integer id) {
+        // Récupère la donnée par son ID via le service.
         Donnee donnee = donneeService.getDonneeById(id);
+        // Vérifie si la donnée existe et retourne une réponse appropriée.
         if (donnee == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,7 +68,9 @@ public class DonneeController {
      */
     @PostMapping("/")
     public ResponseEntity<Donnee> saveDonnee(@RequestBody Donnee donnee) {
+        // Sauvegarde la donnée via le service.
         Donnee savedDonnee = donneeService.saveDonnee(donnee);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +86,9 @@ public class DonneeController {
      */
     @PutMapping("/")
     public ResponseEntity<Donnee> updateDonnee(@RequestBody Donnee donnee) {
+        // Met à jour la donnée via le service.
         Donnee updatedDonnee = donneeService.updateDonnee(donnee);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedDonnee == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,10 +104,13 @@ public class DonneeController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDonneeById(@PathVariable("id") Integer id) {
+        // Récupère la donnée par son ID via le service.
         Donnee donnee = donneeService.getDonneeById(id);
+        // Vérifie si la donnée existe avant de la supprimer.
         if (donnee == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime la donnée via le service.
         donneeService.deleteDonneeById(id);
         return ResponseEntity.ok("Donnée supprimée avec succès");
     }

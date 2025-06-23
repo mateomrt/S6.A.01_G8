@@ -20,6 +20,7 @@ import java.util.List;
 @Validated
 public class SalleController {
 
+    // Service pour gérer les opérations liées aux salles.
     private final SalleService salleService;
 
     /**
@@ -30,7 +31,9 @@ public class SalleController {
      */
     @GetMapping("/")
     public ResponseEntity<List<Salle>> getAllSalles() {
+        // Récupère toutes les salles via le service.
         List<Salle> salles = salleService.getAllSalles();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (salles == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -46,7 +49,9 @@ public class SalleController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Salle> getSalleById(@PathVariable("id") Integer id) {
+        // Récupère la salle par son ID via le service.
         Salle salle = salleService.getSalleById(id);
+        // Vérifie si la salle existe et retourne une réponse appropriée.
         if (salle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -62,7 +67,9 @@ public class SalleController {
      */
     @PostMapping("/")
     public ResponseEntity<Salle> saveSalle(@RequestBody Salle salle) {
+        // Sauvegarde la salle via le service.
         Salle savedSalle = salleService.saveSalle(salle);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedSalle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -78,7 +85,9 @@ public class SalleController {
      */
     @PutMapping("/")
     public ResponseEntity<Salle> updateSalle(@RequestBody Salle salle) {
+        // Met à jour la salle via le service.
         Salle updatedSalle = salleService.updateSalle(salle);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedSalle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -94,10 +103,13 @@ public class SalleController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSalleById(@PathVariable("id") Integer id) {
+        // Récupère la salle par son ID via le service.
         Salle salle = salleService.getSalleById(id);
+        // Vérifie si la salle existe avant de la supprimer.
         if (salle == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime la salle via le service.
         salleService.deleteSalleById(id);
         return ResponseEntity.ok("Salle supprimée avec succès");
     }
@@ -111,6 +123,7 @@ public class SalleController {
      */
     @GetMapping("/search")
     public ResponseEntity<List<Salle>> getSallesByLibelleSalle(@RequestParam(name = "libelleSalle") String libelleSalle) {
+        // Recherche les salles par leur libellé via le service.
         return ResponseEntity.ok().body(salleService.getSallesByLibelleSalle(libelleSalle));
     }
 }
