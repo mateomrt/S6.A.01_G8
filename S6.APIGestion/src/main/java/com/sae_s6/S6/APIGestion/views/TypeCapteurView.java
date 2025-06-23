@@ -18,6 +18,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 @Component
 @Scope("prototype")
 @Route (value="typeCapteur") 
@@ -29,11 +30,11 @@ public class TypeCapteurView extends VerticalLayout {
 	//private final AuteurRepo repo;
 	private final TypeCapteurService typeCapteurService;
 
-	final Grid<TypeCapteur> grid;
+	public final Grid<TypeCapteur> grid;
 
 	final TextField filter;
 
-	private final Button addNewBtn;
+	public final Button addNewBtn;
 
 	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
 	public TypeCapteurView(TypeCapteurService typeCapteurService, TypeCapteurEditor editor) {

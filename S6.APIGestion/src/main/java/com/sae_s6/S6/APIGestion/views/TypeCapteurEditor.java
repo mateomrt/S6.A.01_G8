@@ -13,7 +13,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.context.annotation.Scope;
 
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
@@ -23,16 +25,16 @@ public class TypeCapteurEditor extends VerticalLayout implements KeyNotifier {
 	private TypeCapteur typeCapteur;
 
 	/* Fields to edit properties in TypeCapteur entity */
-	TextField libelleTypeCapteur = new TextField("Libellé type capteur");
-	TextField modeTypeCapteur = new TextField("Mode du type capteur");
+	public TextField libelleTypeCapteur = new TextField("Libellé type capteur");
+	public TextField modeTypeCapteur = new TextField("Mode du type capteur");
 
 	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
-	Button cancel = new Button("Annuler");
-	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
-	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+	public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+	public Button cancel = new Button("Annuler");
+	public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
+	public HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<TypeCapteur> binder = new Binder<>(TypeCapteur.class);
+	public Binder<TypeCapteur> binder = new Binder<>(TypeCapteur.class);
 	private ChangeHandler changeHandler;
 
 	public TypeCapteurEditor(TypeCapteurService typeCapteurService) {
