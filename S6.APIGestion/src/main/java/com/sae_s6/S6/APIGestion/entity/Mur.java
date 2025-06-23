@@ -2,6 +2,7 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -69,7 +70,7 @@ public class Mur {
      * Référence à la salle associée au mur.
      * Ce champ est obligatoire et représente une relation Many-to-One avec l'entité Salle.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "salle_id", referencedColumnName = "id", nullable = false)
     private Salle salleNavigation;
 

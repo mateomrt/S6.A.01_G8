@@ -2,6 +2,7 @@ package com.sae_s6.S6.APIGestion.entity;
 
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,7 +52,7 @@ public class Salle {
      * Référence au bâtiment associé à la salle.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité Batiment.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "batiment_id", referencedColumnName = "id", nullable = true)
     private Batiment batimentNavigation;
 
@@ -59,7 +60,7 @@ public class Salle {
      * Référence au type de salle.
      * Ce champ est optionnel et représente une relation Many-to-One avec l'entité TypeSalle.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "typesalle_id", referencedColumnName = "id", nullable = true)
     private TypeSalle typeSalleNavigation;
 

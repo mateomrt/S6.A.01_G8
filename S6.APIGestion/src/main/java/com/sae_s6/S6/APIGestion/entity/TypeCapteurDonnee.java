@@ -1,5 +1,6 @@
 package com.sae_s6.S6.APIGestion.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -32,7 +33,7 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité Donnee.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "donnee_id", insertable = false, updatable = false)
     private Donnee donneeNavigation;
 
@@ -41,7 +42,7 @@ public class TypeCapteurDonnee {
      * Ce champ représente une relation Many-to-One avec l'entité TypeCapteur.
      * Les colonnes de la clé étrangère ne sont pas modifiables directement.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "typecapteur_id", insertable = false, updatable = false)
     private TypeCapteur typeCapteurNavigation;
 
