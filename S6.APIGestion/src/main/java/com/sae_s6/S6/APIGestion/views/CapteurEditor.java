@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import org.springframework.context.annotation.Scope;
+
 import com.sae_s6.S6.APIGestion.entity.Capteur;
 import com.sae_s6.S6.APIGestion.entity.Mur;
 import com.sae_s6.S6.APIGestion.entity.Salle;
@@ -22,6 +24,7 @@ import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class CapteurEditor extends VerticalLayout implements KeyNotifier {
@@ -34,16 +37,16 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
 	private Capteur capteur;
 
 	/* Fields to edit properties in Capteur entity */
-	TextField libelleCapteur = new TextField("Libellé capteur");
-	TextField positionXCapteur = new TextField("Position X");
-	TextField positionYCapteur = new TextField("Position Y");
+	public TextField libelleCapteur = new TextField("Libellé capteur");
+	public TextField positionXCapteur = new TextField("Position X");
+	public TextField positionYCapteur = new TextField("Position Y");
     
-	ComboBox<Mur> murComboBox = new ComboBox<>("Mur");
-	ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
-	ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type capteur");
+	public ComboBox<Mur> murComboBox = new ComboBox<>("Mur");
+	public ComboBox<Salle> salleComboBox = new ComboBox<>("Salle");
+	public ComboBox<TypeCapteur> typeCapteurComboBox = new ComboBox<>("Type capteur");
 
 	/* Action buttons */
-	Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+	public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
 	Button cancel = new Button("Annuler");
 	Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);

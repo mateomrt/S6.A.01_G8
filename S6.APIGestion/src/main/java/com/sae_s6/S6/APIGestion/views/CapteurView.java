@@ -29,22 +29,27 @@ import org.springframework.util.StringUtils;
 public class CapteurView extends VerticalLayout {
 
 	//private final AuteurRepo repo;
-	private final CapteurService capteurService;
+	public final CapteurService capteurService;
 
-	final Grid<Capteur> grid;
+	public final Grid<Capteur> grid;
 
-	final TextField filter;
+	public final TextField filter;
 
-	private final Button addNewBtn;
+	public final Button addNewBtn;
 
-	//public AuteurView(AuteurRepo repo, AuteurEditor editor) {
+	public final CapteurEditor editor;
+
+	// Getter pour le bouton (comme dans l'exemple du prof)
+	public Button getAddNewBtn() {
+		return addNewBtn;
+	}
+	
 	public CapteurView(CapteurService capteurService, CapteurEditor editor) {
-		//this.repo = repo;
 		this.capteurService = capteurService;
-		//this.editor = editor;
 		this.grid = new Grid<>(Capteur.class);
 		this.filter = new TextField();
 		this.addNewBtn = new Button("Ajouter un capteur", VaadinIcon.PLUS.create());
+		this.editor = editor;
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
@@ -97,7 +102,6 @@ public class CapteurView extends VerticalLayout {
 		listCapteurs(null);
 	}
 
-	// tag::listSalles[]
 	void listCapteurs(String filterText) {
 		if (StringUtils.hasText(filterText)) {
 			grid.setItems(capteurService.getByLibelleCapteurContainingIgnoreCase(filterText));
@@ -105,6 +109,5 @@ public class CapteurView extends VerticalLayout {
 			grid.setItems(capteurService.getAllCapteurs());
 		}
 	}
-	// end::listCustomers[]
 
 }

@@ -12,8 +12,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+@Component
+@Scope("prototype")
 @Route(value = "typeEquipement")
 @PageTitle("Les Types d'équipement")
 @Menu(title = "Les Types d'équipement", order = 1, icon = "vaadin:wrench")
