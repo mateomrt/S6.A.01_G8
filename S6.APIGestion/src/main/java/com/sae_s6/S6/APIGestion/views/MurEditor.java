@@ -13,10 +13,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -42,7 +44,6 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
     public Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-
     Binder<Mur> binder = new Binder<>(Mur.class);
     private ChangeHandler changeHandler;
 
@@ -57,41 +58,64 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
         orientationComboBox.setItems(Orientation.values());
         orientationComboBox.setItemLabelGenerator(Orientation::name);
 
-        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleMur,salleComboBox , hauteur);
-		fieldsRow1.setSpacing(true);
+        HorizontalLayout fieldsRow1 = new HorizontalLayout(libelleMur, salleComboBox, hauteur);
+        fieldsRow1.setSpacing(true);
         fieldsRow1.setWidthFull();
 
-		HorizontalLayout fieldsRow2 = new HorizontalLayout(longueur,orientationComboBox);
-		fieldsRow2.setSpacing(true);
-		fieldsRow2.setWidthFull();
+        HorizontalLayout fieldsRow2 = new HorizontalLayout(longueur, orientationComboBox);
+        fieldsRow2.setSpacing(true);
+        fieldsRow2.setWidthFull();
 
+        libelleMur.setWidthFull();
+        hauteur.setWidthFull();
+        salleComboBox.setWidthFull();
 
-		libelleMur.setWidthFull();
-		hauteur.setWidthFull();
-		salleComboBox.setWidthFull();
+        longueur.setWidth("calc(33.33% - 10px)");
+        orientationComboBox.setWidth("calc(33.33% - 10px)");
 
-		longueur.setWidth("calc(33.33% - 10px)");
-		orientationComboBox.setWidth("calc(33.33% - 10px)");
+        add(fieldsRow1, fieldsRow2, actions);
 
-		add(fieldsRow1, fieldsRow2, actions);
+        // Configuration du binder
+        binder.forField(libelleMur)
+              .asRequired("Le libellé du mur est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  libelleMur.setErrorMessage(status.getMessage().orElse(""));
+                  libelleMur.setInvalid(status.isError());
+              })
+              .bind(Mur::getLibelleMur, Mur::setLibelleMur);
 
-        binder.bindInstanceFields(this);
         binder.forField(salleComboBox)
               .asRequired("Salle est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  salleComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  salleComboBox.setInvalid(status.isError());
+              })
               .bind(Mur::getSalleNavigation, Mur::setSalleNavigation);
 
         binder.forField(orientationComboBox)
               .asRequired("Orientation est obligatoire")
+              .withValidationStatusHandler(status -> {
+                  orientationComboBox.setErrorMessage(status.getMessage().orElse(""));
+                  orientationComboBox.setInvalid(status.isError());
+              })
               .bind(Mur::getOrientation, Mur::setOrientation);
 
         binder.forField(hauteur)
               .withNullRepresentation("")
               .withConverter(new StringToDoubleConverter("La hauteur doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  hauteur.setErrorMessage(status.getMessage().orElse(""));
+                  hauteur.setInvalid(status.isError());
+              })
               .bind(Mur::getHauteur, Mur::setHauteur);
 
         binder.forField(longueur)
               .withNullRepresentation("")
               .withConverter(new StringToDoubleConverter("La longueur doit être un nombre"))
+              .withValidationStatusHandler(status -> {
+                  longueur.setErrorMessage(status.getMessage().orElse(""));
+                  longueur.setInvalid(status.isError());
+              })
               .bind(Mur::getLongueur, Mur::setLongueur);
 
         setSpacing(true);
@@ -113,8 +137,13 @@ public class MurEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void save() {
-        murService.saveMur(mur);
-        changeHandler.onChange();
+        try {
+            binder.writeBean(mur); // Valide et écrit les données dans l'objet mur
+            murService.saveMur(mur);
+            changeHandler.onChange();
+        } catch (ValidationException e) {
+            Notification.show("Veuillez corriger les erreurs avant de sauvegarder.", 3000, Notification.Position.MIDDLE);
+        }
     }
 
     void cancel() {

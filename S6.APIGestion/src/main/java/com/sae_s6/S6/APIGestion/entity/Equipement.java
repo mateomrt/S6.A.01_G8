@@ -108,7 +108,7 @@ public class Equipement {
                 && Objects.equals(hauteur, equipement.hauteur)
                 && Objects.equals(largeur, equipement.largeur)
                 && Objects.equals(position_x, equipement.position_x)
-                && Objects.equals(position_x, equipement.position_y)
+                && Objects.equals(position_y, equipement.position_y)
                 && Objects.equals(murNavigation, equipement.murNavigation)
                 && Objects.equals(salleNavigation, equipement.salleNavigation)
                 && Objects.equals(typeEquipementNavigation, equipement.typeEquipementNavigation);

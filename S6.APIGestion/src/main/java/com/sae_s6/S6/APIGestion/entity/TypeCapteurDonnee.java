@@ -44,4 +44,29 @@ public class TypeCapteurDonnee {
     @ManyToOne
     @JoinColumn(name = "typecapteur_id", insertable = false, updatable = false)
     private TypeCapteur typeCapteurNavigation;
+
+    /**
+     * Vérifie si deux objets TypeCapteurDonnee sont égaux.
+     * Deux associations sont considérées égales si elles ont le même identifiant composite.
+     *
+     * @param o L'objet à comparer.
+     * @return true si les objets sont égaux, false sinon.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TypeCapteurDonnee that)) return false;
+        return id != null && id.equals(that.id);
+    }
+
+    /**
+     * Calcule le hash code de l'objet TypeCapteurDonnee.
+     * Utilise l'identifiant composite pour le calcul.
+     *
+     * @return Le hash code de l'objet.
+     */
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

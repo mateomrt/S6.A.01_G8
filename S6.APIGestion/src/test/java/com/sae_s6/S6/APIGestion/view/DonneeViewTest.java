@@ -3,8 +3,11 @@ package com.sae_s6.S6.APIGestion.view;
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.views.DonneeEditor;
 import com.sae_s6.S6.APIGestion.views.DonneeView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.ListDataProvider;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +27,12 @@ public class DonneeViewTest {
     private DonneeView donneeView;
 
     Logger logger = Logger.getLogger(DonneeViewTest.class.getName());
+
+    @BeforeEach
+    void setupUIContext() {
+        UI.setCurrent(new UI());
+    }
+
 
     @Test
     void testDonneeViewLoaded() {
@@ -59,13 +69,13 @@ public class DonneeViewTest {
 
         assertEquals("", editor.libelleDonnee.getValue(), "New Donnee should have empty libelle");
     
-        editor.libelleDonnee.setValue("Nouvelle Donnee Test");
+        editor.libelleDonnee.setValue("Humidité relative");
         editor.save.click();
 
         // Vérifier que la nouvelle Donnee est bien dans la grille
         Donnee lastDonnee = getLastItem(donneeView.grid);
         logger.info("New Donnee should be last in grid: " + lastDonnee);
-        assertEquals("Nouvelle Donnee Test", lastDonnee.getLibelleDonnee());
+        assertEquals("Humidité relative", lastDonnee.getLibelleDonnee());
     }
 
     private Donnee getFirstItem(Grid<Donnee> grid) {

@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class TypeCapteurController {
 
+    // Service pour gérer les opérations liées aux types de capteurs.
     private final TypeCapteurService typeCapteurService;
 
     /**
@@ -31,7 +32,9 @@ public class TypeCapteurController {
      */
     @GetMapping("/")
     public ResponseEntity<List<TypeCapteur>> getAllTypeCapteurs() {
+        // Récupère tous les types de capteurs via le service.
         List<TypeCapteur> typeCapteurs = typeCapteurService.getAllTypeCapteurs();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (typeCapteurs == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -47,7 +50,9 @@ public class TypeCapteurController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TypeCapteur> getTypeCapteurById(@PathVariable("id") Integer id) {
+        // Récupère le type de capteur par son ID via le service.
         TypeCapteur typeCapteur = typeCapteurService.getTypeCapteurById(id);
+        // Vérifie si le type de capteur existe et retourne une réponse appropriée.
         if (typeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,7 +68,9 @@ public class TypeCapteurController {
      */
     @PostMapping("/")
     public ResponseEntity<TypeCapteur> saveTypeCapteur(@RequestBody TypeCapteur typeCapteur) {
+        // Sauvegarde le type de capteur via le service.
         TypeCapteur savedTypeCapteur = typeCapteurService.saveTypeCapteur(typeCapteur);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedTypeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,7 +86,9 @@ public class TypeCapteurController {
      */
     @PutMapping("/")
     public ResponseEntity<TypeCapteur> updateTypeCapteur(@RequestBody TypeCapteur typeCapteur) {
+        // Met à jour le type de capteur via le service.
         TypeCapteur updatedTypeCapteur = typeCapteurService.updateTypeCapteur(typeCapteur);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedTypeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,10 +104,13 @@ public class TypeCapteurController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTypeCapteurById(@PathVariable("id") Integer id) {
+        // Récupère le type de capteur par son ID via le service.
         TypeCapteur typeCapteur = typeCapteurService.getTypeCapteurById(id);
+        // Vérifie si le type de capteur existe avant de le supprimer.
         if (typeCapteur == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime le type de capteur via le service.
         typeCapteurService.deleteTypeCapteurById(id);
         return ResponseEntity.ok("Type capteur supprimé avec succès");
     }

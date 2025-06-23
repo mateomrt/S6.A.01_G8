@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sae_s6.S6.APIGestion.entity.TypeSalle;
 import com.sae_s6.S6.APIGestion.service.TypeSalleService;
@@ -28,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class TypeSalleController {
 
+    // Service pour gérer les opérations liées aux types de salles.
     private final TypeSalleService typeSalleService;
 
     /**
@@ -38,7 +32,9 @@ public class TypeSalleController {
      */
     @GetMapping("/")
     public ResponseEntity<List<TypeSalle>> getAllSalles() {
+        // Récupère tous les types de salles via le service.
         List<TypeSalle> typeSalles = typeSalleService.getAllTypeSalles();
+        // Vérifie si la liste est nulle et retourne une réponse appropriée.
         if (typeSalles == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -54,7 +50,9 @@ public class TypeSalleController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TypeSalle> getSalleById(@PathVariable("id") Integer id) {
+        // Récupère le type de salle par son ID via le service.
         TypeSalle typeSalle = typeSalleService.getTypeSalleById(id);
+        // Vérifie si le type de salle existe et retourne une réponse appropriée.
         if (typeSalle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,7 +68,9 @@ public class TypeSalleController {
      */
     @PostMapping("/")
     public ResponseEntity<TypeSalle> saveSalle(@RequestBody TypeSalle salle) {
+        // Sauvegarde le type de salle via le service.
         TypeSalle savedTypeSalle = typeSalleService.saveTypeSalle(salle);
+        // Vérifie si la sauvegarde a réussi et retourne une réponse appropriée.
         if (savedTypeSalle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -86,7 +86,9 @@ public class TypeSalleController {
      */
     @PutMapping("/")
     public ResponseEntity<TypeSalle> updateSalle(@RequestBody TypeSalle typeSalle) {
+        // Met à jour le type de salle via le service.
         TypeSalle updatedTypeSalle = typeSalleService.updateTypeSalle(typeSalle);
+        // Vérifie si la mise à jour a réussi et retourne une réponse appropriée.
         if (updatedTypeSalle == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -102,10 +104,13 @@ public class TypeSalleController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSalleById(@PathVariable("id") Integer id) {
+        // Récupère le type de salle par son ID via le service.
         TypeSalle typeSalle = typeSalleService.getTypeSalleById(id);
+        // Vérifie si le type de salle existe avant de le supprimer.
         if (typeSalle == null) {
             return ResponseEntity.badRequest().build();
         }
+        // Supprime le type de salle via le service.
         typeSalleService.deleteTypeSalleById(id);
         return ResponseEntity.ok("Salle supprimée avec succès");
     }

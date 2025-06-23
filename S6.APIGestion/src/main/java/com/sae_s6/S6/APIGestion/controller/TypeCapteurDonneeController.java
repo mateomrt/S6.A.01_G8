@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TypeCapteurDonneeController {
 
+    // Service pour gérer les opérations liées aux associations TypeCapteurDonnee.
     private final TypeCapteurDonneeService typeCapteurDonneeService;
 
     /**
@@ -88,22 +89,27 @@ public class TypeCapteurDonneeController {
 
     /**
      * Endpoint pour mettre à jour une association TypeCapteurDonnee existante.
-     * Permet de mettre à jour le type de capteur, la donnée, ou les deux.
      * URL: localhost:8080/api/type_capteur_donnee/{typeCapteurId}/{donneeId}
      *
      * @param typeCapteurId L'identifiant du type de capteur existant.
      * @param donneeId L'identifiant de la donnée existante.
-     * @param updates Un objet JSON contenant les nouveaux identifiants (newIdTypeCapteur et/ou newIdDonnee).
+     * @param updateTypeCapteurDonnee L'entité TypeCapteurDonnee contenant les nouvelles valeurs.
      * @return Une réponse contenant l'association TypeCapteurDonnee mise à jour ou une réponse 400 si elle n'est pas trouvée.
      */
     @PutMapping("/{donneeId}/{typeCapteurId}")
-    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(@PathVariable("donneeId") Integer donneeId, @PathVariable("typeCapteurId") Integer typeCapteurId, @RequestBody TypeCapteurDonnee updateTypeCapteurDonnee) {
-        
-                
+    public ResponseEntity<TypeCapteurDonnee> updateTypeCapteurOrDonnee(
+            @PathVariable("donneeId") Integer donneeId,
+            @PathVariable("typeCapteurId") Integer typeCapteurId,
+            @RequestBody TypeCapteurDonnee updateTypeCapteurDonnee) {
+        log.debug("Requête reçue pour mettre à jour l'association avec donneeId = {} et typeCapteurId = {}", donneeId, typeCapteurId);
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(donneeId, typeCapteurId);
         TypeCapteurDonnee updatedTypeCapteurDonnee = typeCapteurDonneeService.updateTypeCapteurDonnee(id, updateTypeCapteurDonnee);
+        if (updatedTypeCapteurDonnee == null) {
+            log.warn("Échec de la mise à jour de l'association TypeCapteurDonnee.");
+            return ResponseEntity.badRequest().build();
+        }
+        log.info("Association TypeCapteurDonnee mise à jour avec succès : {}", updatedTypeCapteurDonnee);
         return ResponseEntity.ok(updatedTypeCapteurDonnee);
-        
     }
 
     /**
