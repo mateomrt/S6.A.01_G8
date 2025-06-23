@@ -90,15 +90,16 @@ public class TypeCapteurDonneeService {
      * @param newIdDonnee L'identifiant de la nouvelle donnée (peut être null si non modifié).
      * @return La nouvelle association TypeCapteurDonnee créée.
      */
-    public void updateTypeCapteurDonnee(TypeCapteurDonneeEmbedId oldId, TypeCapteurDonnee newEntity) {
+    public TypeCapteurDonnee updateTypeCapteurDonnee(TypeCapteurDonneeEmbedId oldId, TypeCapteurDonnee newEntity) {
         if (!oldId.equals(newEntity.getId())) {
             // Si la clé a changé, on supprime l'ancienne
             typeCapteurDonneeRepo.deleteById(oldId);
         }
         // Puis on sauvegarde la nouvelle
-        typeCapteurDonneeRepo.save(newEntity);
+        TypeCapteurDonnee updatedTypeCapteurDonnee =  saveTypeCapteurDonnee(newEntity);
+        return updatedTypeCapteurDonnee;
     }
-    
+
 
     /**
      * Supprime une association TypeCapteurDonnee par sa clé composite.
