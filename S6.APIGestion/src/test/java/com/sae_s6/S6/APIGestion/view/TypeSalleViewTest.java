@@ -16,19 +16,31 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour la vue TypeSalleView.
+ * Vérifie le bon fonctionnement de l'interface utilisateur liée aux types de salles.
+ */
 @SpringBootTest
 public class TypeSalleViewTest {
 
+    // Injection de la vue TypeSalleView
     @Autowired
     private TypeSalleView typeSalleView;
 
+    // Logger pour afficher des informations pendant les tests
     Logger logger = Logger.getLogger(TypeSalleViewTest.class.getName());
 
+    /**
+     * Teste si la vue TypeSalleView est correctement chargée.
+     */
     @Test
     void testTypeSalleViewLoaded() {
         assertNotNull(typeSalleView, "TypeSalleView should be loaded by Spring");
     }
 
+    /**
+     * Teste si l'éditeur s'affiche correctement lorsqu'un type de salle est sélectionné.
+     */
     @Test
     void editorVisibleWhenTypeSalleSelected() {
         Grid<TypeSalle> grid = typeSalleView.grid;
@@ -47,6 +59,9 @@ public class TypeSalleViewTest {
         assertEquals(firstTypeSalle.getLibelleTypeSalle(), editor.libelleTypeSalle.getValue());
     }
 
+    /**
+     * Teste l'ajout d'un nouveau type de salle via l'éditeur.
+     */
     @Test
     void editorVisibleWhenAddNewButtonClicked() {
         TypeSalleEditor editor = typeSalleView.editor;
@@ -69,10 +84,20 @@ public class TypeSalleViewTest {
         assertEquals("Nouveau TypeSalle Test", lastTypeSalle.getLibelleTypeSalle());
     }
 
+    /**
+     * Méthode utilitaire pour récupérer le premier élément de la grille.
+     * @param grid Grille contenant les types de salles
+     * @return Premier type de salle de la grille
+     */
     private TypeSalle getFirstItem(Grid<TypeSalle> grid) {
         return ((ListDataProvider<TypeSalle>) grid.getDataProvider()).getItems().iterator().next();
     }
 
+    /**
+     * Méthode utilitaire pour récupérer le dernier élément de la grille.
+     * @param grid Grille contenant les types de salles
+     * @return Dernier type de salle de la grille
+     */
     private TypeSalle getLastItem(Grid<TypeSalle> grid) {
         Collection<TypeSalle> typeSalles = ((ListDataProvider<TypeSalle>) grid.getDataProvider()).getItems();
         List<TypeSalle> typeSalleList = new ArrayList<>(typeSalles);
