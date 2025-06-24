@@ -1,5 +1,7 @@
 package com.sae_s6.S6.APIGestion.views;
 
+import org.springframework.context.annotation.Scope;
+
 import com.sae_s6.S6.APIGestion.entity.TypeEquipement;
 import com.sae_s6.S6.APIGestion.service.TypeEquipementService;
 import com.vaadin.flow.component.Key;
@@ -20,6 +22,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
  * Éditeur pour l'entité TypeEquipement.
  * Permet de créer, modifier ou supprimer un type d'équipement via une interface utilisateur.
  */
+@Scope("prototype")
 @SpringComponent
 @UIScope
 public class TypeEquipementEditor extends VerticalLayout implements KeyNotifier {
