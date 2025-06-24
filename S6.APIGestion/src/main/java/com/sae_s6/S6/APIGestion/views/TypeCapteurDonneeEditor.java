@@ -2,6 +2,9 @@ package com.sae_s6.S6.APIGestion.views;
 
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteurDonneeEmbedId;
+
+import org.springframework.context.annotation.Scope;
+
 import com.sae_s6.S6.APIGestion.entity.Donnee;
 import com.sae_s6.S6.APIGestion.entity.TypeCapteur;
 import com.sae_s6.S6.APIGestion.service.TypeCapteurDonneeService;
@@ -28,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * Éditeur pour l'entité TypeCapteurDonnee.
  * Permet de créer, modifier ou supprimer une association entre un type de capteur et une donnée via une interface utilisateur.
  */
+@Scope("prototype")
 @SpringComponent
 @UIScope
 @Slf4j
