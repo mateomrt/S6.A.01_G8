@@ -69,7 +69,6 @@ public class TypeEquipementControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
         List<TypeEquipement> resultat = Arrays.asList(response.getBody());
-        resultat.sort(Comparator.comparing(TypeEquipement::getLibelleTypeEquipement));
         assertThat(resultat.get(0).getLibelleTypeEquipement()).isEqualTo("Ordinateur");
         assertThat(resultat.get(1).getLibelleTypeEquipement()).isEqualTo("Projecteur");
     }
