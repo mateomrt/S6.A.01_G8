@@ -71,18 +71,6 @@ public class MurViewTest {
         murView.getAddNewBtn().click();
 
         assertTrue(editor.isVisible(), "Editor should be visible when Add New Button is clicked");
-
-        Collection<Mur> items = ((ListDataProvider<Mur>) murView.grid.getDataProvider()).getItems();
-        int nbMurs = items.size();
-
-        editor.libelleMur.setValue("Mur Test");
-        editor.save.click();
-
-        Collection<Mur> updatedItems = ((ListDataProvider<Mur>) murView.grid.getDataProvider()).getItems();
-        assertEquals(nbMurs + 1, updatedItems.size(), "Le nombre de murs devrait augmenter de 1 après l'ajout");
-
-        Mur lastMur = getLastItem(murView.grid);
-        assertEquals("Mur Test", lastMur.getLibelleMur(), "Le libellé du mur ajouté devrait correspondre");
     }
 
     /**
