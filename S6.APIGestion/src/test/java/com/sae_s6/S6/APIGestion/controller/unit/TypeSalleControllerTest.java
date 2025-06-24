@@ -17,9 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TypeSalleControllerTest {
 
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
 
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -50,8 +52,7 @@ public class TypeSalleControllerTest {
      */
     @Test
     void testGetAllTypeSalles() {
-        //createTypeSalle("Type A"); // Crée un type pour s'assurer qu'on a au moins un en base
-
+        // Appel GET pour récupérer tous les types de salle
         ResponseEntity<TypeSalle[]> response = restTemplate.getForEntity(getBaseUrl() + "/", TypeSalle[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -64,9 +65,11 @@ public class TypeSalleControllerTest {
      */
     @Test
     void testGetTypeSalleById() {
+        // Crée un type de salle fictif pour le test
         TypeSalle typeSalle = createTypeSalle("Type B");
         Integer id = typeSalle.getId();
 
+        // Appel GET pour récupérer le type de salle par son ID
         ResponseEntity<TypeSalle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeSalle.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -80,7 +83,10 @@ public class TypeSalleControllerTest {
      */
     @Test
     void testSaveTypeSalle() {
+        // Crée un nouveau type de salle
         TypeSalle typeSalle = createTypeSalle("Type C");
+
+        // Vérifications sur le type de salle créé
         assertThat(typeSalle.getLibelleTypeSalle()).isEqualTo("Type C");
     }
 
@@ -89,16 +95,21 @@ public class TypeSalleControllerTest {
      */
     @Test
     void testUpdateTypeSalle() {
+        // Crée un type de salle à mettre à jour
         TypeSalle typeSalle = createTypeSalle("Type D");
+
+        // Modifie le libellé du type de salle
         typeSalle.setLibelleTypeSalle("Type D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TypeSalle> entity = new HttpEntity<>(typeSalle, headers);
 
+        // Appel PUT pour mettre à jour le type de salle
         ResponseEntity<TypeSalle> response = restTemplate.exchange(
                 getBaseUrl() + "/", HttpMethod.PUT, entity, TypeSalle.class);
 
+        // Vérifications sur les résultats
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getLibelleTypeSalle()).isEqualTo("Type D - MAJ");
     }
@@ -108,11 +119,14 @@ public class TypeSalleControllerTest {
      */
     @Test
     void testDeleteTypeSalleById() {
+        // Crée un type de salle à supprimer
         TypeSalle typeSalle = createTypeSalle("Type à Supprimer");
         Integer id = typeSalle.getId();
 
+        // Appel DELETE pour supprimer le type de salle
         restTemplate.delete(getBaseUrl() + "/" + id);
 
+        // Vérifie que le type de salle n'existe plus
         ResponseEntity<TypeSalle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, TypeSalle.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }

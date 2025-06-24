@@ -22,9 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TypeCapteurControllerTest {
 
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
 
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 

@@ -25,9 +25,11 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CapteurControllerTest {
 
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
-    
+
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -52,32 +54,32 @@ class CapteurControllerTest {
         capteur.setLibelleCapteur("Capteur Test");
         capteur.setPositionXCapteur(10.0);
         capteur.setPositionYCapteur(20.0);
-    
+
         // Relations simulées
         Mur mur = new Mur();
-        mur.setId(1); 
+        mur.setId(1);
         Salle salle = new Salle();
-        salle.setId(1); 
+        salle.setId(1);
         TypeCapteur typeCapteur = new TypeCapteur();
-        typeCapteur.setId(1); 
-    
+        typeCapteur.setId(1);
+
         capteur.setMurNavigation(mur);
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(typeCapteur);
-    
+
         // POST : création du capteur
         ResponseEntity<Capteur> postResponse = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur capteurCree = postResponse.getBody();
-        assertThat(capteurCree).isNotNull(); 
+        assertThat(capteurCree).isNotNull();
         assertThat(capteurCree.getId()).isNotNull();
         capteursCreeIds.add(capteurCree.getId());
-    
+
         // GET : récupération du capteur par son ID
         ResponseEntity<Capteur> getResponse = restTemplate.getForEntity(getBaseUrl() + capteurCree.getId(), Capteur.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur capteurFetched = getResponse.getBody();
-    
+
         // Assertions sur les valeurs
         assertThat(capteurFetched).isNotNull();
         assertThat(capteurFetched.getLibelleCapteur()).isEqualTo("Capteur Test");
@@ -95,10 +97,10 @@ class CapteurControllerTest {
     public void testGetAllCapteurs() {
         // GET : récupération de tous les capteurs
         ResponseEntity<Capteur[]> response = restTemplate.getForEntity(getBaseUrl(), Capteur[].class);
-        
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur[] capteurs = response.getBody();
-        
+
         assertThat(capteurs).isNotNull();
         assertThat(capteurs.length).isGreaterThan(0);
     }
@@ -113,30 +115,33 @@ class CapteurControllerTest {
         capteur.setLibelleCapteur("Capteur Initial");
         capteur.setPositionXCapteur(2.0);
         capteur.setPositionYCapteur(3.0);
-    
-        Mur mur = new Mur(); mur.setId(1);
-        Salle salle = new Salle(); salle.setId(1);
-        TypeCapteur type = new TypeCapteur(); type.setId(1);
-    
+
+        Mur mur = new Mur();
+        mur.setId(1);
+        Salle salle = new Salle();
+        salle.setId(1);
+        TypeCapteur type = new TypeCapteur();
+        type.setId(1);
+
         capteur.setMurNavigation(mur);
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(type);
-    
+
         // POST : création du capteur
         ResponseEntity<Capteur> post = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         Capteur created = post.getBody();
         assertThat(created).isNotNull();
         assertThat(created.getId()).isNotNull();
         capteursCreeIds.add(created.getId());
-    
+
         // Modification des valeurs du capteur
         created.setLibelleCapteur("Capteur Modifié");
         created.setPositionXCapteur(42.0);
-    
+
         // PUT : mise à jour du capteur
         HttpEntity<Capteur> requestEntity = new HttpEntity<>(created);
         ResponseEntity<Capteur> response = restTemplate.exchange(getBaseUrl(), HttpMethod.PUT, requestEntity, Capteur.class);
-    
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Capteur updated = response.getBody();
         assertThat(updated).isNotNull();
@@ -154,24 +159,27 @@ class CapteurControllerTest {
         capteur.setLibelleCapteur("Capteur à Supprimer");
         capteur.setPositionXCapteur(1.0);
         capteur.setPositionYCapteur(1.0);
-    
-        Mur mur = new Mur(); mur.setId(1);
-        Salle salle = new Salle(); salle.setId(1);
-        TypeCapteur type = new TypeCapteur(); type.setId(1);
-    
+
+        Mur mur = new Mur();
+        mur.setId(1);
+        Salle salle = new Salle();
+        salle.setId(1);
+        TypeCapteur type = new TypeCapteur();
+        type.setId(1);
+
         capteur.setMurNavigation(mur);
         capteur.setSalleNavigation(salle);
         capteur.setTypeCapteurNavigation(type);
-    
+
         // POST : création du capteur
         ResponseEntity<Capteur> post = restTemplate.postForEntity(getBaseUrl(), capteur, Capteur.class);
         Capteur created = post.getBody();
         assertThat(created).isNotNull();
         capteursCreeIds.add(created.getId());
-    
+
         // DELETE : suppression du capteur
         restTemplate.delete(getBaseUrl() + created.getId());
-    
+
         // Vérification que le capteur n'existe plus
         ResponseEntity<Capteur> getResponse = restTemplate.getForEntity(getBaseUrl() + created.getId(), Capteur.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -189,6 +197,6 @@ class CapteurControllerTest {
                 System.err.println("Erreur lors de la suppression du capteur ID " + id + " : " + e.getMessage());
             }
         }
-        capteursCreeIds.clear(); 
+        capteursCreeIds.clear();
     }
 }

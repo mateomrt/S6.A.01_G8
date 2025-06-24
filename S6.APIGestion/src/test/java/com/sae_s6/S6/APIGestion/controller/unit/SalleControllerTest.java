@@ -20,9 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SalleControllerTest {
 
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
 
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -41,18 +43,20 @@ public class SalleControllerTest {
      * @return Salle créée
      */
     private Salle createSalle(String libelleSalle, double superficie) {
+        // Prépare les relations nécessaires
         TypeSalle typeSalle = new TypeSalle();
-        typeSalle.setId(1);
+        typeSalle.setId(1); // Assurez-vous que ce type existe dans la base
 
         Batiment batiment = new Batiment();
-        batiment.setId(1);
+        batiment.setId(1); // Assurez-vous que ce bâtiment existe dans la base
 
+        // Crée une salle fictive
         Salle salle = new Salle();
         salle.setId(null); // Laisser l'auto-génération
         salle.setLibelleSalle(libelleSalle);
         salle.setSuperficie(superficie);
-        salle.setBatimentNavigation(batiment); // Plus nécessaire
-        salle.setTypeSalleNavigation(typeSalle); // Plus nécessaire
+        salle.setBatimentNavigation(batiment);
+        salle.setTypeSalleNavigation(typeSalle);
 
         // Envoie une requête POST pour créer la salle
         ResponseEntity<Salle> response = restTemplate.postForEntity(getBaseUrl() + "/", salle, Salle.class);
@@ -65,11 +69,13 @@ public class SalleControllerTest {
      */
     @Test
     void testGetAllSalles() {
+        // Crée une salle fictive pour le test
         createSalle("Salle A", 30.0);
 
         // Appel GET pour récupérer toutes les salles
         ResponseEntity<Salle[]> response = restTemplate.getForEntity(getBaseUrl() + "/", Salle[].class);
 
+        // Vérifications sur les résultats
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
@@ -80,12 +86,14 @@ public class SalleControllerTest {
      */
     @Test
     void testGetSalleById() {
+        // Crée une salle fictive pour le test
         Salle salle = createSalle("Salle B", 40.0);
         Integer id = salle.getId();
 
         // Appel GET pour récupérer la salle par son ID
         ResponseEntity<Salle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Salle.class);
 
+        // Vérifications sur les résultats
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isEqualTo(id);
@@ -96,7 +104,10 @@ public class SalleControllerTest {
      */
     @Test
     void testSaveSalle() {
+        // Crée une salle fictive pour le test
         Salle salle = createSalle("Salle C", 25.0);
+
+        // Vérifications sur la salle créée
         assertThat(salle.getLibelleSalle()).isEqualTo("Salle C");
     }
 
@@ -105,7 +116,10 @@ public class SalleControllerTest {
      */
     @Test
     void testUpdateSalle() {
+        // Crée une salle fictive pour le test
         Salle salle = createSalle("Salle D", 35.0);
+
+        // Modifie le libellé de la salle
         salle.setLibelleSalle("Salle D - MAJ");
 
         HttpHeaders headers = new HttpHeaders();
@@ -116,6 +130,7 @@ public class SalleControllerTest {
         ResponseEntity<Salle> response = restTemplate.exchange(
                 getBaseUrl() + "/", HttpMethod.PUT, entity, Salle.class);
 
+        // Vérifications sur les résultats
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getLibelleSalle()).isEqualTo("Salle D - MAJ");
     }
@@ -125,6 +140,7 @@ public class SalleControllerTest {
      */
     @Test
     void testDeleteSalleById() {
+        // Crée une salle fictive pour le test
         Salle salle = createSalle("Salle à Supprimer", 50.0);
         Integer id = salle.getId();
 
@@ -133,7 +149,6 @@ public class SalleControllerTest {
 
         // Vérifie que la salle n'existe plus
         ResponseEntity<Salle> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Salle.class);
-        // Ton contrôleur doit retourner NOT_FOUND ou BAD_REQUEST après suppression
         assertThat(response.getStatusCode().is4xxClientError()).isTrue();
     }
 }

@@ -24,9 +24,12 @@ import java.util.List;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EquipementControllerTest {
+
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
 
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 

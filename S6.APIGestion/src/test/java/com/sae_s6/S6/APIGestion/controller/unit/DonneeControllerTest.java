@@ -21,9 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DonneeControllerTest {
+
+    // Port local utilisé par le serveur de test
     @LocalServerPort
     private int port;
 
+    // Injection de TestRestTemplate pour effectuer les appels HTTP
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -39,11 +42,11 @@ public class DonneeControllerTest {
      * Méthode utilitaire pour créer une Donnee via l'API.
      * @param id identifiant de la donnée (peut être null pour auto-génération)
      * @param libelle libellé de la donnée
-     * @param unite libellé de la donnée
-     * @return Donnee créé
+     * @param unite unité de la donnée
+     * @return Donnee créée
      */
     private Donnee createDonnee(Integer id, String libelle, String unite) {
-        // Crée une donnee fictive
+        // Crée une donnée fictive
         Donnee donnee = new Donnee();
         donnee.setId(id);
         donnee.setLibelleDonnee(libelle);
@@ -158,5 +161,4 @@ public class DonneeControllerTest {
         ResponseEntity<Donnee> response = restTemplate.getForEntity(getBaseUrl() + "/" + id, Donnee.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
 }
