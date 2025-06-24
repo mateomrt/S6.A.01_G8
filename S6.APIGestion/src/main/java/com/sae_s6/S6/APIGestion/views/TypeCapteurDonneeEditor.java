@@ -194,6 +194,9 @@ public class TypeCapteurDonneeEditor extends VerticalLayout implements KeyNotifi
             return;
         }
 
+        donneeComboBox.setItems(donneeService.getAllDonnees());
+        typeCapteurComboBox.setItems(typeCapteurService.getAllTypeCapteurs());
+
         boolean isExisting = (t.getId() != null);
 
         if (isExisting) {
