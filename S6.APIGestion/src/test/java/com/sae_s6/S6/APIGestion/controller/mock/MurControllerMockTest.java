@@ -31,17 +31,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 public class MurControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection du service MurService simulé avec Mockito
     @MockitoBean
     private MurService murService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de tous les murs via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -70,6 +75,8 @@ public class MurControllerMockTest {
 
     /**
      * Teste la récupération d'un mur par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que le mur retourné correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -96,6 +103,8 @@ public class MurControllerMockTest {
 
     /**
      * Teste la création d'un mur via l'API.
+     * Simule un appel POST avec un mur et vérifie que le mur créé correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -122,6 +131,8 @@ public class MurControllerMockTest {
 
     /**
      * Teste la mise à jour d'un mur via l'API.
+     * Simule un appel PUT avec un mur mis à jour et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -149,6 +160,8 @@ public class MurControllerMockTest {
 
     /**
      * Teste la suppression d'un mur via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test

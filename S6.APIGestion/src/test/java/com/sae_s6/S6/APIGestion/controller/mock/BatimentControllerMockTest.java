@@ -30,17 +30,22 @@ import java.util.List;
 @AutoConfigureMockMvc
 public class BatimentControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection de BatimentService simulé avec Mockito
     @MockitoBean
     private BatimentService batimentService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de tous les bâtiments via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -69,6 +74,8 @@ public class BatimentControllerMockTest {
 
     /**
      * Teste la récupération d'un bâtiment par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que le bâtiment retourné correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -95,6 +102,8 @@ public class BatimentControllerMockTest {
 
     /**
      * Teste la création d'un bâtiment via l'API.
+     * Simule un appel POST avec un bâtiment et vérifie que le bâtiment créé correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -121,6 +130,8 @@ public class BatimentControllerMockTest {
 
     /**
      * Teste la mise à jour d'un bâtiment via l'API.
+     * Simule un appel PUT avec un bâtiment mis à jour et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -148,6 +159,8 @@ public class BatimentControllerMockTest {
 
     /**
      * Teste la suppression d'un bâtiment via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test

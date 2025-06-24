@@ -29,17 +29,23 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeEquipementControllerMockTest {
+
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection du service TypeEquipementService simulé avec Mockito
     @MockitoBean
     private TypeEquipementService typeEquipementService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de tous les types d'équipement via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -51,7 +57,7 @@ public class TypeEquipementControllerMockTest {
 
         // Simulation du service
         Mockito.when(typeEquipementService.getAllTypeEquipements())
-                    .thenReturn(typeEquipements);
+                .thenReturn(typeEquipements);
 
         // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/typeequipement/")
@@ -68,6 +74,8 @@ public class TypeEquipementControllerMockTest {
 
     /**
      * Teste la récupération d'un type d'équipement par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que le type retourné correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -78,7 +86,7 @@ public class TypeEquipementControllerMockTest {
 
         // Simulation du service
         Mockito.when(typeEquipementService.getTypeEquipementById(typeEquipementId))
-                    .thenReturn(typeEquipement);
+                .thenReturn(typeEquipement);
 
         // Act : appel GET simulé
         MvcResult result = mockMvc.perform(get("/api/typeequipement/" + typeEquipementId)
@@ -94,6 +102,8 @@ public class TypeEquipementControllerMockTest {
 
     /**
      * Teste la création d'un type d'équipement via l'API.
+     * Simule un appel POST avec un type et vérifie que le type créé correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -103,8 +113,8 @@ public class TypeEquipementControllerMockTest {
 
         // Simulation du service
         Mockito.when(typeEquipementService.saveTypeEquipement(Mockito.any()))
-                    .thenReturn(newTypeEquipement);
-                            
+                .thenReturn(newTypeEquipement);
+
         // Act : appel POST simulé
         MvcResult result = mockMvc.perform(post("/api/typeequipement/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -120,6 +130,8 @@ public class TypeEquipementControllerMockTest {
 
     /**
      * Teste la mise à jour d'un type d'équipement via l'API.
+     * Simule un appel PUT avec un type modifié et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -129,7 +141,7 @@ public class TypeEquipementControllerMockTest {
 
         // Simulation du service
         Mockito.when(typeEquipementService.updateTypeEquipement(Mockito.any()))
-                    .thenReturn(updatedTypeEquipement);
+                .thenReturn(updatedTypeEquipement);
 
         // Act : appel PUT simulé
         MvcResult result = mockMvc.perform(put("/api/typeequipement/")
@@ -140,13 +152,15 @@ public class TypeEquipementControllerMockTest {
         // Assert : vérification du résultat et du code HTTP
         String json = result.getResponse().getContentAsString();
         TypeEquipement typeEquipement = objectMapper.readValue(json, TypeEquipement.class);
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value()); 
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(typeEquipement.getId()).isEqualTo(1);
         assertThat(typeEquipement.getLibelleTypeEquipement()).isEqualTo("PC");
     }
 
     /**
      * Teste la suppression d'un type d'équipement via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -157,13 +171,13 @@ public class TypeEquipementControllerMockTest {
 
         // Simulation du service pour la récupération et la suppression
         Mockito.when(typeEquipementService.getTypeEquipementById(typeEquipementId))
-            .thenReturn(typeEquipement);
-        
+                .thenReturn(typeEquipement);
+
         Mockito.doNothing().when(typeEquipementService).deleteTypeEquipementById(typeEquipementId);
 
         // Act : appel DELETE simulé
         MvcResult result = mockMvc.perform(delete("/api/typeequipement/" + typeEquipementId)
-                .contentType(MediaType.APPLICATION_JSON))                
+                .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         // Assert : vérification du code HTTP de succès

@@ -24,9 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TypeCapteurControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -48,9 +50,10 @@ class TypeCapteurControllerMockTest {
      */
     @Test
     void testPostTypeCapteurAndGetById() throws Exception {
+        // Arrange : création d'un type de capteur fictif
         TypeCapteur type = buildTypeCapteur("MockCapteur");
 
-        // POST : création du type de capteur
+        // Act : POST pour créer le type de capteur
         MvcResult postResult = mockMvc.perform(post("/api/typeCapteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(type)))
@@ -58,9 +61,10 @@ class TypeCapteurControllerMockTest {
                 .andExpect(jsonPath("$.libelle_type_capteur").value("MockCapteur"))
                 .andReturn();
 
+        // Conversion de la réponse en objet TypeCapteur
         TypeCapteur saved = objectMapper.readValue(postResult.getResponse().getContentAsString(), TypeCapteur.class);
 
-        // GET : récupération du type de capteur par son ID
+        // Act : GET pour récupérer le type de capteur par son ID
         mockMvc.perform(get("/api/typeCapteur/" + saved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.libelle_type_capteur").value("MockCapteur"))
@@ -73,6 +77,7 @@ class TypeCapteurControllerMockTest {
      */
     @Test
     void testGetAllTypeCapteurs() throws Exception {
+        // Act : GET pour récupérer tous les types de capteurs
         mockMvc.perform(get("/api/typeCapteur/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -85,20 +90,24 @@ class TypeCapteurControllerMockTest {
      */
     @Test
     void testUpdateTypeCapteur() throws Exception {
+        // Arrange : création d'un type de capteur fictif
         TypeCapteur type = buildTypeCapteur("Type Initial");
 
-        // POST : création du type de capteur
+        // Act : POST pour créer le type de capteur
         MvcResult post = mockMvc.perform(post("/api/typeCapteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(type)))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        // Conversion de la réponse en objet TypeCapteur
         TypeCapteur created = objectMapper.readValue(post.getResponse().getContentAsString(), TypeCapteur.class);
+
+        // Modification des valeurs du type de capteur
         created.setLibelleTypeCapteur("Type Modifié");
         created.setModeTypeCapteur("Manuel");
 
-        // PUT : mise à jour du type de capteur
+        // Act : PUT pour mettre à jour le type de capteur
         mockMvc.perform(put("/api/typeCapteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(created)))
@@ -113,22 +122,24 @@ class TypeCapteurControllerMockTest {
      */
     @Test
     void testDeleteTypeCapteur() throws Exception {
+        // Arrange : création d'un type de capteur fictif
         TypeCapteur type = buildTypeCapteur("À Supprimer");
 
-        // POST : création du type de capteur
+        // Act : POST pour créer le type de capteur
         MvcResult post = mockMvc.perform(post("/api/typeCapteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(type)))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        // Conversion de la réponse en objet TypeCapteur
         TypeCapteur created = objectMapper.readValue(post.getResponse().getContentAsString(), TypeCapteur.class);
 
-        // DELETE : suppression du type de capteur
+        // Act : DELETE pour supprimer le type de capteur
         mockMvc.perform(delete("/api/typeCapteur/" + created.getId()))
                 .andExpect(status().isOk());
 
-        // Vérifie que l'élément n'existe plus
+        // Assert : vérification que le type de capteur n'existe plus
         mockMvc.perform(get("/api/typeCapteur/" + created.getId()))
                 .andExpect(status().isBadRequest());
     }

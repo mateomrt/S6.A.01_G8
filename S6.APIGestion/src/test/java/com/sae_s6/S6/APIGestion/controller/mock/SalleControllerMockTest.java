@@ -30,17 +30,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 public class SalleControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection du service SalleService simulé avec Mockito
     @MockitoBean
     private SalleService salleService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de toutes les salles via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -69,6 +74,8 @@ public class SalleControllerMockTest {
 
     /**
      * Teste la récupération d'une salle par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que la salle retournée correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -95,6 +102,8 @@ public class SalleControllerMockTest {
 
     /**
      * Teste la création d'une salle via l'API.
+     * Simule un appel POST avec une salle et vérifie que la salle créée correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -121,6 +130,8 @@ public class SalleControllerMockTest {
 
     /**
      * Teste la mise à jour d'une salle via l'API.
+     * Simule un appel PUT avec une salle modifiée et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -148,6 +159,8 @@ public class SalleControllerMockTest {
 
     /**
      * Teste la suppression d'une salle via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -173,6 +186,8 @@ public class SalleControllerMockTest {
 
     /**
      * Teste la recherche de salles par libellé via l'API.
+     * Simule un appel GET avec un paramètre de recherche et vérifie que les salles retournées correspondent.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test

@@ -30,17 +30,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 public class TypeSalleControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection du service TypeSalleService simulé avec Mockito
     @MockitoBean
     private TypeSalleService typeSalleService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de tous les types de salle via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -69,6 +74,8 @@ public class TypeSalleControllerMockTest {
 
     /**
      * Teste la récupération d'un type de salle par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que le type retourné correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -95,6 +102,8 @@ public class TypeSalleControllerMockTest {
 
     /**
      * Teste la création d'un type de salle via l'API.
+     * Simule un appel POST avec un type et vérifie que le type créé correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -121,6 +130,8 @@ public class TypeSalleControllerMockTest {
 
     /**
      * Teste la mise à jour d'un type de salle via l'API.
+     * Simule un appel PUT avec un type modifié et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -148,6 +159,8 @@ public class TypeSalleControllerMockTest {
 
     /**
      * Teste la suppression d'un type de salle via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test

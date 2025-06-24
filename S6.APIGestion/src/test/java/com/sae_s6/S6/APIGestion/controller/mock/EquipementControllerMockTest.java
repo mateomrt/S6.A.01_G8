@@ -29,17 +29,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EquipementControllerMockTest {
+
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection du service EquipementService simulé avec Mockito
     @MockitoBean
     private EquipementService equipementService;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * Teste la récupération de tous les équipements via l'API.
+     * Simule un appel GET et vérifie que les données retournées correspondent aux données fictives.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -68,6 +74,8 @@ public class EquipementControllerMockTest {
 
     /**
      * Teste la récupération d'un équipement par son identifiant via l'API.
+     * Simule un appel GET avec un identifiant et vérifie que l'équipement retourné correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -94,6 +102,8 @@ public class EquipementControllerMockTest {
 
     /**
      * Teste la création d'un équipement via l'API.
+     * Simule un appel POST avec un équipement et vérifie que l'équipement créé correspond.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -120,6 +130,8 @@ public class EquipementControllerMockTest {
 
     /**
      * Teste la mise à jour d'un équipement via l'API.
+     * Simule un appel PUT avec un équipement mis à jour et vérifie que les données retournées sont correctes.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test
@@ -147,6 +159,8 @@ public class EquipementControllerMockTest {
 
     /**
      * Teste la suppression d'un équipement via l'API.
+     * Simule un appel DELETE avec un identifiant et vérifie que le code HTTP retourné est correct.
+     * 
      * @throws Exception en cas d'erreur lors de l'appel HTTP simulé
      */
     @Test

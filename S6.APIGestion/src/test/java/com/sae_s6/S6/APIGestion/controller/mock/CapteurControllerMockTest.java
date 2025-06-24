@@ -27,9 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CapteurControllerMockTest {
 
+    // Injection de MockMvc pour simuler les appels HTTP
     @Autowired
     private MockMvc mockMvc;
 
+    // Injection d'ObjectMapper pour la conversion JSON
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -39,6 +41,7 @@ class CapteurControllerMockTest {
      * @return un objet Capteur prêt à être utilisé dans les tests
      */
     private Capteur buildCapteur(String libelle) {
+        // Création d'un capteur avec des valeurs par défaut
         Capteur capteur = new Capteur();
         capteur.setLibelleCapteur(libelle);
         capteur.setPositionXCapteur(10.0);
@@ -61,9 +64,10 @@ class CapteurControllerMockTest {
      */
     @Test
     void testPostCapteurAndGetById() throws Exception {
+        // Arrange : création d'un capteur fictif
         Capteur capteur = buildCapteur("Capteur Test");
 
-        // POST : création du capteur
+        // Act : POST pour créer le capteur
         MvcResult postResult = mockMvc.perform(post("/api/capteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(capteur)))
@@ -71,10 +75,10 @@ class CapteurControllerMockTest {
                 .andExpect(jsonPath("$.libelle_capteur").value("Capteur Test"))
                 .andReturn();
 
+        // Conversion de la réponse en objet Capteur
         Capteur saved = objectMapper.readValue(postResult.getResponse().getContentAsString(), Capteur.class);
-        System.out.println("Réponse POST = " + postResult.getResponse().getContentAsString());
 
-        // GET : récupération du capteur par son ID
+        // Act : GET pour récupérer le capteur par son ID
         mockMvc.perform(get("/api/capteur/" + saved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.libelle_capteur").value("Capteur Test"))
@@ -91,6 +95,7 @@ class CapteurControllerMockTest {
      */
     @Test
     void testGetAllCapteurs() throws Exception {
+        // Act : GET pour récupérer tous les capteurs
         mockMvc.perform(get("/api/capteur/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -103,20 +108,24 @@ class CapteurControllerMockTest {
      */
     @Test
     void testUpdateCapteur() throws Exception {
+        // Arrange : création d'un capteur fictif
         Capteur capteur = buildCapteur("Capteur Initial");
 
-        // Création du capteur
+        // Act : POST pour créer le capteur
         MvcResult post = mockMvc.perform(post("/api/capteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(capteur)))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        // Conversion de la réponse en objet Capteur
         Capteur created = objectMapper.readValue(post.getResponse().getContentAsString(), Capteur.class);
+
+        // Modification des valeurs du capteur
         created.setLibelleCapteur("Capteur Modifié");
         created.setPositionXCapteur(42.0);
 
-        // PUT : mise à jour du capteur
+        // Act : PUT pour mettre à jour le capteur
         mockMvc.perform(put("/api/capteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(created)))
@@ -131,22 +140,24 @@ class CapteurControllerMockTest {
      */
     @Test
     void testDeleteCapteur() throws Exception {
+        // Arrange : création d'un capteur fictif
         Capteur capteur = buildCapteur("Capteur à Supprimer");
 
-        // Création du capteur
+        // Act : POST pour créer le capteur
         MvcResult post = mockMvc.perform(post("/api/capteur/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(capteur)))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        // Conversion de la réponse en objet Capteur
         Capteur created = objectMapper.readValue(post.getResponse().getContentAsString(), Capteur.class);
 
-        // DELETE : suppression du capteur
+        // Act : DELETE pour supprimer le capteur
         mockMvc.perform(delete("/api/capteur/" + created.getId()))
                 .andExpect(status().isOk());
 
-        // Vérifie que le capteur n'existe plus
+        // Assert : vérification que le capteur n'existe plus
         mockMvc.perform(get("/api/capteur/" + created.getId()))
                 .andExpect(status().isBadRequest());
     }

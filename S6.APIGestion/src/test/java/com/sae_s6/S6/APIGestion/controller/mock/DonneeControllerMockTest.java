@@ -22,9 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class DonneeControllerMockTest {
 
+    // Mock du service DonneeService
     @Mock
     private DonneeService donneeService;
 
+    // Injection du contrôleur avec le mock
     @InjectMocks
     private DonneeController donneeController;
 
@@ -41,17 +43,18 @@ class DonneeControllerMockTest {
      */
     @Test
     void testGetAllDonnees() {
+        // Arrange : création de données fictives
         Donnee donnee1 = new Donnee(1, "Température", "°C");
         Donnee donnee2 = new Donnee(2, "Humidité", "%");
         List<Donnee> donnees = Arrays.asList(donnee1, donnee2);
 
-        // Simule le retour du service
+        // Simulation du service
         when(donneeService.getAllDonnees()).thenReturn(donnees);
 
-        // Appel du contrôleur
+        // Act : appel du contrôleur
         ResponseEntity<List<Donnee>> response = donneeController.getAllDonnees();
 
-        // Vérifications
+        // Assert : vérification des résultats
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(donnees, response.getBody());
         verify(donneeService, times(1)).getAllDonnees();
@@ -62,10 +65,13 @@ class DonneeControllerMockTest {
      */
     @Test
     void testGetAllDonnees_NullList() {
+        // Simulation du service retournant null
         when(donneeService.getAllDonnees()).thenReturn(null);
 
+        // Act : appel du contrôleur
         ResponseEntity<List<Donnee>> response = donneeController.getAllDonnees();
 
+        // Assert : vérification du code HTTP
         assertEquals(400, response.getStatusCodeValue());
     }
 
@@ -74,11 +80,16 @@ class DonneeControllerMockTest {
      */
     @Test
     void testGetDonneeById() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(1, "Pression", "Pa");
+
+        // Simulation du service
         when(donneeService.getDonneeById(1)).thenReturn(donnee);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.getDonneeById(1);
 
+        // Assert : vérification des résultats
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(donnee, response.getBody());
         verify(donneeService, times(1)).getDonneeById(1);
@@ -89,10 +100,13 @@ class DonneeControllerMockTest {
      */
     @Test
     void testGetDonneeById_NotFound() {
+        // Simulation du service retournant null
         when(donneeService.getDonneeById(1)).thenReturn(null);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.getDonneeById(1);
 
+        // Assert : vérification du code HTTP
         assertEquals(400, response.getStatusCodeValue());
     }
 
@@ -101,12 +115,17 @@ class DonneeControllerMockTest {
      */
     @Test
     void testSaveDonnee() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(null, "Vitesse", "m/s");
         Donnee savedDonnee = new Donnee(1, "Vitesse", "m/s");
+
+        // Simulation du service
         when(donneeService.saveDonnee(donnee)).thenReturn(savedDonnee);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.saveDonnee(donnee);
 
+        // Assert : vérification des résultats
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(savedDonnee, response.getBody());
         verify(donneeService, times(1)).saveDonnee(donnee);
@@ -117,11 +136,16 @@ class DonneeControllerMockTest {
      */
     @Test
     void testSaveDonnee_Failure() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(null, "Vitesse", "m/s");
+
+        // Simulation du service retournant null
         when(donneeService.saveDonnee(donnee)).thenReturn(null);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.saveDonnee(donnee);
 
+        // Assert : vérification du code HTTP
         assertEquals(400, response.getStatusCodeValue());
     }
 
@@ -130,11 +154,16 @@ class DonneeControllerMockTest {
      */
     @Test
     void testUpdateDonnee() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(1, "Vitesse", "m/s");
+
+        // Simulation du service
         when(donneeService.updateDonnee(donnee)).thenReturn(donnee);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.updateDonnee(donnee);
 
+        // Assert : vérification des résultats
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(donnee, response.getBody());
         verify(donneeService, times(1)).updateDonnee(donnee);
@@ -145,11 +174,16 @@ class DonneeControllerMockTest {
      */
     @Test
     void testUpdateDonnee_Failure() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(1, "Vitesse", "m/s");
+
+        // Simulation du service retournant null
         when(donneeService.updateDonnee(donnee)).thenReturn(null);
 
+        // Act : appel du contrôleur
         ResponseEntity<Donnee> response = donneeController.updateDonnee(donnee);
 
+        // Assert : vérification du code HTTP
         assertEquals(400, response.getStatusCodeValue());
     }
 
@@ -158,12 +192,17 @@ class DonneeControllerMockTest {
      */
     @Test
     void testDeleteDonneeById() {
+        // Arrange : création d'une donnée fictive
         Donnee donnee = new Donnee(1, "Pression", "Pa");
+
+        // Simulation du service
         when(donneeService.getDonneeById(1)).thenReturn(donnee);
         doNothing().when(donneeService).deleteDonneeById(1);
 
+        // Act : appel du contrôleur
         ResponseEntity<String> response = donneeController.deleteDonneeById(1);
 
+        // Assert : vérification des résultats
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("Donnée supprimée avec succès", response.getBody());
         verify(donneeService, times(1)).deleteDonneeById(1);
@@ -174,10 +213,13 @@ class DonneeControllerMockTest {
      */
     @Test
     void testDeleteDonneeById_NotFound() {
+        // Simulation du service retournant null
         when(donneeService.getDonneeById(1)).thenReturn(null);
 
+        // Act : appel du contrôleur
         ResponseEntity<String> response = donneeController.deleteDonneeById(1);
 
+        // Assert : vérification du code HTTP
         assertEquals(400, response.getStatusCodeValue());
         verify(donneeService, times(0)).deleteDonneeById(1);
     }
