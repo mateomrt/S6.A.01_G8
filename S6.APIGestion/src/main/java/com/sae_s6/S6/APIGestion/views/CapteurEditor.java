@@ -194,7 +194,7 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
     /**
      * Sauvegarde le capteur actuellement édité.
      */
-    void save() {
+    public void save() {
         try {
             binder.writeBean(capteur); // Valide et écrit les données dans l'objet capteur
             capteurService.saveCapteur(capteur);
