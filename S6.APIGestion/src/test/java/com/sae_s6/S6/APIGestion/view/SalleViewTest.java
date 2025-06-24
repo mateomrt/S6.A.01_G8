@@ -47,18 +47,26 @@ public class SalleViewTest {
      */
     @Test
     void editorVisibleWhenSalleSelected() {
+        // Récupère la grille contenant les salles
         Grid<Salle> grid = salleView.grid;
+
+        // Récupère la première salle de la grille
         Salle firstSalle = getFirstItem(grid);
         assertNotNull(firstSalle, "There should be at least one Salle in the grid");
 
+        // Récupère l'éditeur
         SalleEditor editor = salleView.editor;
 
+        // Vérifie que l'éditeur n'est pas visible au départ
         assertFalse(editor.isVisible(), "Editor should not be visible initially");
 
+        // Simule la sélection d'une salle dans la grille
         grid.asSingleSelect().setValue(firstSalle);
 
+        // Vérifie que l'éditeur devient visible
         assertTrue(editor.isVisible(), "Editor should be visible when a Salle is selected");
 
+        // Vérifie que les informations de la salle sélectionnée sont affichées dans l'éditeur
         logger.info("Salle in editor: " + editor.libelleSalle.getValue());
         assertEquals(firstSalle.getLibelleSalle(), editor.libelleSalle.getValue());
     }
@@ -68,6 +76,7 @@ public class SalleViewTest {
      */
     @Test
     void editorVisibleWhenAddNewButtonClicked() {
+        // Récupère l'éditeur
         SalleEditor editor = salleView.editor;
 
         // Vérifie que l'éditeur n'est pas visible au départ
