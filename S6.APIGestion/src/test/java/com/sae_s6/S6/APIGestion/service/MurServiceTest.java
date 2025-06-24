@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class MurServiceTest {
 
+    // Mocks des repositories nécessaires
     @Mock
     private MurRepo murRepo;
 
@@ -41,6 +42,7 @@ public class MurServiceTest {
     @Mock
     private TypeSalleRepo typeSalleRepo;
 
+    // Injection du service avec les mocks
     @InjectMocks
     private MurService murService;
 
@@ -57,12 +59,15 @@ public class MurServiceTest {
      */
     @Test
     public void testGetAllMurs() {
+        // Arrange : préparation des données fictives
         Mur mur1 = new Mur();
         Mur mur2 = new Mur();
         when(murRepo.findAll()).thenReturn(Arrays.asList(mur1, mur2));
 
+        // Act : appel du service
         List<Mur> result = murService.getAllMurs();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(murRepo, times(1)).findAll();
     }
@@ -72,12 +77,15 @@ public class MurServiceTest {
      */
     @Test
     public void testGetMurById_Found() {
+        // Arrange : préparation des données fictives
         Mur mur = new Mur();
         mur.setId(1);
         when(murRepo.findById(1)).thenReturn(Optional.of(mur));
 
+        // Act : appel du service
         Mur result = murService.getMurById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -87,10 +95,13 @@ public class MurServiceTest {
      */
     @Test
     public void testGetMurById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(murRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         Mur result = murService.getMurById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -99,32 +110,32 @@ public class MurServiceTest {
      */
     @Test
     public void testSaveMur() {
-        // Création des objets nécessaires
+        // Arrange : création des objets nécessaires
         Batiment batiment = new Batiment();
         batiment.setId(10);
-    
+
         TypeSalle typeSalle = new TypeSalle();
         typeSalle.setId(20);
-    
+
         Salle salle = new Salle();
         salle.setId(5);
         salle.setBatimentNavigation(batiment);
         salle.setTypeSalleNavigation(typeSalle);
-    
+
         Mur mur = new Mur();
         mur.setSalleNavigation(salle);
-    
+
         Mur savedMur = new Mur();
         savedMur.setId(100); // ID généré automatiquement
-    
+
         // Simulation des dépendances
         when(salleRepo.findById(5)).thenReturn(Optional.of(salle));
         when(murRepo.save(any(Mur.class))).thenReturn(savedMur);
-    
-        // Appel de la méthode à tester
+
+        // Act : appel du service
         Mur result = murService.saveMur(mur);
-    
-        // Vérifications
+
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(100, result.getId()); // Vérifie que l'ID généré est correct
         verify(salleRepo).findById(5);
@@ -136,6 +147,7 @@ public class MurServiceTest {
      */
     @Test
     public void testUpdateMur() {
+        // Arrange : préparation des données fictives
         Mur existingMur = new Mur();
         existingMur.setId(1);
         existingMur.setLibelleMur("Ancien titre");
@@ -146,8 +158,10 @@ public class MurServiceTest {
 
         when(murRepo.save(updatedMur)).thenReturn(updatedMur);
 
+        // Act : appel du service
         Mur result = murService.updateMur(updatedMur);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals("Nouveau titre", result.getLibelleMur());
         verify(murRepo, times(1)).save(updatedMur);
@@ -158,8 +172,10 @@ public class MurServiceTest {
      */
     @Test
     public void testDeleteMurById() {
-        Integer id = 1;
-        murService.deleteMurById(id);
-        verify(murRepo, times(1)).deleteById(id);
+        // Act : appel du service
+        murService.deleteMurById(1);
+
+        // Assert : vérification des résultats
+        verify(murRepo, times(1)).deleteById(1);
     }
 }

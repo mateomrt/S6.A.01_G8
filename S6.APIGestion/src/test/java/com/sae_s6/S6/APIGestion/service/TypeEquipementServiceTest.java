@@ -21,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TypeEquipementServiceTest {
 
+    // Mock du repository TypeEquipementRepo
     @Mock
     private TypeEquipementRepo typeEquipementRepo;
 
+    // Injection du service avec le mock
     @InjectMocks
     private TypeEquipementService typeEquipementService;
 
@@ -40,12 +42,15 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testGetAllTypeEquipements() {
+        // Arrange : préparation des données fictives
         TypeEquipement eq1 = new TypeEquipement();
         TypeEquipement eq2 = new TypeEquipement();
         when(typeEquipementRepo.findAll()).thenReturn(Arrays.asList(eq1, eq2));
 
+        // Act : appel du service
         List<TypeEquipement> result = typeEquipementService.getAllTypeEquipements();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(typeEquipementRepo, times(1)).findAll();
     }
@@ -55,12 +60,15 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testGetTypeEquipementById_Found() {
+        // Arrange : préparation des données fictives
         TypeEquipement eq = new TypeEquipement();
         eq.setId(1);
         when(typeEquipementRepo.findById(1)).thenReturn(Optional.of(eq));
 
+        // Act : appel du service
         TypeEquipement result = typeEquipementService.getTypeEquipementById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -70,10 +78,13 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testGetTypeEquipementById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(typeEquipementRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         TypeEquipement result = typeEquipementService.getTypeEquipementById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -82,12 +93,15 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testSaveTypeEquipement() {
+        // Arrange : préparation des données fictives
         TypeEquipement eq = new TypeEquipement();
         eq.setId(1);
         when(typeEquipementRepo.save(eq)).thenReturn(eq);
 
+        // Act : appel du service
         TypeEquipement result = typeEquipementService.saveTypeEquipement(eq);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(typeEquipementRepo, times(1)).save(eq);
@@ -98,12 +112,15 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testUpdateTypeEquipement() {
+        // Arrange : préparation des données fictives
         TypeEquipement eq = new TypeEquipement();
         eq.setId(1);
         when(typeEquipementRepo.save(eq)).thenReturn(eq);
 
+        // Act : appel du service
         TypeEquipement result = typeEquipementService.updateTypeEquipement(eq);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(typeEquipementRepo, times(1)).save(eq);
@@ -114,8 +131,13 @@ public class TypeEquipementServiceTest {
      */
     @Test
     public void testDeleteTypeEquipementById() {
+        // Arrange : préparation de l'identifiant
         Integer id = 1;
+
+        // Act : appel du service
         typeEquipementService.deleteTypeEquipementById(id);
+
+        // Assert : vérification des résultats
         verify(typeEquipementRepo, times(1)).deleteById(id);
     }
 }

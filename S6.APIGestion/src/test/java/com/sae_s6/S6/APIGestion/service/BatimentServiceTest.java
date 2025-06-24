@@ -21,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BatimentServiceTest {
 
+    // Mock du repository BatimentRepo
     @Mock
     private BatimentRepo batimentRepo;
 
+    // Injection du service avec le mock
     @InjectMocks
     private BatimentService batimentService;
 
@@ -40,12 +42,15 @@ public class BatimentServiceTest {
      */
     @Test
     void testGetAllBatiments() {
+        // Arrange : préparation des données fictives
         Batiment b1 = new Batiment();
         Batiment b2 = new Batiment();
         when(batimentRepo.findAll()).thenReturn(Arrays.asList(b1, b2));
 
+        // Act : appel du service
         List<Batiment> result = batimentService.getAllBatiments();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(batimentRepo, times(1)).findAll();
     }
@@ -55,12 +60,15 @@ public class BatimentServiceTest {
      */
     @Test
     void testGetBatimentById_Found() {
+        // Arrange : préparation des données fictives
         Batiment b = new Batiment();
         b.setId(1);
         when(batimentRepo.findById(1)).thenReturn(Optional.of(b));
 
+        // Act : appel du service
         Batiment result = batimentService.getBatimentById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -70,10 +78,13 @@ public class BatimentServiceTest {
      */
     @Test
     void testGetBatimentById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(batimentRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         Batiment result = batimentService.getBatimentById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -82,12 +93,15 @@ public class BatimentServiceTest {
      */
     @Test
     void testUpdateBatiment() {
+        // Arrange : préparation des données fictives
         Batiment b = new Batiment();
         b.setId(1);
         when(batimentRepo.save(b)).thenReturn(b);
 
+        // Act : appel du service
         Batiment result = batimentService.updateBatiment(b);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(batimentRepo, times(1)).save(b);
@@ -98,13 +112,16 @@ public class BatimentServiceTest {
      */
     @Test
     void testGetByLibelleBatimentContainingIgnoreCase() {
+        // Arrange : préparation des données fictives
         Batiment b1 = new Batiment();
         Batiment b2 = new Batiment();
         when(batimentRepo.findByLibelleBatimentContainingIgnoreCase("test"))
                 .thenReturn(Arrays.asList(b1, b2));
 
+        // Act : appel du service
         List<Batiment> result = batimentService.getByLibelleBatimentContainingIgnoreCase("test");
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(batimentRepo, times(1))
                 .findByLibelleBatimentContainingIgnoreCase("test");

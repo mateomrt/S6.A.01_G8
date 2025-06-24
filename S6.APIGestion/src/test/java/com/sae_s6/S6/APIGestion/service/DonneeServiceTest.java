@@ -21,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DonneeServiceTest {
 
+    // Mock du repository DonneeRepo
     @Mock
     private DonneeRepo donneeRepo;
 
+    // Injection du service avec le mock
     @InjectMocks
     private DonneeService donneeService;
 
@@ -40,12 +42,15 @@ public class DonneeServiceTest {
      */
     @Test
     public void testGetAllDonnees() {
+        // Arrange : préparation des données fictives
         Donnee donnee1 = new Donnee();
         Donnee donnee2 = new Donnee();
         when(donneeRepo.findAll()).thenReturn(Arrays.asList(donnee1, donnee2));
 
+        // Act : appel du service
         List<Donnee> result = donneeService.getAllDonnees();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(donneeRepo, times(1)).findAll();
     }
@@ -55,12 +60,15 @@ public class DonneeServiceTest {
      */
     @Test
     public void testGetDonneeById_Found() {
+        // Arrange : préparation des données fictives
         Donnee donnee = new Donnee();
         donnee.setId(1);
         when(donneeRepo.findById(1)).thenReturn(Optional.of(donnee));
 
+        // Act : appel du service
         Donnee result = donneeService.getDonneeById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -70,10 +78,13 @@ public class DonneeServiceTest {
      */
     @Test
     public void testGetDonneeById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(donneeRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         Donnee result = donneeService.getDonneeById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -82,12 +93,15 @@ public class DonneeServiceTest {
      */
     @Test
     public void testSaveDonnee() {
+        // Arrange : préparation des données fictives
         Donnee donnee = new Donnee();
         donnee.setId(1);
         when(donneeRepo.save(donnee)).thenReturn(donnee);
 
+        // Act : appel du service
         Donnee result = donneeService.saveDonnee(donnee);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(donneeRepo, times(1)).save(donnee);
@@ -98,12 +112,15 @@ public class DonneeServiceTest {
      */
     @Test
     public void testUpdateDonnee() {
+        // Arrange : préparation des données fictives
         Donnee donnee = new Donnee();
         donnee.setId(1);
         when(donneeRepo.save(donnee)).thenReturn(donnee);
 
+        // Act : appel du service
         Donnee result = donneeService.updateDonnee(donnee);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(donneeRepo, times(1)).save(donnee);
@@ -114,8 +131,13 @@ public class DonneeServiceTest {
      */
     @Test
     public void testDeleteDonneeById() {
+        // Arrange : préparation de l'identifiant
         Integer id = 1;
+
+        // Act : appel du service
         donneeService.deleteDonneeById(id);
+
+        // Assert : vérification des résultats
         verify(donneeRepo, times(1)).deleteById(id);
     }
 }

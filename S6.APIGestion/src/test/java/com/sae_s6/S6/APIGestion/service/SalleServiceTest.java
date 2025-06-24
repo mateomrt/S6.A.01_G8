@@ -28,6 +28,7 @@ import java.util.List;
  */
 public class SalleServiceTest {
 
+    // Mocks des repositories nécessaires
     @Mock
     private SalleRepo salleRepo;
 
@@ -37,6 +38,7 @@ public class SalleServiceTest {
     @Mock
     private TypeSalleRepo typeSalleRepo;
 
+    // Injection du service avec les mocks
     @InjectMocks
     private SalleService salleService;
 
@@ -53,12 +55,15 @@ public class SalleServiceTest {
      */
     @Test
     public void testGetAllSalles() {
+        // Arrange : préparation des données fictives
         Salle salle1 = new Salle();
         Salle salle2 = new Salle();
         when(salleRepo.findAll()).thenReturn(Arrays.asList(salle1, salle2));
 
+        // Act : appel du service
         List<Salle> salles = salleService.getAllSalles();
 
+        // Assert : vérification des résultats
         assertEquals(2, salles.size());
         verify(salleRepo, times(1)).findAll();
     }
@@ -68,12 +73,15 @@ public class SalleServiceTest {
      */
     @Test
     public void testGetSalleById_Found() {
+        // Arrange : préparation des données fictives
         Salle salle = new Salle();
         salle.setId(1);
         when(salleRepo.findById(1)).thenReturn(Optional.of(salle));
 
+        // Act : appel du service
         Salle result = salleService.getSalleById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -83,10 +91,13 @@ public class SalleServiceTest {
      */
     @Test
     public void testGetSalleById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(salleRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         Salle result = salleService.getSalleById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -95,7 +106,7 @@ public class SalleServiceTest {
      */
     @Test
     public void testSaveSalle() {
-        // Création des objets nécessaires
+        // Arrange : création des objets nécessaires
         Salle salle = new Salle();
         salle.setId(1);
 
@@ -116,10 +127,10 @@ public class SalleServiceTest {
         when(typeSalleRepo.findById(20)).thenReturn(Optional.of(typeSalle));
         when(salleRepo.save(any(Salle.class))).thenReturn(savedSalle);
 
-        // Appel de la méthode à tester
+        // Act : appel du service
         Salle result = salleService.saveSalle(salle);
 
-        // Vérifications
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(100, result.getId()); // Vérifie que l'ID généré est correct
         verify(batimentRepo).findById(10);
@@ -132,12 +143,15 @@ public class SalleServiceTest {
      */
     @Test
     public void testUpdateSalle() {
+        // Arrange : préparation des données fictives
         Salle salle = new Salle();
         salle.setId(1);
         when(salleRepo.save(salle)).thenReturn(salle);
 
+        // Act : appel du service
         Salle result = salleService.updateSalle(salle);
 
+        // Assert : vérification des résultats
         assertEquals(1, result.getId());
     }
 
@@ -146,7 +160,10 @@ public class SalleServiceTest {
      */
     @Test
     public void testDeleteSalleById() {
+        // Act : appel du service
         salleService.deleteSalleById(1);
+
+        // Assert : vérification des résultats
         verify(salleRepo, times(1)).deleteById(1);
     }
 }

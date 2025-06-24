@@ -23,8 +23,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour le service TypeCapteurDonneeService.
+ * Utilise Mockito pour simuler les repositories.
+ */
 public class TypeCapteurDonneeServiceTest {
 
+    // Mocks des repositories nécessaires
     @Mock
     private TypeCapteurDonneeRepo typeCapteurDonneeRepo;
 
@@ -34,6 +39,7 @@ public class TypeCapteurDonneeServiceTest {
     @Mock
     private TypeCapteurRepo typeCapteurRepo;
 
+    // Injection du service avec les mocks
     @InjectMocks
     private TypeCapteurDonneeService typeCapteurDonneeService;
 
@@ -50,12 +56,15 @@ public class TypeCapteurDonneeServiceTest {
      */
     @Test
     public void testGetAllTypeCapteurDonnee() {
+        // Arrange : préparation des données fictives
         TypeCapteurDonnee tcd1 = new TypeCapteurDonnee();
         TypeCapteurDonnee tcd2 = new TypeCapteurDonnee();
         when(typeCapteurDonneeRepo.findAll()).thenReturn(Arrays.asList(tcd1, tcd2));
 
+        // Act : appel du service
         List<TypeCapteurDonnee> result = typeCapteurDonneeService.getAllTypeCapteurDonnee();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(typeCapteurDonneeRepo, times(1)).findAll();
     }
@@ -65,13 +74,16 @@ public class TypeCapteurDonneeServiceTest {
      */
     @Test
     public void testGetTypeCapteurDonneeById_Found() {
+        // Arrange : préparation des données fictives
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonnee tcd = new TypeCapteurDonnee();
         tcd.setId(id);
         when(typeCapteurDonneeRepo.findById(id)).thenReturn(Optional.of(tcd));
 
+        // Act : appel du service
         TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(id, result.getId());
     }
@@ -81,11 +93,14 @@ public class TypeCapteurDonneeServiceTest {
      */
     @Test
     public void testGetTypeCapteurDonneeById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         when(typeCapteurDonneeRepo.findById(id)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         TypeCapteurDonnee result = typeCapteurDonneeService.getTypeCapteurDonneeById(id);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -94,6 +109,7 @@ public class TypeCapteurDonneeServiceTest {
      */
     @Test
     public void testSaveTypeCapteurDonnee() {
+        // Arrange : préparation des données fictives
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         Donnee donnee = new Donnee();
         donnee.setId(1);
@@ -109,8 +125,10 @@ public class TypeCapteurDonneeServiceTest {
         when(typeCapteurRepo.findById(2)).thenReturn(Optional.of(typeCapteur));
         when(typeCapteurDonneeRepo.save(tcd)).thenReturn(tcd);
 
+        // Act : appel du service
         TypeCapteurDonnee result = typeCapteurDonneeService.saveTypeCapteurDonnee(tcd);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(id, result.getId());
         verify(typeCapteurDonneeRepo, times(1)).save(tcd);
@@ -121,7 +139,7 @@ public class TypeCapteurDonneeServiceTest {
      */
     @Test
     void updateTypeCapteurDonnee_WhenIdChanged_ShouldDeleteOldAndSaveNew() {
-        // Arrange
+        // Arrange : préparation des données fictives
         TypeCapteurDonneeEmbedId oldId = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonneeEmbedId newId = new TypeCapteurDonneeEmbedId(2, 1);
 
@@ -139,10 +157,10 @@ public class TypeCapteurDonneeServiceTest {
         when(typeCapteurRepo.findById(1)).thenReturn(Optional.of(typeCapteur));
         when(typeCapteurDonneeRepo.save(any())).thenReturn(newEntity);
 
-        // Act
+        // Act : appel du service
         TypeCapteurDonnee result = typeCapteurDonneeService.updateTypeCapteurDonnee(oldId, newEntity);
 
-        // Assert
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(2, result.getId().getIdDonnee());
         assertEquals(1, result.getId().getIdTypeCapteur());
@@ -154,18 +172,18 @@ public class TypeCapteurDonneeServiceTest {
      * Teste la suppression d'une association TypeCapteurDonnee par son identifiant.
      */
     @Test
-        public void testDeleteTypeCapteurDonneeById() {
-            // Arrange
+    public void testDeleteTypeCapteurDonneeById() {
+        // Arrange : préparation des données fictives
         TypeCapteurDonneeEmbedId id = new TypeCapteurDonneeEmbedId(1, 2);
         TypeCapteurDonnee typeCapteurDonnee = new TypeCapteurDonnee();
         typeCapteurDonnee.setId(id);
 
         when(typeCapteurDonneeRepo.findById(id)).thenReturn(Optional.of(typeCapteurDonnee));
 
-        // Act
+        // Act : appel du service
         typeCapteurDonneeService.deleteTypeCapteurDonneeById(id);
 
-        // Assert
+        // Assert : vérification des résultats
         verify(typeCapteurDonneeRepo, times(1)).deleteById(id);
     }
 }

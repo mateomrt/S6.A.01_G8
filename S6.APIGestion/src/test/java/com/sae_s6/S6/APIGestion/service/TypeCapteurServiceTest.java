@@ -21,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TypeCapteurServiceTest {
 
+    // Mock du repository TypeCapteurRepo
     @Mock
     private TypeCapteurRepo typeCapteurRepo;
 
+    // Injection du service avec le mock
     @InjectMocks
     private TypeCapteurService typeCapteurService;
 
@@ -40,12 +42,15 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testGetAllTypeCapteurs() {
+        // Arrange : préparation des données fictives
         TypeCapteur capteur1 = new TypeCapteur();
         TypeCapteur capteur2 = new TypeCapteur();
         when(typeCapteurRepo.findAll()).thenReturn(Arrays.asList(capteur1, capteur2));
 
+        // Act : appel du service
         List<TypeCapteur> result = typeCapteurService.getAllTypeCapteurs();
 
+        // Assert : vérification des résultats
         assertEquals(2, result.size());
         verify(typeCapteurRepo, times(1)).findAll();
     }
@@ -55,12 +60,15 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testGetTypeCapteurById_Found() {
+        // Arrange : préparation des données fictives
         TypeCapteur capteur = new TypeCapteur();
         capteur.setId(1);
         when(typeCapteurRepo.findById(1)).thenReturn(Optional.of(capteur));
 
+        // Act : appel du service
         TypeCapteur result = typeCapteurService.getTypeCapteurById(1);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
     }
@@ -70,10 +78,13 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testGetTypeCapteurById_NotFound() {
+        // Arrange : simulation d'un résultat vide
         when(typeCapteurRepo.findById(1)).thenReturn(Optional.empty());
 
+        // Act : appel du service
         TypeCapteur result = typeCapteurService.getTypeCapteurById(1);
 
+        // Assert : vérification des résultats
         assertNull(result);
     }
 
@@ -82,12 +93,15 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testSaveTypeCapteur() {
+        // Arrange : préparation des données fictives
         TypeCapteur capteur = new TypeCapteur();
         capteur.setId(1);
         when(typeCapteurRepo.save(capteur)).thenReturn(capteur);
 
+        // Act : appel du service
         TypeCapteur result = typeCapteurService.saveTypeCapteur(capteur);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(typeCapteurRepo, times(1)).save(capteur);
@@ -98,12 +112,15 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testUpdateTypeCapteur() {
+        // Arrange : préparation des données fictives
         TypeCapteur capteur = new TypeCapteur();
         capteur.setId(1);
         when(typeCapteurRepo.save(capteur)).thenReturn(capteur);
 
+        // Act : appel du service
         TypeCapteur result = typeCapteurService.updateTypeCapteur(capteur);
 
+        // Assert : vérification des résultats
         assertNotNull(result);
         assertEquals(1, result.getId());
         verify(typeCapteurRepo, times(1)).save(capteur);
@@ -114,8 +131,13 @@ public class TypeCapteurServiceTest {
      */
     @Test
     public void testDeleteTypeCapteurById() {
+        // Arrange : préparation de l'identifiant
         Integer id = 1;
+
+        // Act : appel du service
         typeCapteurService.deleteTypeCapteurById(id);
+
+        // Assert : vérification des résultats
         verify(typeCapteurRepo, times(1)).deleteById(id);
     }
 }
