@@ -95,7 +95,6 @@ public class EquipementControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
         List<Equipement> resultat = Arrays.asList(response.getBody());
-        resultat.sort(Comparator.comparing(Equipement::getLibelleEquipement));
         assertThat(resultat.get(0).getLibelleEquipement()).isEqualTo("PC principal");
         assertThat(resultat.get(1).getLibelleEquipement()).isEqualTo("Vidéo projecteur");
     }
