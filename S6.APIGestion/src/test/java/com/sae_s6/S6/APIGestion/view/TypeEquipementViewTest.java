@@ -17,20 +17,31 @@ import com.sae_s6.S6.APIGestion.views.TypeEquipementView;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
-
+/**
+ * Classe de test unitaire pour la vue TypeEquipementView.
+ * Vérifie le bon fonctionnement de l'interface utilisateur liée aux types d'équipements.
+ */
 @SpringBootTest
 public class TypeEquipementViewTest {
+
+    // Injection de la vue TypeEquipementView
     @Autowired
     private TypeEquipementView typeEquipementView;
 
+    // Logger pour afficher des informations pendant les tests
     Logger logger = Logger.getLogger(TypeEquipementViewTest.class.getName());
 
+    /**
+     * Teste si la vue TypeEquipementView est correctement chargée.
+     */
     @Test
     void testTypeEquipementViewLoaded() {
-       
-        assert typeEquipementView != null;
+        assertNotNull(typeEquipementView, "TypeEquipementView should be loaded by Spring");
     }
 
+    /**
+     * Teste si l'éditeur s'affiche correctement lorsqu'un type d'équipement est sélectionné.
+     */
     @Test
     void editorAfficheQuandTypeEquipementSelectionne() {
         Grid<TypeEquipement> grid = typeEquipementView.grid;
@@ -47,6 +58,9 @@ public class TypeEquipementViewTest {
         assertEquals(firstTypeEquipement.getLibelleTypeEquipement(), editor.libelleTypeEquipement.getValue());
     }
 
+    /**
+     * Teste l'ajout d'un nouveau type d'équipement via l'éditeur.
+     */
     @Test
     void editorAfficheQuandNewTypeEquipementClicked() {
         TypeEquipementEditor editor = typeEquipementView.editor;
@@ -69,14 +83,23 @@ public class TypeEquipementViewTest {
         assertEquals("Nouveau TypeEquipement Test", lastTypeEquipement.getLibelleTypeEquipement());
     }
 
+    /**
+     * Méthode utilitaire pour récupérer le premier élément de la grille.
+     * @param grid Grille contenant les types d'équipements
+     * @return Premier type d'équipement de la grille
+     */
     private TypeEquipement getFirstItem(Grid<TypeEquipement> grid) {
         return ((ListDataProvider<TypeEquipement>) grid.getDataProvider()).getItems().iterator().next();
     }
 
+    /**
+     * Méthode utilitaire pour récupérer le dernier élément de la grille.
+     * @param grid Grille contenant les types d'équipements
+     * @return Dernier type d'équipement de la grille
+     */
     private TypeEquipement getLastItem(Grid<TypeEquipement> grid) {
         Collection<TypeEquipement> typeEquipements = ((ListDataProvider<TypeEquipement>) grid.getDataProvider()).getItems();
         List<TypeEquipement> typeEquipementList = new ArrayList<>(typeEquipements);
         return typeEquipementList.get(typeEquipementList.size() - 1);
     }
-
 }

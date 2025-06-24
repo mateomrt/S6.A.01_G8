@@ -22,19 +22,31 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test unitaire pour la vue EquipementView.
+ * Vérifie le bon fonctionnement de l'interface utilisateur liée aux équipements.
+ */
 @SpringBootTest
 public class EquipementViewTest {
 
+    // Injection de la vue EquipementView
     @Autowired
     private EquipementView equipementView;
 
+    // Logger pour afficher des informations pendant les tests
     Logger logger = Logger.getLogger(EquipementViewTest.class.getName());
 
+    /**
+     * Teste si la vue EquipementView est correctement chargée.
+     */
     @Test
     void testEquipementViewLoaded() {
         assertNotNull(equipementView, "EquipementView should be loaded by Spring");
     }
 
+    /**
+     * Teste si l'éditeur s'affiche correctement lorsqu'un équipement est sélectionné.
+     */
     @Test
     void editorVisibleWhenEquipementSelected() {
         Grid<Equipement> grid = equipementView.grid;
@@ -57,18 +69,21 @@ public class EquipementViewTest {
         assertEquals(firstEquipement.getLibelleEquipement(), editor.libelleEquipement.getValue());
     }
 
+    /**
+     * Teste l'ajout d'un nouvel équipement via l'éditeur.
+     */
     @Test
     void editorVisibleWhenAddNewButtonClicked() {
         EquipementEditor editor = (EquipementEditor) equipementView.getChildren()
                 .filter(component -> component instanceof EquipementEditor)
                 .findFirst()
                 .orElse(null);
-    
+
         assertNotNull(editor, "EquipementEditor should be present");
         assertFalse(editor.isVisible(), "Editor should not be visible initially");
-    
+
         equipementView.getAddNewBtn().click();
-    
+
         assertTrue(editor.isVisible(), "Editor should be visible when Add New Button is clicked");
 
         Collection<Equipement> items = ((ListDataProvider<Equipement>) equipementView.grid.getDataProvider()).getItems();
@@ -109,15 +124,22 @@ public class EquipementViewTest {
         assertEquals(murTest, lastEquipement.getMurNavigation(), "Le mur de l'équipement ajouté devrait correspondre");
         assertEquals(salleTest, lastEquipement.getSalleNavigation(), "La salle de l'équipement ajouté devrait correspondre");
         assertEquals(typeEquipementTest, lastEquipement.getTypeEquipementNavigation(), "Le type d'équipement de l'équipement ajouté devrait correspondre");
-            
-
     }
-    
 
+    /**
+     * Méthode utilitaire pour récupérer le premier élément de la grille.
+     * @param grid Grille contenant les équipements
+     * @return Premier équipement de la grille
+     */
     private Equipement getFirstItem(Grid<Equipement> grid) {
         return ((ListDataProvider<Equipement>) grid.getDataProvider()).getItems().iterator().next();
     }
 
+    /**
+     * Méthode utilitaire pour récupérer le dernier élément de la grille.
+     * @param grid Grille contenant les équipements
+     * @return Dernier équipement de la grille
+     */
     private Equipement getLastItem(Grid<Equipement> grid) {
         Collection<Equipement> equipements = ((ListDataProvider<Equipement>) grid.getDataProvider()).getItems();
         List<Equipement> equipementList = new ArrayList<>(equipements);

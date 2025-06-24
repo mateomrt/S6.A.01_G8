@@ -37,7 +37,7 @@ public class DonneeEditor extends VerticalLayout implements KeyNotifier {
      * Champs de texte pour les propriétés de la donnée.
      */
     public TextField libelleDonnee = new TextField("Libellé donnée");
-    TextField unite = new TextField("Unité");
+    public TextField unite = new TextField("Unité");
 
     /**
      * Boutons pour les actions de sauvegarde, annulation et suppression.
