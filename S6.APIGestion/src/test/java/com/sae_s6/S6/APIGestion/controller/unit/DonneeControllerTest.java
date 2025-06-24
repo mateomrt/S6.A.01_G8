@@ -72,11 +72,10 @@ public class DonneeControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().length).isGreaterThan(0);
         List<Donnee> resultat = Arrays.asList(response.getBody());
-        resultat.sort(Comparator.comparing(Donnee::getLibelleDonnee));
-        assertThat(resultat.get(0).getLibelleDonnee()).isEqualTo("Humidité relative");
-        assertThat(resultat.get(0).getUnite()).isEqualTo("%");
-        assertThat(resultat.get(1).getLibelleDonnee()).isEqualTo("Température");
-        assertThat(resultat.get(1).getUnite()).isEqualTo("°C");
+        assertThat(resultat.get(0).getLibelleDonnee()).isEqualTo("Température");
+        assertThat(resultat.get(0).getUnite()).isEqualTo("°C");
+        assertThat(resultat.get(1).getLibelleDonnee()).isEqualTo("Humidité relative");
+        assertThat(resultat.get(1).getUnite()).isEqualTo("%");
     }
 
     /**
