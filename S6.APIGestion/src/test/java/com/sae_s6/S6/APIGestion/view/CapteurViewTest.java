@@ -28,30 +28,40 @@ import com.vaadin.flow.data.provider.Query;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-@SpringBootTest
 /**
- * Test class for the CapteurView component.
- * Voir : https://vaadin.com/docs/v23/tutorial/unit-and-integration-testing
+ * Classe de test unitaire pour la vue CapteurView.
+ * Vérifie le bon fonctionnement de l'interface utilisateur liée aux capteurs.
  */
+@SpringBootTest
 public class CapteurViewTest {
+
+    /**
+     * Initialise l'environnement de test avant chaque test.
+     */
     @BeforeEach
     void setUp() {
-    UI ui = new UI();
-    UI.setCurrent(ui);
-}
+        UI ui = new UI();
+        UI.setCurrent(ui);
+    }
 
+    // Injection de la vue CapteurView
     @Autowired
     private CapteurView capteurView;
 
+    // Logger pour afficher des informations pendant les tests
     Logger logger = Logger.getLogger(CapteurViewTest.class.getName());
 
+    /**
+     * Teste si la vue CapteurView est correctement chargée.
+     */
     @Test
     void testCapteurView() {
-        // This test will check if the CapteurView bean is loaded correctly
-        // and if it can be instantiated without any issues.
         assert capteurView != null;
     }
 
+    /**
+     * Teste si l'éditeur s'affiche correctement lorsqu'un capteur est sélectionné.
+     */
     @Test
     void editorAfficheQuandCapteurSelectionne() {
         Grid<Capteur> grid = capteurView.grid;
@@ -70,96 +80,110 @@ public class CapteurViewTest {
         assertEquals(firstCapteur.getLibelleCapteur(), editor.libelleCapteur.getValue());
     }
 
+    /**
+     * Teste l'ajout d'un nouveau capteur via l'éditeur.
+     */
     @Test
-void editorAfficheQuandNewCapteurClicked() {
-    CapteurEditor editor = capteurView.editor;
+    void editorAfficheQuandNewCapteurClicked() {
+        CapteurEditor editor = capteurView.editor;
 
-    // 1. Vérifier l'état initial
-    assertFalse(editor.isVisible(), "Editor should not be visible initially");
+        // Vérifie l'état initial
+        assertFalse(editor.isVisible(), "Editor should not be visible initially");
 
-    // 2. Cliquer sur le bouton "Add new"
-    capteurView.getAddNewBtn().click();
+        // Simule un clic sur le bouton "Ajouter un nouveau capteur"
+        capteurView.getAddNewBtn().click();
 
-    // 3. Vérifications après affichage du formulaire
-    assertTrue(editor.isVisible(), "Editor should be visible after clicking the button");
-    assertEquals("", editor.libelleCapteur.getValue());
-    assertEquals("", editor.positionXCapteur.getValue());
-    assertEquals("", editor.positionYCapteur.getValue());
-    assertNull(editor.murComboBox.getValue());
-    assertNull(editor.salleComboBox.getValue());
-    assertNull(editor.typeCapteurComboBox.getValue());
+        // Vérifie que l'éditeur devient visible
+        assertTrue(editor.isVisible(), "Editor should be visible after clicking Add New Button");
 
-    // 4. Sauvegarder le nombre de capteurs avant ajout
-    Collection<Capteur> capteursAvant = ((ListDataProvider<Capteur>) capteurView.grid.getDataProvider()).getItems();
-    int nombreCapteursAvant = capteursAvant.size();
+        // Vérifie que les champs sont vides ou initialisés
+        assertEquals("", editor.libelleCapteur.getValue());
+        assertEquals("", editor.positionXCapteur.getValue());
+        assertEquals("", editor.positionYCapteur.getValue());
+        assertNull(editor.murComboBox.getValue());
+        assertNull(editor.salleComboBox.getValue());
+        assertNull(editor.typeCapteurComboBox.getValue());
 
-    // 5. Récupérer les valeurs pour les ComboBox
-    List<Mur> murs = new ArrayList<>(editor.murComboBox.getDataProvider().fetch(new Query<>()).toList());
-    List<TypeCapteur> typeCapteurs = new ArrayList<>(editor.typeCapteurComboBox.getDataProvider().fetch(new Query<>()).toList());
-    List<Salle> salles = new ArrayList<>(editor.salleComboBox.getDataProvider().fetch(new Query<>()).toList());
+        // Sauvegarde le nombre de capteurs avant ajout
+        Collection<Capteur> capteursAvant = ((ListDataProvider<Capteur>) capteurView.grid.getDataProvider()).getItems();
+        int nombreCapteursAvant = capteursAvant.size();
 
-    assertFalse(murs.isEmpty(), "Aucun mur disponible pour le test");
-    assertFalse(typeCapteurs.isEmpty(), "Aucun type de capteur disponible pour le test");
-    assertFalse(salles.isEmpty(), "Aucune salle disponible pour le test");
+        // Récupère les valeurs pour les ComboBox
+        List<Mur> murs = new ArrayList<>(editor.murComboBox.getDataProvider().fetch(new Query<>()).toList());
+        List<TypeCapteur> typeCapteurs = new ArrayList<>(editor.typeCapteurComboBox.getDataProvider().fetch(new Query<>()).toList());
+        List<Salle> salles = new ArrayList<>(editor.salleComboBox.getDataProvider().fetch(new Query<>()).toList());
 
-    // 6. Sélectionner les premiers éléments valides
-    Mur murTest = murs.get(0);
-    TypeCapteur typeCapteurTest = typeCapteurs.get(0);
-    Salle salleTest = salles.get(0);
+        assertFalse(murs.isEmpty(), "Aucun mur disponible pour le test");
+        assertFalse(typeCapteurs.isEmpty(), "Aucun type de capteur disponible pour le test");
+        assertFalse(salles.isEmpty(), "Aucune salle disponible pour le test");
 
-    // 7. Remplir le formulaire
-    editor.libelleCapteur.setValue("Nouveau Capteur Test");
-    editor.murComboBox.setValue(murTest);
-    editor.positionXCapteur.setValue(String.valueOf(10));
-    editor.positionYCapteur.setValue(String.valueOf(20));
-    editor.salleComboBox.setValue(salleTest);
-    editor.typeCapteurComboBox.setValue(typeCapteurTest);
+        // Sélectionne les premiers éléments valides
+        Mur murTest = murs.get(0);
+        TypeCapteur typeCapteurTest = typeCapteurs.get(0);
+        Salle salleTest = salles.get(0);
 
-    // 8. Clic sur le bouton save
-    editor.save.click();
+        // Remplit le formulaire
+        editor.libelleCapteur.setValue("Nouveau Capteur Test");
+        editor.murComboBox.setValue(murTest);
+        editor.positionXCapteur.setValue(String.valueOf(10));
+        editor.positionYCapteur.setValue(String.valueOf(20));
+        editor.salleComboBox.setValue(salleTest);
+        editor.typeCapteurComboBox.setValue(typeCapteurTest);
 
-    // 9. Attendre que le grid soit mis à jour (si nécessaire, à adapter si les updates sont async ou via listeners)
-    try {
-        Thread.sleep(200); 
-    } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+        // Clic sur le bouton save
+        editor.save.click();
+
+        // Attendre que le grid soit mis à jour
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Vérifie que le capteur a bien été ajouté
+        Collection<Capteur> capteursApres = ((ListDataProvider<Capteur>) capteurView.grid.getDataProvider()).getItems();
+        int nombreCapteursApres = capteursApres.size();
+
+        assertEquals(nombreCapteursAvant + 1, nombreCapteursApres, "Le capteur n'a pas été ajouté");
+
+        Capteur lastCapteur = getLastItem(capteurView.grid);
+        assertEquals("Nouveau Capteur Test", lastCapteur.getLibelleCapteur());
+        assertEquals(10.0, lastCapteur.getPositionXCapteur());
+        assertEquals(20.0, lastCapteur.getPositionYCapteur());
+        assertEquals(murTest, lastCapteur.getMurNavigation());
+        assertEquals(salleTest, lastCapteur.getSalleNavigation());
+        assertEquals(typeCapteurTest, lastCapteur.getTypeCapteurNavigation());
     }
 
-    // 10. Vérifier que le capteur a bien été ajouté
-    Collection<Capteur> capteursApres = ((ListDataProvider<Capteur>) capteurView.grid.getDataProvider()).getItems();
-    int nombreCapteursApres = capteursApres.size();
+    /**
+     * Méthode utilitaire pour récupérer le dernier élément de la grille.
+     * @param grid Grille contenant les capteurs
+     * @return Dernier capteur de la grille
+     */
+    private Capteur getLastItem(Grid<Capteur> grid) {
+        Collection<Capteur> capteurs = ((ListDataProvider<Capteur>) grid.getDataProvider()).getItems();
+        return new ArrayList<>(capteurs).get(capteurs.size() - 1);
+    }
 
-    assertEquals(nombreCapteursAvant +1, nombreCapteursApres, "Le capteur n'a pas été ajouté");
-
-    Capteur lastCapteur = getLastItem(capteurView.grid);
-    assertEquals("Nouveau Capteur Test", lastCapteur.getLibelleCapteur());
-    assertEquals(10.0, lastCapteur.getPositionXCapteur());
-    assertEquals(20.0, lastCapteur.getPositionYCapteur());
-    assertEquals(murTest, lastCapteur.getMurNavigation());
-    assertEquals(salleTest, lastCapteur.getSalleNavigation());
-    assertEquals(typeCapteurTest, lastCapteur.getTypeCapteurNavigation());
-}
-
-// Méthode utilitaire
-private Capteur getLastItem(Grid<Capteur> grid) {
-    Collection<Capteur> capteurs = ((ListDataProvider<Capteur>) grid.getDataProvider()).getItems();
-    return new ArrayList<>(capteurs).get(capteurs.size() - 1);
-}
-
-
+    /**
+     * Méthode utilitaire pour récupérer le premier élément de la grille.
+     * @param grid Grille contenant les capteurs
+     * @return Premier capteur de la grille
+     */
     private Capteur getFirstItem(Grid<Capteur> grid) {
         return ((ListDataProvider<Capteur>) grid.getDataProvider()).getItems().iterator().next();
     }
 
+    /**
+     * Teste la fonctionnalité de filtre.
+     */
     @Test
     public void testFilterFunctionality() {
-        // Test the filter functionality
         try {
             Field filterField = CapteurView.class.getDeclaredField("filter");
             filterField.setAccessible(true);
             ((com.vaadin.flow.component.textfield.TextField) filterField.get(capteurView)).setValue("test");
-            
-            // Verify that the listCapteurs method is called with the filter value
+
             assertNotNull(((com.vaadin.flow.component.textfield.TextField) filterField.get(capteurView)).getValue());
             assertEquals("test", ((com.vaadin.flow.component.textfield.TextField) filterField.get(capteurView)).getValue());
         } catch (Exception e) {
@@ -167,11 +191,13 @@ private Capteur getLastItem(Grid<Capteur> grid) {
         }
     }
 
+    /**
+     * Teste les colonnes de la grille.
+     */
     @Test
     public void testGridColumns() {
         Grid<Capteur> grid = capteurView.grid;
-        
-        // Verify that all expected columns are present
+
         assertNotNull(grid.getColumnByKey("id"));
         assertNotNull(grid.getColumnByKey("libelleCapteur"));
         assertNotNull(grid.getColumnByKey("positionXCapteur"));
@@ -181,15 +207,20 @@ private Capteur getLastItem(Grid<Capteur> grid) {
         assertNotNull(grid.getColumnByKey("typeCapteurDescription"));
     }
 
+    /**
+     * Teste la largeur des colonnes de la grille.
+     */
     @Test
     public void testGridColumnWidths() {
         Grid<Capteur> grid = capteurView.grid;
-        
-        // Test that the ID column has the correct width
+
         assertEquals("50px", grid.getColumnByKey("id").getWidth());
         assertEquals(0, grid.getColumnByKey("id").getFlexGrow());
     }
 
+    /**
+     * Teste le placeholder du filtre.
+     */
     @Test
     public void testFilterPlaceholder() {
         try {
@@ -201,6 +232,9 @@ private Capteur getLastItem(Grid<Capteur> grid) {
         }
     }
 
+    /**
+     * Teste le texte du bouton "Ajouter un capteur".
+     */
     @Test
     public void testAddNewButtonText() {
         try {
@@ -211,6 +245,11 @@ private Capteur getLastItem(Grid<Capteur> grid) {
             fail("Erreur lors du test du bouton: " + e.getMessage());
         }
     }
+
+    /**
+     * Récupère l'éditeur depuis la vue.
+     * @return Instance de CapteurEditor
+     */
     private CapteurEditor getEditorFromView() {
         try {
             Field editorField = CapteurView.class.getDeclaredField("editor");

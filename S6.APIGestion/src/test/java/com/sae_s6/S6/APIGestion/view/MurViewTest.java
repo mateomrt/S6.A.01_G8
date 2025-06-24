@@ -43,18 +43,26 @@ public class MurViewTest {
      */
     @Test
     void editorVisibleWhenMurSelected() {
+        // Récupère la grille contenant les murs
         Grid<Mur> grid = murView.grid;
+
+        // Récupère le premier mur de la grille
         Mur firstMur = getFirstItem(grid);
         assertNotNull(firstMur, "There should be at least one Mur in the grid");
 
+        // Récupère l'éditeur
         MurEditor editor = murView.editor;
 
+        // Vérifie que l'éditeur n'est pas visible au départ
         assertFalse(editor.isVisible(), "Editor should not be visible initially");
 
+        // Simule la sélection d'un mur dans la grille
         grid.asSingleSelect().setValue(firstMur);
 
+        // Vérifie que l'éditeur devient visible
         assertTrue(editor.isVisible(), "Editor should be visible when a Mur is selected");
 
+        // Vérifie que les informations du mur sélectionné sont affichées dans l'éditeur
         logger.info("Mur in editor: " + editor.libelleMur.getValue());
         assertEquals(firstMur.getLibelleMur(), editor.libelleMur.getValue());
     }
@@ -64,12 +72,16 @@ public class MurViewTest {
      */
     @Test
     void editorVisibleWhenAddNewButtonClicked() {
+        // Récupère l'éditeur
         MurEditor editor = murView.editor;
 
+        // Vérifie que l'éditeur n'est pas visible au départ
         assertFalse(editor.isVisible(), "Editor should not be visible initially");
 
+        // Simule un clic sur le bouton "Ajouter un nouveau mur"
         murView.getAddNewBtn().click();
 
+        // Vérifie que l'éditeur devient visible
         assertTrue(editor.isVisible(), "Editor should be visible when Add New Button is clicked");
     }
 
