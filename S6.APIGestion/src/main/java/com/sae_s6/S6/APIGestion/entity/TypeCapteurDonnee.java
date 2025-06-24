@@ -1,6 +1,5 @@
 package com.sae_s6.S6.APIGestion.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
