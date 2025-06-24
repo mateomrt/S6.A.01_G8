@@ -70,6 +70,7 @@ public class DonneeViewTest {
         assertEquals("", editor.libelleDonnee.getValue(), "New Donnee should have empty libelle");
     
         editor.libelleDonnee.setValue("Humidité relative");
+        editor.unite.setValue("%");
         editor.save.click();
 
         // Vérifier que la nouvelle Donnee est bien dans la grille
