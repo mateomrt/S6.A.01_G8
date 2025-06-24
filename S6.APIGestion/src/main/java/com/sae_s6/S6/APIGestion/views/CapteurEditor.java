@@ -245,6 +245,7 @@ public class CapteurEditor extends VerticalLayout implements KeyNotifier {
         }
 
         binder.setBean(capteur);
+        binder.readBean(capteur);
         setVisible(true);
         libelleCapteur.focus();
     }

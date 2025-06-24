@@ -48,22 +48,22 @@ public class EquipementEditor extends VerticalLayout implements KeyNotifier {
      * Champs de texte pour les propriétés de l'équipement.
      */
     public TextField libelleEquipement = new TextField("Libellé équipement");
-    TextField hauteur = new TextField("Hauteur");
-    TextField largeur = new TextField("Largeur");
-    TextField position_x = new TextField("Position X");
-    TextField position_y = new TextField("Position Y");
+    public TextField hauteur = new TextField("Hauteur");
+    public TextField largeur = new TextField("Largeur");
+    public TextField position_x = new TextField("Position X");
+    public TextField position_y = new TextField("Position Y");
 
     /**
      * ComboBox pour sélectionner les relations associées à l'équipement.
      */
-    ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
-    ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
-    ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
+    public ComboBox<Mur> MurComboBox = new ComboBox<>("Mur");
+    public ComboBox<Salle> SalleComboBox = new ComboBox<>("Salle");
+    public ComboBox<TypeEquipement> TypeEquipementComboBox = new ComboBox<>("Type équipement");
 
     /**
      * Boutons pour les actions de sauvegarde, annulation et suppression.
      */
-    Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
+    public Button save = new Button("Sauvegarder", VaadinIcon.CHECK.create());
     Button cancel = new Button("Annuler");
     Button delete = new Button("Supprimer", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
